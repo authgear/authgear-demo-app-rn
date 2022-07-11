@@ -10,6 +10,11 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
+"@authgear/react-native@0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@authgear/react-native/-/react-native-0.22.0.tgz#47f9e4ddc7a66857973ab45e9251bb4582c1a383"
+  integrity sha512-PqyXI1/LKBCc9cLL5BFtUH4wMKLIUFc1kGQbhGrSWo3Lx8hjaDW1hROLESUcFlOVSd7UKWovW3t4/3yNiig4CQ==
+
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
