@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button, Text} from 'react-native-paper';
+import {useTheme, Button, Text} from 'react-native-paper';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 20,
     marginBottom: 15,
-    color: 'rgba(0, 0, 0, 0.6)',
   },
   configButton: {
     alignItems: 'flex-start',
@@ -37,11 +36,15 @@ const styles = StyleSheet.create({
 });
 
 const AuthenticationScreen: React.FC = () => {
+  const theme = useTheme();
+
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.titleText}>Authgear Demo</Text>
-        <Text style={styles.subTitleText}>https://demo.authgear.apps.com/</Text>
+        <Text style={{...styles.subTitleText, color: theme.colors.disabled}}>
+          https://demo.authgear.apps.com/
+        </Text>
         <View style={styles.configButton}>
           <Button mode="text">Configure</Button>
         </View>
