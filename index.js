@@ -13,6 +13,7 @@ const theme = {
   version: 3,
   colors: {
     ...DefaultTheme.colors,
+    background: '#F5F5F5',
     primary: '#0099FF',
   },
 };
