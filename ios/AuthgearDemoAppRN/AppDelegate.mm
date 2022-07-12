@@ -16,6 +16,8 @@
 
 #import <react/config/ReactNativeConfig.h>
 
+#import <authgear-react-native/AGAuthgearReactNative.h>
+
 static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
 @interface AppDelegate () <RCTCxxBridgeDelegate, RCTTurboModuleManagerDelegate> {
@@ -126,6 +128,36 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 - (id<RCTTurboModule>)getModuleInstanceFromClass:(Class)moduleClass
 {
   return RCTAppSetupDefaultModuleFromClass(moduleClass);
+}
+
+// For handling deeplink
+- (BOOL)application:(UIApplication *)app
+            openURL:(NSURL *)url
+            options:
+                (NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
+    return [AGAuthgearReactNative application:app openURL:url options:options];
+}
+
+// For handling deeplink
+// deprecated, for supporting older devices (iOS < 9.0)
+- (BOOL)application:(UIApplication *)application
+        openURL:(NSURL *)url
+        sourceApplication:(NSString *)sourceApplication
+        annotation:(id)annotation {
+            return [AGAuthgearReactNative application:application
+                                      openURL:url
+                                      sourceApplication:sourceApplication
+                                      annotation:annotation];
+}
+
+// for handling universal link
+- (BOOL)application:(UIApplication *)application
+        continueUserActivity:(NSUserActivity *)userActivity
+        restorationHandler:
+            (void (^)(NSArray<id<UIUserActivityRestoring>> *_Nullable))restorationHandler {
+                return [AGAuthgearReactNative application:application
+                            continueUserActivity:userActivity
+                            restorationHandler:restorationHandler];
 }
 
 #endif
