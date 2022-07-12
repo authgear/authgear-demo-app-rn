@@ -15,6 +15,7 @@ const theme = {
     ...DefaultTheme.colors,
     background: '#F5F5F5',
     primary: '#0099FF',
+    disabled: 'rgba(0, 0, 0, 0.6)',
   },
 };
 
