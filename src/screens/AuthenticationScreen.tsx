@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     alignItems: 'center',
+    marginBottom: 32,
   },
   button: {
     marginBottom: 20,
