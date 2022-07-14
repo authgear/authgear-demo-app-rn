@@ -1,10 +1,11 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   StyleSheet,
   View,
   TouchableWithoutFeedback,
   Keyboard,
   useColorScheme,
+  Alert,
 } from 'react-native';
 import {
   useTheme,
@@ -18,6 +19,37 @@ import {
 } from 'react-native-paper';
 import {ColorScheme} from '@authgear/react-native';
 import RadioGroup, {RadioGroupItemProps} from '../RadioGroup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../App';
+
+interface Config {
+  clientID: string;
+  endpoint: string;
+  colorScheme?: ColorScheme;
+  explicitColorScheme: ColorScheme | null;
+  useTransientTokenStorage: boolean;
+  shareSessionWithSystemBrowser: boolean;
+}
+
+export async function getConfigFromStorage(): Promise<Config | null> {
+  try {
+    const configString = await AsyncStorage.getItem('config');
+    return configString != null ? JSON.parse(configString) : null;
+  } catch (e: any) {
+    Alert.alert('Error', String(e));
+    return null;
+  }
+}
+
+async function saveConfigToStorage(config: Config) {
+  try {
+    const configString = JSON.stringify(config);
+    await AsyncStorage.setItem('config', configString);
+  } catch (e: any) {
+    Alert.alert('Error', String(e));
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -90,18 +122,41 @@ const colorSchemeItems: RadioGroupItemProps<ColorScheme | null>[] = [
   },
 ];
 
-const ConfigurationScreen: React.FC = () => {
+type ConfigurationScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Configuration'
+>;
+
+const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
   const theme = useTheme();
+  const navigation = props.navigation;
+
   const [endpoint, setEndpoint] = useState<string>('');
   const [clientID, setClientID] = useState<string>('');
   const [explicitColorScheme, setExplicitColorScheme] =
     useState<ColorScheme | null>(null);
-  const [isTokenStorageEnabled, setIsTokenStorageEnabled] =
+  const [useTransientTokenStorage, setUseTransientTokenStorage] =
     useState<boolean>(false);
-  const [isShareSessionEnabled, setIsShareSessionEnabled] =
+  const [shareSessionWithSystemBrowser, setShareSessionWithSystemBrowser] =
     useState<boolean>(false);
   const [isColorSchemeDialogVisible, setIsColorSchemeDialogVisible] =
     useState<boolean>(false);
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      const config = await getConfigFromStorage();
+      if (config == null) {
+        return;
+      }
+
+      setClientID(config.clientID);
+      setEndpoint(config.endpoint);
+      setExplicitColorScheme(config.explicitColorScheme);
+      setUseTransientTokenStorage(config.useTransientTokenStorage);
+      setShareSessionWithSystemBrowser(config.shareSessionWithSystemBrowser);
+    };
+    loadConfig();
+  }, []);
 
   const systemColorSchemeNull = useColorScheme();
   const systemColorScheme = systemColorSchemeNull ?? undefined;
@@ -126,6 +181,33 @@ const ConfigurationScreen: React.FC = () => {
     setIsColorSchemeDialogVisible(false);
   }, [setIsColorSchemeDialogVisible]);
 
+  const onSave = useCallback(async () => {
+    if (clientID === '' || endpoint === '') {
+      Alert.alert('Error', 'Please fill in client ID and endpoint');
+      return;
+    }
+
+    const config = {
+      clientID,
+      endpoint,
+      colorScheme,
+      explicitColorScheme,
+      useTransientTokenStorage,
+      shareSessionWithSystemBrowser,
+    };
+    saveConfigToStorage(config);
+
+    navigation.navigate('Authentication');
+  }, [
+    clientID,
+    colorScheme,
+    endpoint,
+    explicitColorScheme,
+    navigation,
+    shareSessionWithSystemBrowser,
+    useTransientTokenStorage,
+  ]);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
@@ -144,6 +226,7 @@ const ConfigurationScreen: React.FC = () => {
               label="Authgear Endpoint"
               value={endpoint}
               onChangeText={setEndpoint}
+              autoCapitalize="none"
             />
             <TextInput
               style={styles.textInput}
@@ -151,6 +234,7 @@ const ConfigurationScreen: React.FC = () => {
               label="Client ID"
               value={clientID}
               onChangeText={setClientID}
+              autoCapitalize="none"
             />
           </View>
 
@@ -192,8 +276,8 @@ const ConfigurationScreen: React.FC = () => {
             <Text style={styles.labelText}>Transient TokenStorage</Text>
             <Switch
               color={theme.colors.primary}
-              value={isTokenStorageEnabled}
-              onValueChange={setIsTokenStorageEnabled}
+              value={useTransientTokenStorage}
+              onValueChange={setUseTransientTokenStorage}
             />
           </View>
           <Divider />
@@ -204,13 +288,13 @@ const ConfigurationScreen: React.FC = () => {
             </Text>
             <Switch
               color={theme.colors.primary}
-              value={isShareSessionEnabled}
-              onValueChange={setIsShareSessionEnabled}
+              value={shareSessionWithSystemBrowser}
+              onValueChange={setShareSessionWithSystemBrowser}
             />
           </View>
           <Divider />
 
-          <Button mode="contained" style={styles.saveButton}>
+          <Button mode="contained" style={styles.saveButton} onPress={onSave}>
             Save
           </Button>
         </View>
