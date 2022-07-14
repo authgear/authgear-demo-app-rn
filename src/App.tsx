@@ -3,17 +3,30 @@
  */
 
 import React from 'react';
-import {SafeAreaView, StatusBar} from 'react-native';
-
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AuthenticationScreen from './screens/AuthenticationScreen';
+import ConfigurationScreen from './screens/ConfigurationScreen';
+
+export type RootStackParamList = {
+  Authentication: any;
+  Configuration: any;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App: React.FC = () => {
   return (
     <>
-      <StatusBar barStyle="light-content" />
-      <SafeAreaView>
-        <AuthenticationScreen />
-      </SafeAreaView>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Authentication">
+          <Stack.Screen
+            name="Authentication"
+            component={AuthenticationScreen}
+          />
+          <Stack.Screen name="Configuration" component={ConfigurationScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </>
   );
 };

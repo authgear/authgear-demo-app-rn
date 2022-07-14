@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useTheme, Button, Text} from 'react-native-paper';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../App';
 
 const styles = StyleSheet.create({
   container: {
@@ -35,8 +37,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const AuthenticationScreen: React.FC = () => {
+type AuthenticationScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Authentication'
+>;
+
+const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
   const theme = useTheme();
+  const navigation = props.navigation;
+
+  const onPressConfigButton = useCallback(() => {
+    return navigation.navigate('Configuration');
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -46,7 +58,9 @@ const AuthenticationScreen: React.FC = () => {
           https://demo.authgear.apps.com/
         </Text>
         <View style={styles.configButton}>
-          <Button mode="text">Configure</Button>
+          <Button mode="text" onPress={onPressConfigButton}>
+            Configure
+          </Button>
         </View>
       </View>
       <View style={styles.actionButtons}>
