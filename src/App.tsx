@@ -8,8 +8,8 @@ import AuthenticationScreen from './screens/AuthenticationScreen';
 import ConfigurationScreen from './screens/ConfigurationScreen';
 
 export type RootStackParamList = {
-  Authentication: any;
-  Configuration: any;
+  Authentication: undefined;
+  Configuration: {fromButton: boolean} | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

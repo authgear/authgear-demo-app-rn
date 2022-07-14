@@ -102,8 +102,11 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
 
-  saveButton: {
-    marginVertical: 46,
+  buttonContainer: {
+    marginVertical: 32,
+  },
+  button: {
+    marginBottom: 16,
   },
 });
 
@@ -130,6 +133,7 @@ type ConfigurationScreenProps = NativeStackScreenProps<
 const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
   const theme = useTheme();
   const navigation = props.navigation;
+  const fromButton = props.route.params?.fromButton;
 
   const [endpoint, setEndpoint] = useState<string>('');
   const [clientID, setClientID] = useState<string>('');
@@ -207,6 +211,10 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
     shareSessionWithSystemBrowser,
     useTransientTokenStorage,
   ]);
+
+  const onCancelButtonClick = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -294,9 +302,21 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
           </View>
           <Divider />
 
-          <Button mode="contained" style={styles.saveButton} onPress={onSave}>
-            Save
-          </Button>
+          <View style={styles.buttonContainer}>
+            <Button mode="contained" style={styles.button} onPress={onSave}>
+              Save
+            </Button>
+            {fromButton ? (
+              <Button
+                mode="outlined"
+                style={styles.button}
+                onPress={onCancelButtonClick}>
+                Cancel
+              </Button>
+            ) : (
+              <></>
+            )}
+          </View>
         </View>
       </View>
     </TouchableWithoutFeedback>

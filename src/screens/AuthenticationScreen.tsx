@@ -1,8 +1,9 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useTheme, Button, Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../App';
+import {getConfigFromStorage} from './ConfigurationScreen';
 
 const styles = StyleSheet.create({
   container: {
@@ -46,8 +47,18 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
   const theme = useTheme();
   const navigation = props.navigation;
 
+  useEffect(() => {
+    const checkIfConfigExists = async () => {
+      const config = await getConfigFromStorage();
+      if (config == null) {
+        navigation.replace('Configuration');
+      }
+    };
+    checkIfConfigExists();
+  }, [navigation]);
+
   const onPressConfigButton = useCallback(() => {
-    return navigation.navigate('Configuration');
+    return navigation.navigate('Configuration', {fromButton: true});
   }, [navigation]);
 
   return (
