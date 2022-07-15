@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleText: {
-    marginTop: 60,
+    marginTop: 120,
     marginBottom: 6,
     fontSize: 34,
     fontWeight: '400',
