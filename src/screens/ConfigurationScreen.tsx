@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -19,37 +19,9 @@ import {
 } from 'react-native-paper';
 import {ColorScheme} from '@authgear/react-native';
 import RadioGroup, {RadioGroupItemProps} from '../RadioGroup';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../App';
-
-interface Config {
-  clientID: string;
-  endpoint: string;
-  colorScheme?: ColorScheme;
-  explicitColorScheme: ColorScheme | null;
-  useTransientTokenStorage: boolean;
-  shareSessionWithSystemBrowser: boolean;
-}
-
-export async function getConfigFromStorage(): Promise<Config | null> {
-  try {
-    const configString = await AsyncStorage.getItem('config');
-    return configString != null ? JSON.parse(configString) : null;
-  } catch (e: any) {
-    Alert.alert('Error', String(e));
-    return null;
-  }
-}
-
-async function saveConfigToStorage(config: Config) {
-  try {
-    const configString = JSON.stringify(config);
-    await AsyncStorage.setItem('config', configString);
-  } catch (e: any) {
-    Alert.alert('Error', String(e));
-  }
-}
+import {useConfig} from '../context/ConfigProvider';
 
 const styles = StyleSheet.create({
   container: {
@@ -135,32 +107,18 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
   const navigation = props.navigation;
   const fromButton = props.route.params?.fromButton;
 
-  const [endpoint, setEndpoint] = useState<string>('');
-  const [clientID, setClientID] = useState<string>('');
+  const {config, setConfig} = useConfig();
+
+  const [endpoint, setEndpoint] = useState<string>(config?.endpoint ?? '');
+  const [clientID, setClientID] = useState<string>(config?.clientID ?? '');
   const [explicitColorScheme, setExplicitColorScheme] =
-    useState<ColorScheme | null>(null);
+    useState<ColorScheme | null>(config?.explicitColorScheme ?? null);
   const [useTransientTokenStorage, setUseTransientTokenStorage] =
-    useState<boolean>(false);
+    useState<boolean>(config?.useTransientTokenStorage ?? false);
   const [shareSessionWithSystemBrowser, setShareSessionWithSystemBrowser] =
-    useState<boolean>(false);
+    useState<boolean>(config?.shareSessionWithSystemBrowser ?? false);
   const [isColorSchemeDialogVisible, setIsColorSchemeDialogVisible] =
     useState<boolean>(false);
-
-  useEffect(() => {
-    const loadConfig = async () => {
-      const config = await getConfigFromStorage();
-      if (config == null) {
-        return;
-      }
-
-      setClientID(config.clientID);
-      setEndpoint(config.endpoint);
-      setExplicitColorScheme(config.explicitColorScheme);
-      setUseTransientTokenStorage(config.useTransientTokenStorage);
-      setShareSessionWithSystemBrowser(config.shareSessionWithSystemBrowser);
-    };
-    loadConfig();
-  }, []);
 
   const systemColorSchemeNull = useColorScheme();
   const systemColorScheme = systemColorSchemeNull ?? undefined;
@@ -191,7 +149,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
       return;
     }
 
-    const config = {
+    const newConfig = {
       clientID,
       endpoint,
       colorScheme,
@@ -199,15 +157,21 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
       useTransientTokenStorage,
       shareSessionWithSystemBrowser,
     };
-    saveConfigToStorage(config);
+    setConfig(newConfig);
 
-    navigation.navigate('Authentication');
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return;
+    }
+
+    navigation.replace('Authentication');
   }, [
     clientID,
     colorScheme,
     endpoint,
     explicitColorScheme,
     navigation,
+    setConfig,
     shareSessionWithSystemBrowser,
     useTransientTokenStorage,
   ]);

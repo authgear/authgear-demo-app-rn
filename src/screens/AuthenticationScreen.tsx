@@ -3,7 +3,11 @@ import {StyleSheet, View} from 'react-native';
 import {useTheme, Button, Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../App';
-import {getConfigFromStorage} from './ConfigurationScreen';
+import authgear, {
+  PersistentTokenStorage,
+  TransientTokenStorage,
+} from '@authgear/react-native';
+import {useConfig} from '../context/ConfigProvider';
 
 const styles = StyleSheet.create({
   container: {
@@ -48,15 +52,35 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
   const theme = useTheme();
   const navigation = props.navigation;
 
+  const {configLoading, config} = useConfig();
+
   useEffect(() => {
-    const checkIfConfigExists = async () => {
-      const config = await getConfigFromStorage();
-      if (config == null) {
-        navigation.replace('Configuration');
-      }
-    };
-    checkIfConfigExists();
-  }, [navigation]);
+    if (configLoading) {
+      return;
+    }
+    if (config == null) {
+      navigation.replace('Configuration');
+      return;
+    }
+
+    const clientID = config.clientID;
+    const endpoint = config.endpoint;
+    const tokenStorage = config.useTransientTokenStorage
+      ? new TransientTokenStorage()
+      : new PersistentTokenStorage();
+    const shareSessionWithSystemBrowser = config.shareSessionWithSystemBrowser;
+
+    authgear
+      .configure({
+        clientID,
+        endpoint,
+        tokenStorage,
+        shareSessionWithSystemBrowser,
+      })
+      .catch(e => {
+        JSON.parse(JSON.stringify(e));
+      });
+  }, [config, configLoading, navigation]);
 
   const onPressConfigButton = useCallback(() => {
     return navigation.navigate('Configuration', {fromButton: true});
