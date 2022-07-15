@@ -17,6 +17,7 @@ const theme = {
     background: '#FFFFFF',
     primary: '#0099FF',
     disabled: 'rgba(0, 0, 0, 0.6)',
+    error: '#B00020',
   },
 };
 
