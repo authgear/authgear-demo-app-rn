@@ -9,11 +9,13 @@ import ConfigurationScreen from './screens/ConfigurationScreen';
 import ConfigProvider from './context/ConfigProvider';
 import UserPanelScreen from './screens/UserPanelScreen';
 import UserInfoProvider from './context/UserInfoProvider';
+import UserInfoScreen from './screens/UserInfoScreen';
 
 export type RootStackParamList = {
   Authentication: undefined;
   Configuration: {fromButton: boolean} | undefined;
   UserPanel: undefined;
+  UserInfo: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -31,6 +33,7 @@ const App: React.FC = () => {
           />
           <Stack.Screen name="Configuration" component={ConfigurationScreen} />
           <Stack.Screen name="UserPanel" component={UserPanelScreen} />
+          <Stack.Screen name="UserInfo" component={UserInfoScreen} />
         </Stack.Navigator>
       </UserInfoProvider>
     </ConfigProvider>
