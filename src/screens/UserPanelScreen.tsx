@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {
   Appbar,
@@ -14,6 +14,9 @@ import {
 import {RootStackParamList} from '../App';
 import {useConfig} from '../context/ConfigProvider';
 import {useUserInfo} from '../context/UserInfoProvider';
+import ShowError from '../ShowError';
+import authgear from '@authgear/react-native';
+import LoadingSpinner from '../LoadingSpinner';
 
 const styles = StyleSheet.create({
   container: {
@@ -39,9 +42,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginVertical: 8,
   },
-  button: {
-    flexDirection: 'row',
+  buttonContent: {
     marginVertical: 8,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
 });
 
@@ -55,10 +59,46 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
   const theme = useTheme();
   const {userInfo} = useUserInfo();
   const config = useConfig();
+
   const [infoDialogVisble, setInfoDialogVisible] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    if (dispatchAction == null) {
+      return;
+    }
+
+    // Give buffer time for spinner to disapear
+    setTimeout(dispatchAction, 100);
+    setDispatchAction(null);
+  }, [dispatchAction, loading]);
+
+  const onPressLogoutButton = useCallback(() => {
+    setLoading(true);
+    authgear
+      .logout()
+      .then(() => {
+        setDispatchAction(() => () => navigation.replace('Authentication'));
+      })
+      .catch(e => {
+        ShowError(e);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [navigation]);
 
   return (
     <>
+      <LoadingSpinner loading={loading} />
+
       <Appbar.Header>
         <Appbar.Content title="Authgear Demo" />
         <Appbar.Action
@@ -111,39 +151,61 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         />
 
         <View style={styles.buttonContainer}>
-          <Button compact={true} uppercase={false} style={styles.button}>
+          <Button
+            compact={true}
+            uppercase={false}
+            contentStyle={styles.buttonContent}>
             <Text style={styles.contentText}>User Information</Text>
           </Button>
           <Divider />
-          <Button compact={true} uppercase={false} style={styles.button}>
+          <Button
+            compact={true}
+            uppercase={false}
+            contentStyle={styles.buttonContent}>
             <Text style={styles.contentText}>User Settings</Text>
           </Button>
           <Divider />
           {userInfo?.isAnonymous ? null : (
             <>
-              <Button compact={true} uppercase={false} style={styles.button}>
+              <Button
+                compact={true}
+                uppercase={false}
+                contentStyle={styles.buttonContent}>
                 <Text style={styles.contentText}>Enable Biometric Login</Text>
               </Button>
               <Divider />
-              <Button compact={true} uppercase={false} style={styles.button}>
+              <Button
+                compact={true}
+                uppercase={false}
+                contentStyle={styles.buttonContent}>
                 <Text style={styles.contentText}>Reauthenticate</Text>
               </Button>
               <Divider />
             </>
           )}
-          <Button compact={true} uppercase={false} style={styles.button}>
+          <Button
+            compact={true}
+            uppercase={false}
+            contentStyle={styles.buttonContent}>
             <Text style={styles.contentText}>Show Auth Time</Text>
           </Button>
           <Divider />
           {userInfo?.isAnonymous ? (
             <>
-              <Button compact={true} uppercase={false} style={styles.button}>
+              <Button
+                compact={true}
+                uppercase={false}
+                contentStyle={styles.buttonContent}>
                 <Text style={styles.contentText}>Promote User</Text>
               </Button>
               <Divider />
             </>
           ) : null}
-          <Button compact={true} uppercase={false} style={styles.button}>
+          <Button
+            compact={true}
+            uppercase={false}
+            contentStyle={styles.buttonContent}
+            onPress={onPressLogoutButton}>
             <Text style={{...styles.contentText, color: theme.colors.error}}>
               Logout
             </Text>
