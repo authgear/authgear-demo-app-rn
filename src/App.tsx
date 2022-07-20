@@ -11,6 +11,7 @@ import UserPanelScreen from './screens/UserPanelScreen';
 import UserInfoProvider from './context/UserInfoProvider';
 import UserInfoScreen from './screens/UserInfoScreen';
 import {Platform} from 'react-native';
+import BiometricProvider from './context/BiometricProvider';
 
 export type RootStackParamList = {
   Authentication: undefined;
@@ -46,17 +47,22 @@ const App: React.FC = () => {
   return (
     <ConfigProvider>
       <UserInfoProvider>
-        <Stack.Navigator
-          initialRouteName="Authentication"
-          screenOptions={{headerShown: false}}>
-          <Stack.Screen
-            name="Authentication"
-            component={AuthenticationScreen}
-          />
-          <Stack.Screen name="Configuration" component={ConfigurationScreen} />
-          <Stack.Screen name="UserPanel" component={UserPanelScreen} />
-          <Stack.Screen name="UserInfo" component={UserInfoScreen} />
-        </Stack.Navigator>
+        <BiometricProvider>
+          <Stack.Navigator
+            initialRouteName="Authentication"
+            screenOptions={{headerShown: false}}>
+            <Stack.Screen
+              name="Authentication"
+              component={AuthenticationScreen}
+            />
+            <Stack.Screen
+              name="Configuration"
+              component={ConfigurationScreen}
+            />
+            <Stack.Screen name="UserPanel" component={UserPanelScreen} />
+            <Stack.Screen name="UserInfo" component={UserInfoScreen} />
+          </Stack.Navigator>
+        </BiometricProvider>
       </UserInfoProvider>
     </ConfigProvider>
   );
