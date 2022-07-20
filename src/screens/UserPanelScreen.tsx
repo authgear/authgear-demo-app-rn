@@ -154,7 +154,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
           <Button
             compact={true}
             uppercase={false}
-            contentStyle={styles.buttonContent}>
+            contentStyle={styles.buttonContent}
+            onPress={() => navigation.navigate('UserInfo')}>
             <Text style={styles.contentText}>User Information</Text>
           </Button>
           <Divider />
