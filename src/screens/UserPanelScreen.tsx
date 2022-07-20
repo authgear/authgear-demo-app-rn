@@ -170,9 +170,10 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       })
       .catch(e => ShowError(e))
       .finally(() => {
+        biometric.updateState();
         setLoading(false);
       });
-  }, [config.content?.colorScheme, setUserInfo]);
+  }, [biometric, config.content?.colorScheme, setUserInfo]);
 
   const onReauthenticate = useCallback(() => {
     async function task() {

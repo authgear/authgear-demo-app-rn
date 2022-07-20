@@ -11,6 +11,7 @@ import {useConfig} from '../context/ConfigProvider';
 import {useUserInfo} from '../context/UserInfoProvider';
 import ShowError from '../ShowError';
 import LoadingSpinner from '../LoadingSpinner';
+import {useBiometric} from '../context/BiometricProvider';
 
 const styles = StyleSheet.create({
   container: {
@@ -57,6 +58,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
   const navigation = props.navigation;
 
   const config = useConfig();
+  const biometric = useBiometric();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
@@ -128,10 +130,11 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
           ShowError(e);
         })
         .finally(() => {
+          biometric.updateState();
           setLoading(false);
         });
     },
-    [config.content?.colorScheme, navigation, setUserInfo],
+    [biometric, config.content?.colorScheme, navigation, setUserInfo],
   );
 
   const onPressSignupButton = useCallback(() => {
@@ -154,9 +157,10 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
         ShowError(e);
       })
       .finally(() => {
+        biometric.updateState();
         setLoading(false);
       });
-  }, [navigation, setUserInfo]);
+  }, [biometric, navigation, setUserInfo]);
 
   return (
     <>
