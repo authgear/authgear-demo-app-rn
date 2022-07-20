@@ -128,6 +128,10 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
           </Button>
           <Divider />
           <Button compact={true} uppercase={false} style={styles.button}>
+            <Text style={styles.contentText}>Show Auth Time</Text>
+          </Button>
+          <Divider />
+          <Button compact={true} uppercase={false} style={styles.button}>
             <Text style={{...styles.contentText, color: theme.colors.error}}>
               Logout
             </Text>
