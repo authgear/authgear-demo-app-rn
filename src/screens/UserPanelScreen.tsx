@@ -50,6 +50,21 @@ const styles = StyleSheet.create({
   },
 });
 
+const biometricOptions = {
+  ios: {
+    localizedReason: 'Use biometric to authenticate',
+    constraint: 'biometryCurrentSet' as const,
+  },
+  android: {
+    title: 'Biometric Authentication',
+    subtitle: 'Biometric authentication',
+    description: 'Use biometric to authenticate',
+    negativeButtonText: 'Cancel',
+    constraint: ['BIOMETRIC_STRONG' as const],
+    invalidatedByBiometricEnrollment: true,
+  },
+};
+
 type UserPanelScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'UserPanel'
@@ -63,6 +78,9 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
 
   const [infoDialogVisble, setInfoDialogVisible] = useState(false);
   const [authTimeDialogVisble, setAuthTimeDialogVisble] = useState(false);
+  const [reauthDialogVisble, setReauthDialogVisble] = useState(false);
+  const [reauthSuccessDialogVisble, setReauthSuccessDialogVisble] =
+    useState(false);
   const [logoutDialogVisble, setLogoutDialogVisble] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
@@ -135,6 +153,45 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         setUserInfo(result.userInfo);
       })
       .catch(e => ShowError(e))
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [config.content?.colorScheme, setUserInfo]);
+
+  const onReauthenticate = useCallback(() => {
+    async function task() {
+      await authgear.refreshIDToken();
+      if (!authgear.canReauthenticate()) {
+        throw new Error(
+          'canReauthenticate() returns false for the current user',
+        );
+      }
+
+      const result = await authgear.reauthenticate(
+        {
+          redirectURI,
+          colorScheme: config.content?.colorScheme,
+          wechatRedirectURI,
+        },
+        biometricOptions,
+      );
+
+      setUserInfo(result.userInfo);
+
+      return true;
+    }
+
+    setReauthDialogVisble(false);
+    setLoading(true);
+    task()
+      .then(success => {
+        if (success) {
+          setReauthSuccessDialogVisble(true);
+        }
+      })
+      .catch(e => {
+        ShowError(e);
+      })
       .finally(() => {
         setLoading(false);
       });
@@ -234,6 +291,42 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         </Dialog>
       </Portal>
 
+      <Portal>
+        <Dialog
+          visible={reauthDialogVisble}
+          onDismiss={() => setReauthDialogVisble(false)}>
+          <Dialog.Title>Reauthenticate user?</Dialog.Title>
+          <Dialog.Content>
+            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+              The auth time will be updated after reauthentication. This is
+              useful to identify the users before sensitive operations.
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setReauthDialogVisble(false)}>Cancel</Button>
+            <Button onPress={onReauthenticate}>Re-auth</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      <Portal>
+        <Dialog
+          visible={reauthSuccessDialogVisble}
+          onDismiss={() => setReauthSuccessDialogVisble(false)}>
+          <Dialog.Title>Reauth success</Dialog.Title>
+          <Dialog.Content>
+            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+              The auth time is now {authgear.getAuthTime()?.toISOString()}
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setReauthSuccessDialogVisble(false)}>
+              Cancel
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
       <View style={styles.container}>
         <Text style={styles.contentText}>Welcome!</Text>
 
@@ -272,7 +365,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
               <Button
                 compact={true}
                 uppercase={false}
-                contentStyle={styles.buttonContent}>
+                contentStyle={styles.buttonContent}
+                onPress={() => setReauthDialogVisble(true)}>
                 <Text style={styles.contentText}>Reauthenticate</Text>
               </Button>
               <Divider />
