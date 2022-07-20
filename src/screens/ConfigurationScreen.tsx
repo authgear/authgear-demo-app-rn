@@ -6,6 +6,7 @@ import {
   Keyboard,
   useColorScheme,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import {
   useTheme,
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleText: {
-    marginTop: 120,
+    marginTop: 40,
     marginBottom: 6,
     fontSize: 34,
     fontWeight: '400',
@@ -40,14 +41,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '400',
     lineHeight: 20,
-    marginBottom: 15,
   },
 
   textInputs: {
-    marginVertical: 25,
+    marginVertical: 16,
   },
   textInput: {
-    marginVertical: 15,
+    marginVertical: 8,
   },
 
   colorSchemeLabelButton: {
@@ -182,7 +182,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View>
           <Text style={styles.titleText}>Authgear Demo</Text>
           <Text style={{...styles.subTitleText, color: theme.colors.disabled}}>
@@ -190,26 +190,26 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
           </Text>
         </View>
 
-        <View>
-          <View style={styles.textInputs}>
-            <TextInput
-              style={styles.textInput}
-              mode="outlined"
-              label="Authgear Endpoint"
-              value={endpoint}
-              onChangeText={setEndpoint}
-              autoCapitalize="none"
-            />
-            <TextInput
-              style={styles.textInput}
-              mode="outlined"
-              label="Client ID"
-              value={clientID}
-              onChangeText={setClientID}
-              autoCapitalize="none"
-            />
-          </View>
+        <View style={styles.textInputs}>
+          <TextInput
+            style={styles.textInput}
+            mode="outlined"
+            label="Authgear Endpoint"
+            value={endpoint}
+            onChangeText={setEndpoint}
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.textInput}
+            mode="outlined"
+            label="Client ID"
+            value={clientID}
+            onChangeText={setClientID}
+            autoCapitalize="none"
+          />
+        </View>
 
+        <View>
           <Button
             mode="text"
             compact={true}
@@ -282,7 +282,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
             )}
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 };
