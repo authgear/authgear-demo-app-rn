@@ -12,6 +12,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import {RootStackParamList} from '../App';
+import {useConfig} from '../context/ConfigProvider';
 import {useUserInfo} from '../context/UserInfoProvider';
 
 const styles = StyleSheet.create({
@@ -22,6 +23,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     lineHeight: 24,
+  },
+
+  configDialogText: {
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 20,
   },
 
   userInfoCard: {
@@ -47,6 +54,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
   const navigation = props.navigation;
   const theme = useTheme();
   const {userInfo} = useUserInfo();
+  const config = useConfig();
   const [infoDialogVisble, setInfoDialogVisible] = useState(false);
 
   return (
@@ -63,7 +71,29 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         <Dialog visible={infoDialogVisble}>
           <Dialog.Title>Configuration</Dialog.Title>
           <Dialog.Content>
-            <Text>Hi</Text>
+            <Text
+              style={[styles.configDialogText, {color: theme.colors.disabled}]}>
+              Endpoint: {config.content?.endpoint}
+            </Text>
+            <Text
+              style={[styles.configDialogText, {color: theme.colors.disabled}]}>
+              Client ID: {config.content?.clientID}
+            </Text>
+            <Text
+              style={[styles.configDialogText, {color: theme.colors.disabled}]}>
+              AUTHUI Color Scheme:{' '}
+              {config.content?.explicitColorScheme ?? 'System'}
+            </Text>
+            <Text
+              style={[styles.configDialogText, {color: theme.colors.disabled}]}>
+              Transient Token Storage:{' '}
+              {config.content?.useTransientTokenStorage.toString()}
+            </Text>
+            <Text
+              style={[styles.configDialogText, {color: theme.colors.disabled}]}>
+              Share Session with Device Browser:{' '}
+              {config.content?.shareSessionWithSystemBrowser.toString()}
+            </Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setInfoDialogVisible(false)}>Dismiss</Button>
