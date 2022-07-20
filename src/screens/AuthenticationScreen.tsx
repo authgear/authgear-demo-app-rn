@@ -2,7 +2,12 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {useTheme, Button, Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {redirectURI, RootStackParamList, wechatRedirectURI} from '../App';
+import {
+  biometricOptions,
+  redirectURI,
+  RootStackParamList,
+  wechatRedirectURI,
+} from '../App';
 import authgear, {
   PersistentTokenStorage,
   TransientTokenStorage,
@@ -145,6 +150,21 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
     authenticate('login');
   }, [authenticate]);
 
+  const onPressBiometricLoginButton = useCallback(() => {
+    setLoading(true);
+    authgear
+      .authenticateBiometric(biometricOptions)
+      .then(({userInfo}) => {
+        setUserInfo(userInfo);
+        setDispatchAction(() => () => navigation.replace('UserPanel'));
+      })
+      .catch(e => ShowError(e))
+      .finally(() => {
+        biometric.updateState();
+        setLoading(false);
+      });
+  }, [biometric, navigation, setUserInfo]);
+
   const onPressGuestLoginButton = useCallback(() => {
     setLoading(true);
     authgear
@@ -190,7 +210,10 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
             onPress={onPressLoginButton}>
             Login
           </Button>
-          <Button mode="outlined" style={styles.button}>
+          <Button
+            mode="outlined"
+            style={styles.button}
+            onPress={onPressBiometricLoginButton}>
             Login with biometric
           </Button>
           <Button
