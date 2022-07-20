@@ -3,6 +3,8 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import <AGAuthgearReactNative.h>
+#import "RCTWechatAuthModule.h"
 
 #import <React/RCTAppSetupUtils.h>
 
@@ -16,8 +18,6 @@
 
 #import <react/config/ReactNativeConfig.h>
 
-#import <authgear-react-native/AGAuthgearReactNative.h>
-
 static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
 @interface AppDelegate () <RCTCxxBridgeDelegate, RCTTurboModuleManagerDelegate> {
@@ -28,6 +28,13 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 }
 @end
 #endif
+
+// config
+NSString* const WechatAppID = @"wxe64ed6a7605b5021";
+NSString* const WechatUniversalLink = @"https://authgear-demo-rn.pandawork.com/wechat/";
+
+// Error domain
+NSString* const WechatAuthErrorDomain = @"com.authgear.example.reactnative.wechatauth_error";
 
 @implementation AppDelegate
 
@@ -59,6 +66,10 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+
+  // Setup Wechat SDK
+  [WXApi registerApp:WechatAppID universalLink:WechatUniversalLink];
+
   return YES;
 }
 
@@ -84,6 +95,12 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   return initProps;
 }
 
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
+  [WXApi handleOpenUniversalLink:userActivity delegate:self];
+  [AGAuthgearReactNative application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
+  return YES;
+}
+
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
@@ -91,6 +108,49 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
+}
+
+-(void) onReq:(BaseReq*)req
+{
+}
+
+-(void) onResp:(BaseResp*)resp
+{
+  SendAuthResp *sendAuthResp;
+  if([resp isKindOfClass:[SendAuthResp class]])
+  {
+    sendAuthResp = (SendAuthResp*)resp;
+    NSDictionary<NSString *, id> *payload;
+    if (sendAuthResp.errCode == WXSuccess) {
+      payload = @{
+        @"code": sendAuthResp.code,
+        @"state": sendAuthResp.state,
+      };
+    } else {
+      NSString *message;
+      switch (resp.errCode) {
+        case WXErrCodeUserCancel:
+          message = @"errcode_cancel";
+          break;
+        case WXErrCodeAuthDeny:
+          message = @"errcode_deny";
+          break;
+        case WXErrCodeUnsupport:
+          message = @"errcode_unsupported";
+          break;
+        default:
+          message = @"errcode_unknown";
+          break;
+      }
+      payload = @{
+        @"error": [NSError errorWithDomain:WechatAuthErrorDomain code:resp.errCode userInfo:nil],
+        @"error_message": message,
+      };
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kWechatAuthResultNotification
+                                                        object:nil
+                                                      userInfo:payload];
+  }
 }
 
 #if RCT_NEW_ARCH_ENABLED
@@ -128,36 +188,6 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 - (id<RCTTurboModule>)getModuleInstanceFromClass:(Class)moduleClass
 {
   return RCTAppSetupDefaultModuleFromClass(moduleClass);
-}
-
-// For handling deeplink
-- (BOOL)application:(UIApplication *)app
-            openURL:(NSURL *)url
-            options:
-                (NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
-    return [AGAuthgearReactNative application:app openURL:url options:options];
-}
-
-// For handling deeplink
-// deprecated, for supporting older devices (iOS < 9.0)
-- (BOOL)application:(UIApplication *)application
-        openURL:(NSURL *)url
-        sourceApplication:(NSString *)sourceApplication
-        annotation:(id)annotation {
-            return [AGAuthgearReactNative application:application
-                                      openURL:url
-                                      sourceApplication:sourceApplication
-                                      annotation:annotation];
-}
-
-// for handling universal link
-- (BOOL)application:(UIApplication *)application
-        continueUserActivity:(NSUserActivity *)userActivity
-        restorationHandler:
-            (void (^)(NSArray<id<UIUserActivityRestoring>> *_Nullable))restorationHandler {
-                return [AGAuthgearReactNative application:application
-                            continueUserActivity:userActivity
-                            restorationHandler:restorationHandler];
 }
 
 #endif
