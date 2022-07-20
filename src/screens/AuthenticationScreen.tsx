@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
+import {Platform, SafeAreaView, StyleSheet, View} from 'react-native';
 import {useTheme, Button, Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../App';
@@ -65,6 +65,21 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
   const config = useConfig();
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    if (dispatchAction == null) {
+      return;
+    }
+    // Give buffer time for spinner to disapear
+    setTimeout(dispatchAction, 100);
+    setDispatchAction(null);
+  }, [dispatchAction, loading]);
 
   useEffect(() => {
     if (config.loading) {
@@ -111,7 +126,9 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
         })
         .then(({userInfo}) => {
           setUserInfo(userInfo);
-          navigation.replace('UserPanel');
+          setDispatchAction(() => () => {
+            navigation.replace('UserPanel');
+          });
         })
         .catch(e => {
           ShowError(e);
@@ -137,7 +154,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
       .authenticateAnonymously()
       .then(({userInfo}) => {
         setUserInfo(userInfo);
-        navigation.replace('UserPanel');
+        setDispatchAction(() => () => navigation.replace('UserPanel'));
       })
       .catch(e => {
         ShowError(e);
@@ -149,8 +166,8 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
 
   return (
     <>
-      <LoadingSpinner loading={loading} />
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <LoadingSpinner loading={loading} />
         <View>
           <Text style={styles.titleText}>Authgear Demo</Text>
           <Text style={{...styles.subTitleText, color: theme.colors.disabled}}>
@@ -185,7 +202,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
             Continue as guest
           </Button>
         </View>
-      </View>
+      </SafeAreaView>
     </>
   );
 };
