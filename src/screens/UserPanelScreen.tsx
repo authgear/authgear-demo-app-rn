@@ -12,6 +12,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import {RootStackParamList} from '../App';
+import {useUserInfo} from '../context/UserInfoProvider';
 
 const styles = StyleSheet.create({
   container: {
@@ -45,6 +46,7 @@ type UserPanelScreenProps = NativeStackScreenProps<
 const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
   const navigation = props.navigation;
   const theme = useTheme();
+  const {userInfo} = useUserInfo();
   const [infoDialogVisble, setInfoDialogVisible] = useState(false);
 
   return (
@@ -73,8 +75,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         <Text style={styles.contentText}>Welcome!</Text>
 
         <Card.Title
-          title="Card Title"
-          subtitle="Card Subtitle"
+          title={userInfo?.isAnonymous ? 'Guest' : userInfo?.name}
+          subtitle={userInfo?.sub}
           style={styles.userInfoCard}
         />
 
