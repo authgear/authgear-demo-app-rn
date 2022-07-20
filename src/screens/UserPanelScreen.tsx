@@ -63,6 +63,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
 
   const [infoDialogVisble, setInfoDialogVisible] = useState(false);
   const [authTimeVisble, setAuthTimeVisble] = useState(false);
+  const [logoutVisble, setLogoutVisble] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
     null,
@@ -139,7 +140,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       });
   }, [config.content?.colorScheme, setUserInfo]);
 
-  const onPressLogoutButton = useCallback(() => {
+  const onLogout = useCallback(() => {
+    setLogoutVisble(false);
     setLoading(true);
     authgear
       .logout()
@@ -213,6 +215,21 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         </Dialog>
       </Portal>
 
+      <Portal>
+        <Dialog visible={logoutVisble} onDismiss={() => setLogoutVisble(false)}>
+          <Dialog.Title>Logout?</Dialog.Title>
+          <Dialog.Content>
+            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+              Are you sure to logout?
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setLogoutVisble(false)}>Cancel</Button>
+            <Button onPress={onLogout}>Logout</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
       <View style={styles.container}>
         <Text style={styles.contentText}>Welcome!</Text>
 
@@ -281,7 +298,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
             compact={true}
             uppercase={false}
             contentStyle={styles.buttonContent}
-            onPress={onPressLogoutButton}>
+            onPress={() => setLogoutVisble(true)}>
             <Text style={{...styles.contentText, color: theme.colors.error}}>
               Logout
             </Text>
