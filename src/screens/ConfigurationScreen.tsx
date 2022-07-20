@@ -194,17 +194,17 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
           <TextInput
             style={styles.textInput}
             mode="outlined"
-            label="Authgear Endpoint"
-            value={endpoint}
-            onChangeText={setEndpoint}
+            label="Client ID"
+            value={clientID}
+            onChangeText={setClientID}
             autoCapitalize="none"
           />
           <TextInput
             style={styles.textInput}
             mode="outlined"
-            label="Client ID"
-            value={clientID}
-            onChangeText={setClientID}
+            label="Authgear Endpoint"
+            value={endpoint}
+            onChangeText={setEndpoint}
             autoCapitalize="none"
           />
         </View>
