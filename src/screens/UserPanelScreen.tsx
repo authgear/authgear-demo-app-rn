@@ -15,8 +15,9 @@ import {RootStackParamList} from '../App';
 import {useConfig} from '../context/ConfigProvider';
 import {useUserInfo} from '../context/UserInfoProvider';
 import ShowError from '../ShowError';
-import authgear from '@authgear/react-native';
+import authgear, {Page} from '@authgear/react-native';
 import LoadingSpinner from '../LoadingSpinner';
+import {wechatRedirectURI} from './AuthenticationScreen';
 
 const styles = StyleSheet.create({
   container: {
@@ -109,6 +110,19 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const onPressUserSettingsButton = useCallback(() => {
+    setLoading(true);
+    authgear
+      .open(Page.Settings, {
+        colorScheme: config.content?.colorScheme,
+        wechatRedirectURI,
+      })
+      .catch(e => ShowError(e))
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [config.content?.colorScheme]);
+
   const onPressLogoutButton = useCallback(() => {
     setLoading(true);
     authgear
@@ -191,7 +205,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
           <Button
             compact={true}
             uppercase={false}
-            contentStyle={styles.buttonContent}>
+            contentStyle={styles.buttonContent}
+            onPress={onPressUserSettingsButton}>
             <Text style={styles.contentText}>User Settings</Text>
           </Button>
           <Divider />
