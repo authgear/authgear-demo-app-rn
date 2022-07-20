@@ -62,8 +62,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
   const config = useConfig();
 
   const [infoDialogVisble, setInfoDialogVisible] = useState(false);
-  const [authTimeVisble, setAuthTimeVisble] = useState(false);
-  const [logoutVisble, setLogoutVisble] = useState(false);
+  const [authTimeDialogVisble, setAuthTimeDialogVisble] = useState(false);
+  const [logoutDialogVisble, setLogoutDialogVisble] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
     null,
@@ -141,7 +141,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
   }, [config.content?.colorScheme, setUserInfo]);
 
   const onLogout = useCallback(() => {
-    setLogoutVisble(false);
+    setLogoutDialogVisble(false);
     setLoading(true);
     authgear
       .logout()
@@ -201,8 +201,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
 
       <Portal>
         <Dialog
-          visible={authTimeVisble}
-          onDismiss={() => setAuthTimeVisble(false)}>
+          visible={authTimeDialogVisble}
+          onDismiss={() => setAuthTimeDialogVisble(false)}>
           <Dialog.Title>Auth Time</Dialog.Title>
           <Dialog.Content>
             <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
@@ -210,13 +210,17 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setAuthTimeVisble(false)}>Dismiss</Button>
+            <Button onPress={() => setAuthTimeDialogVisble(false)}>
+              Dismiss
+            </Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
 
       <Portal>
-        <Dialog visible={logoutVisble} onDismiss={() => setLogoutVisble(false)}>
+        <Dialog
+          visible={logoutDialogVisble}
+          onDismiss={() => setLogoutDialogVisble(false)}>
           <Dialog.Title>Logout?</Dialog.Title>
           <Dialog.Content>
             <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
@@ -224,7 +228,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setLogoutVisble(false)}>Cancel</Button>
+            <Button onPress={() => setLogoutDialogVisble(false)}>Cancel</Button>
             <Button onPress={onLogout}>Logout</Button>
           </Dialog.Actions>
         </Dialog>
@@ -278,7 +282,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
             compact={true}
             uppercase={false}
             contentStyle={styles.buttonContent}
-            onPress={() => setAuthTimeVisble(true)}>
+            onPress={() => setAuthTimeDialogVisble(true)}>
             <Text style={styles.contentText}>Show Auth Time</Text>
           </Button>
           <Divider />
@@ -298,7 +302,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
             compact={true}
             uppercase={false}
             contentStyle={styles.buttonContent}
-            onPress={() => setLogoutVisble(true)}>
+            onPress={() => setLogoutDialogVisble(true)}>
             <Text style={{...styles.contentText, color: theme.colors.error}}>
               Logout
             </Text>
