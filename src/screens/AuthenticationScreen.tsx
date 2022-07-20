@@ -145,7 +145,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
     authenticate('login');
   }, [authenticate]);
 
-  const onPressGuestButton = useCallback(() => {
+  const onPressGuestLoginButton = useCallback(() => {
     setLoading(true);
     authgear
       .authenticateAnonymously()
@@ -196,7 +196,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
           <Button
             mode="outlined"
             style={styles.button}
-            onPress={onPressGuestButton}>
+            onPress={onPressGuestLoginButton}>
             Continue as guest
           </Button>
         </View>
