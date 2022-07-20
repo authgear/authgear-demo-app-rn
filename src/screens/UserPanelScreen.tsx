@@ -65,6 +65,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
     null,
   );
+  const [userDisplayName, setUserDisplayName] = useState<string>('User');
 
   useEffect(() => {
     if (loading) {
@@ -79,6 +80,34 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
     setTimeout(dispatchAction, 100);
     setDispatchAction(null);
   }, [dispatchAction, loading]);
+
+  useEffect(() => {
+    if (userInfo == null) {
+      setDispatchAction(() => () => navigation.replace('Authentication'));
+      return;
+    }
+
+    if (userInfo.isAnonymous) {
+      setUserDisplayName('Guest');
+    }
+    if (userInfo.phoneNumber != null) {
+      setUserDisplayName(userInfo.phoneNumber);
+    }
+    if (userInfo.email != null) {
+      setUserDisplayName(userInfo.email);
+    }
+    if (userInfo.givenName != null) {
+      setUserDisplayName(userInfo.givenName);
+    }
+    if (userInfo.familyName != null) {
+      setUserDisplayName(userInfo.familyName);
+    }
+    if (userInfo.givenName != null && userInfo.familyName != null) {
+      setUserDisplayName(userInfo.givenName + ' ' + userInfo.familyName);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onPressLogoutButton = useCallback(() => {
     setLoading(true);
@@ -145,7 +174,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         <Text style={styles.contentText}>Welcome!</Text>
 
         <Card.Title
-          title={userInfo?.isAnonymous ? 'Guest' : userInfo?.name}
+          title={userDisplayName}
           subtitle={userInfo?.sub}
           style={styles.userInfoCard}
         />
