@@ -119,18 +119,30 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
             <Text style={styles.contentText}>User Settings</Text>
           </Button>
           <Divider />
-          <Button compact={true} uppercase={false} style={styles.button}>
-            <Text style={styles.contentText}>Enable Biometric Login</Text>
-          </Button>
-          <Divider />
-          <Button compact={true} uppercase={false} style={styles.button}>
-            <Text style={styles.contentText}>Reauthenticate</Text>
-          </Button>
-          <Divider />
+          {userInfo?.isAnonymous ? null : (
+            <>
+              <Button compact={true} uppercase={false} style={styles.button}>
+                <Text style={styles.contentText}>Enable Biometric Login</Text>
+              </Button>
+              <Divider />
+              <Button compact={true} uppercase={false} style={styles.button}>
+                <Text style={styles.contentText}>Reauthenticate</Text>
+              </Button>
+              <Divider />
+            </>
+          )}
           <Button compact={true} uppercase={false} style={styles.button}>
             <Text style={styles.contentText}>Show Auth Time</Text>
           </Button>
           <Divider />
+          {userInfo?.isAnonymous ? (
+            <>
+              <Button compact={true} uppercase={false} style={styles.button}>
+                <Text style={styles.contentText}>Promote User</Text>
+              </Button>
+              <Divider />
+            </>
+          ) : null}
           <Button compact={true} uppercase={false} style={styles.button}>
             <Text style={{...styles.contentText, color: theme.colors.error}}>
               Logout
