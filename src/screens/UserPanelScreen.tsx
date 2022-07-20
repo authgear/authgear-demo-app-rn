@@ -78,10 +78,13 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
 
   const [infoDialogVisble, setInfoDialogVisible] = useState(false);
   const [authTimeDialogVisble, setAuthTimeDialogVisble] = useState(false);
+  const [disableBiometricDialogVisble, setDisableBiometricDialogVisble] =
+    useState(false);
   const [reauthDialogVisble, setReauthDialogVisble] = useState(false);
   const [reauthSuccessDialogVisble, setReauthSuccessDialogVisble] =
     useState(false);
   const [logoutDialogVisble, setLogoutDialogVisble] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
     null,
@@ -140,6 +143,51 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         setLoading(false);
       });
   }, [config.content?.colorScheme]);
+
+  const updateBiometricState = useCallback(() => {
+    authgear
+      .checkBiometricSupported(biometricOptions)
+      .then(() => {
+        authgear
+          .isBiometricEnabled()
+          .then(enabled => {
+            setBiometricEnabled(enabled);
+          })
+          .catch(() => {
+            // ignore the error.
+          });
+      })
+      .catch(() => {
+        // ignore the error.
+      });
+  }, []);
+
+  const onPressEnableBiometricButton = useCallback(() => {
+    setLoading(true);
+    authgear
+      .enableBiometric(biometricOptions)
+      .catch(e => {
+        ShowError(e);
+      })
+      .finally(() => {
+        setLoading(false);
+        updateBiometricState();
+      });
+  }, [updateBiometricState]);
+
+  const onDisableBiometric = useCallback(() => {
+    setDisableBiometricDialogVisble(false);
+    setLoading(true);
+    authgear
+      .disableBiometric()
+      .catch(e => {
+        ShowError(e);
+      })
+      .finally(() => {
+        setLoading(false);
+        updateBiometricState();
+      });
+  }, [updateBiometricState]);
 
   const onPressPromoteUserButton = useCallback(() => {
     setLoading(true);
@@ -327,6 +375,25 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         </Dialog>
       </Portal>
 
+      <Portal>
+        <Dialog
+          visible={disableBiometricDialogVisble}
+          onDismiss={() => setDisableBiometricDialogVisble(false)}>
+          <Dialog.Title>Disable Biometric Login?</Dialog.Title>
+          <Dialog.Content>
+            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+              This will remove the biometric key from this device.
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setDisableBiometricDialogVisble(false)}>
+              Cancel
+            </Button>
+            <Button onPress={onDisableBiometric}>Disable</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
       <View style={styles.container}>
         <Text style={styles.contentText}>Welcome!</Text>
 
@@ -358,8 +425,17 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
               <Button
                 compact={true}
                 uppercase={false}
-                contentStyle={styles.buttonContent}>
-                <Text style={styles.contentText}>Enable Biometric Login</Text>
+                contentStyle={styles.buttonContent}
+                onPress={
+                  biometricEnabled
+                    ? () => setDisableBiometricDialogVisble(true)
+                    : onPressEnableBiometricButton
+                }>
+                <Text style={styles.contentText}>
+                  {biometricEnabled
+                    ? 'Disable Biometric Login'
+                    : 'Enable Biometric Login'}
+                </Text>
               </Button>
               <Divider />
               <Button
