@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
-import {useTheme, Button, Text, ActivityIndicator} from 'react-native-paper';
+import {useTheme, Button, Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../App';
 import authgear, {
@@ -10,18 +10,9 @@ import authgear, {
 import {useConfig} from '../context/ConfigProvider';
 import {useUserInfo} from '../context/UserInfoProvider';
 import ShowError from '../ShowError';
+import LoadingSpinner from '../LoadingSpinner';
 
 const styles = StyleSheet.create({
-  loading: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
   container: {
     margin: 16,
     flex: 1,
@@ -158,10 +149,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
 
   return (
     <>
-      <ActivityIndicator
-        animating={loading}
-        style={loading ? [styles.loading, {zIndex: 1}] : styles.loading}
-      />
+      <LoadingSpinner loading={loading} />
       <View style={styles.container}>
         <View>
           <Text style={styles.titleText}>Authgear Demo</Text>
