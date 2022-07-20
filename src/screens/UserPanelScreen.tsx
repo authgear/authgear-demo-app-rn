@@ -152,7 +152,9 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       </Appbar.Header>
 
       <Portal>
-        <Dialog visible={infoDialogVisble}>
+        <Dialog
+          visible={infoDialogVisble}
+          onDismiss={() => setInfoDialogVisible(false)}>
           <Dialog.Title>Configuration</Dialog.Title>
           <Dialog.Content>
             <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
