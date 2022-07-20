@@ -107,16 +107,20 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
   const navigation = props.navigation;
   const fromButton = props.route.params?.fromButton;
 
-  const {config, setConfig} = useConfig();
+  const config = useConfig();
 
-  const [endpoint, setEndpoint] = useState<string>(config?.endpoint ?? '');
-  const [clientID, setClientID] = useState<string>(config?.clientID ?? '');
+  const [endpoint, setEndpoint] = useState<string>(
+    config.content?.endpoint ?? '',
+  );
+  const [clientID, setClientID] = useState<string>(
+    config.content?.clientID ?? '',
+  );
   const [explicitColorScheme, setExplicitColorScheme] =
-    useState<ColorScheme | null>(config?.explicitColorScheme ?? null);
+    useState<ColorScheme | null>(config.content?.explicitColorScheme ?? null);
   const [useTransientTokenStorage, setUseTransientTokenStorage] =
-    useState<boolean>(config?.useTransientTokenStorage ?? false);
+    useState<boolean>(config.content?.useTransientTokenStorage ?? false);
   const [shareSessionWithSystemBrowser, setShareSessionWithSystemBrowser] =
-    useState<boolean>(config?.shareSessionWithSystemBrowser ?? false);
+    useState<boolean>(config.content?.shareSessionWithSystemBrowser ?? false);
   const [isColorSchemeDialogVisible, setIsColorSchemeDialogVisible] =
     useState<boolean>(false);
 
@@ -157,7 +161,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
       useTransientTokenStorage,
       shareSessionWithSystemBrowser,
     };
-    setConfig(newConfig);
+    config.setContent(newConfig);
 
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -168,10 +172,10 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
   }, [
     clientID,
     colorScheme,
+    config,
     endpoint,
     explicitColorScheme,
     navigation,
-    setConfig,
     shareSessionWithSystemBrowser,
     useTransientTokenStorage,
   ]);

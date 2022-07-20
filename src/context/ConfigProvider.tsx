@@ -13,15 +13,15 @@ export interface Config {
 }
 
 interface ConfigContextProviderValue {
-  configLoading: boolean;
-  config: Config | null;
-  setConfig: React.Dispatch<React.SetStateAction<Config | null>>;
+  loading: boolean;
+  content: Config | null;
+  setContent: React.Dispatch<React.SetStateAction<Config | null>>;
 }
 
 const ConfigContext = createContext<ConfigContextProviderValue>({
-  configLoading: true,
-  config: null,
-  setConfig: () => {},
+  loading: true,
+  content: null,
+  setContent: () => {},
 });
 
 interface ConfigProviderProps {
@@ -29,28 +29,28 @@ interface ConfigProviderProps {
 }
 
 const ConfigProvider: React.FC<ConfigProviderProps> = ({children}) => {
-  const [config, setConfig] = useState<Config | null>(null);
-  const [configLoading, setConfigLoading] = useState<boolean>(true);
+  const [content, setContent] = useState<Config | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (config != null) {
-      setConfigLoading(true);
-      AsyncStorage.setItem('config', JSON.stringify(config))
-        .then(() => setConfigLoading(false))
+    if (content != null) {
+      setLoading(true);
+      AsyncStorage.setItem('config', JSON.stringify(content))
+        .then(() => setLoading(false))
         .catch((e: any) => {
           Alert.alert('Error', JSON.parse(JSON.stringify(e)));
         });
     }
-  }, [config]);
+  }, [content]);
 
   useEffect(() => {
-    setConfigLoading(true);
+    setLoading(true);
     AsyncStorage.getItem('config')
       .then(value => {
         if (value != null) {
-          setConfig(JSON.parse(value));
+          setContent(JSON.parse(value));
         }
-        setConfigLoading(false);
+        setLoading(false);
       })
       .catch((e: any) => {
         Alert.alert('Error', JSON.parse(JSON.stringify(e)));
@@ -58,7 +58,7 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({children}) => {
   }, []);
 
   return (
-    <ConfigContext.Provider value={{configLoading, config, setConfig}}>
+    <ConfigContext.Provider value={{loading, content, setContent}}>
       {children}
     </ConfigContext.Provider>
   );

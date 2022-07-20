@@ -125,23 +125,24 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
   const {setUserInfo} = useUserInfo();
   const navigation = props.navigation;
 
-  const {configLoading, config} = useConfig();
+  const config = useConfig();
 
   useEffect(() => {
-    if (configLoading) {
+    if (config.loading) {
       return;
     }
-    if (config == null) {
+    if (config.content == null) {
       navigation.replace('Configuration');
       return;
     }
 
-    const clientID = config.clientID;
-    const endpoint = config.endpoint;
-    const tokenStorage = config.useTransientTokenStorage
+    const clientID = config.content?.clientID;
+    const endpoint = config.content?.endpoint;
+    const tokenStorage = config.content?.useTransientTokenStorage
       ? new TransientTokenStorage()
       : new PersistentTokenStorage();
-    const shareSessionWithSystemBrowser = config.shareSessionWithSystemBrowser;
+    const shareSessionWithSystemBrowser =
+      config.content?.shareSessionWithSystemBrowser;
 
     authgear
       .configure({
@@ -153,7 +154,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
       .catch(e => {
         showError(e);
       });
-  }, [config, configLoading, navigation]);
+  }, [config, navigation]);
 
   const onPressConfigButton = useCallback(() => {
     return navigation.navigate('Configuration', {fromButton: true});
@@ -166,7 +167,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
           redirectURI,
           wechatRedirectURI,
           page,
-          colorScheme: config?.colorScheme,
+          colorScheme: config.content?.colorScheme,
         })
         .then(({userInfo}) => {
           setUserInfo(userInfo);
@@ -176,7 +177,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
           showError(e);
         });
     },
-    [config?.colorScheme, navigation, setUserInfo],
+    [config.content?.colorScheme, navigation, setUserInfo],
   );
 
   const onPressSignupButton = useCallback(() => {
