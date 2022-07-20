@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, Platform, StyleSheet, View} from 'react-native';
-import {useTheme, Button, Text} from 'react-native-paper';
+import {useTheme, Button, Text, ActivityIndicator} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../App';
 import authgear, {
@@ -17,6 +17,16 @@ import {useConfig} from '../context/ConfigProvider';
 import {useUserInfo} from '../context/UserInfoProvider';
 
 const styles = StyleSheet.create({
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   container: {
     margin: 16,
     flex: 1,
@@ -127,6 +137,8 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
 
   const config = useConfig();
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
     if (config.loading) {
       return;
@@ -162,6 +174,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
 
   const authenticate = useCallback(
     (page: string) => {
+      setLoading(true);
       authgear
         .authenticate({
           redirectURI,
@@ -175,6 +188,9 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
         })
         .catch(e => {
           showError(e);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     },
     [config.content?.colorScheme, navigation, setUserInfo],
@@ -189,6 +205,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
   }, [authenticate]);
 
   const onPressGuestButton = useCallback(() => {
+    setLoading(true);
     authgear
       .authenticateAnonymously()
       .then(({userInfo}) => {
@@ -197,46 +214,55 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
       })
       .catch(e => {
         showError(e);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [navigation, setUserInfo]);
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={styles.titleText}>Authgear Demo</Text>
-        <Text style={{...styles.subTitleText, color: theme.colors.disabled}}>
-          https://demo.authgear.apps.com/
-        </Text>
-        <View style={styles.configButton}>
-          <Button mode="text" onPress={onPressConfigButton}>
-            Configure
+    <>
+      <ActivityIndicator
+        animating={loading}
+        style={loading ? [styles.loading, {zIndex: 1}] : styles.loading}
+      />
+      <View style={styles.container}>
+        <View>
+          <Text style={styles.titleText}>Authgear Demo</Text>
+          <Text style={{...styles.subTitleText, color: theme.colors.disabled}}>
+            https://demo.authgear.apps.com/
+          </Text>
+          <View style={styles.configButton}>
+            <Button mode="text" onPress={onPressConfigButton}>
+              Configure
+            </Button>
+          </View>
+        </View>
+        <View style={styles.actionButtons}>
+          <Button
+            mode="contained"
+            style={styles.button}
+            onPress={onPressSignupButton}>
+            Signup
+          </Button>
+          <Button
+            mode="outlined"
+            style={styles.button}
+            onPress={onPressLoginButton}>
+            Login
+          </Button>
+          <Button mode="outlined" style={styles.button}>
+            Login with biometric
+          </Button>
+          <Button
+            mode="outlined"
+            style={styles.button}
+            onPress={onPressGuestButton}>
+            Continue as guest
           </Button>
         </View>
       </View>
-      <View style={styles.actionButtons}>
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={onPressSignupButton}>
-          Signup
-        </Button>
-        <Button
-          mode="outlined"
-          style={styles.button}
-          onPress={onPressLoginButton}>
-          Login
-        </Button>
-        <Button mode="outlined" style={styles.button}>
-          Login with biometric
-        </Button>
-        <Button
-          mode="outlined"
-          style={styles.button}
-          onPress={onPressGuestButton}>
-          Continue as guest
-        </Button>
-      </View>
-    </View>
+    </>
   );
 };
 
