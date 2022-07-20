@@ -17,7 +17,7 @@ import {useUserInfo} from '../context/UserInfoProvider';
 import ShowError from '../ShowError';
 import authgear, {Page} from '@authgear/react-native';
 import LoadingSpinner from '../LoadingSpinner';
-import {wechatRedirectURI} from './AuthenticationScreen';
+import {redirectURI, wechatRedirectURI} from './AuthenticationScreen';
 
 const styles = StyleSheet.create({
   container: {
@@ -58,7 +58,7 @@ type UserPanelScreenProps = NativeStackScreenProps<
 const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
   const navigation = props.navigation;
   const theme = useTheme();
-  const {userInfo} = useUserInfo();
+  const {userInfo, setUserInfo} = useUserInfo();
   const config = useConfig();
 
   const [infoDialogVisble, setInfoDialogVisible] = useState(false);
@@ -107,9 +107,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
     if (userInfo.givenName != null && userInfo.familyName != null) {
       setUserDisplayName(userInfo.givenName + ' ' + userInfo.familyName);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigation, userInfo]);
 
   const onPressUserSettingsButton = useCallback(() => {
     setLoading(true);
@@ -123,6 +121,23 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         setLoading(false);
       });
   }, [config.content?.colorScheme]);
+
+  const onPressPromoteUserButton = useCallback(() => {
+    setLoading(true);
+    authgear
+      .promoteAnonymousUser({
+        redirectURI,
+        wechatRedirectURI,
+        colorScheme: config.content?.colorScheme,
+      })
+      .then(result => {
+        setUserInfo(result.userInfo);
+      })
+      .catch(e => ShowError(e))
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [config.content?.colorScheme, setUserInfo]);
 
   const onPressLogoutButton = useCallback(() => {
     setLoading(true);
@@ -255,7 +270,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
               <Button
                 compact={true}
                 uppercase={false}
-                contentStyle={styles.buttonContent}>
+                contentStyle={styles.buttonContent}
+                onPress={onPressPromoteUserButton}>
                 <Text style={styles.contentText}>Promote User</Text>
               </Button>
               <Divider />
