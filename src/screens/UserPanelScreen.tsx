@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
 
-  configDialogText: {
+  dialogText: {
     fontSize: 14,
     fontWeight: '400',
     lineHeight: 20,
@@ -62,6 +62,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
   const config = useConfig();
 
   const [infoDialogVisble, setInfoDialogVisible] = useState(false);
+  const [authTimeVisble, setAuthTimeVisble] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
     null,
@@ -154,32 +155,43 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         <Dialog visible={infoDialogVisble}>
           <Dialog.Title>Configuration</Dialog.Title>
           <Dialog.Content>
-            <Text
-              style={[styles.configDialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
               Endpoint: {config.content?.endpoint}
             </Text>
-            <Text
-              style={[styles.configDialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
               Client ID: {config.content?.clientID}
             </Text>
-            <Text
-              style={[styles.configDialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
               AUTHUI Color Scheme:{' '}
               {config.content?.explicitColorScheme ?? 'System'}
             </Text>
-            <Text
-              style={[styles.configDialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
               Transient Token Storage:{' '}
               {config.content?.useTransientTokenStorage.toString()}
             </Text>
-            <Text
-              style={[styles.configDialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
               Share Session with Device Browser:{' '}
               {config.content?.shareSessionWithSystemBrowser.toString()}
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setInfoDialogVisible(false)}>Dismiss</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      <Portal>
+        <Dialog
+          visible={authTimeVisble}
+          onDismiss={() => setAuthTimeVisble(false)}>
+          <Dialog.Title>Auth Time</Dialog.Title>
+          <Dialog.Content>
+            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+              {authgear.getAuthTime()?.toISOString()}
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setAuthTimeVisble(false)}>Dismiss</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
@@ -231,7 +243,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
           <Button
             compact={true}
             uppercase={false}
-            contentStyle={styles.buttonContent}>
+            contentStyle={styles.buttonContent}
+            onPress={() => setAuthTimeVisble(true)}>
             <Text style={styles.contentText}>Show Auth Time</Text>
           </Button>
           <Divider />
