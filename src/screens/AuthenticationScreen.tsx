@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Platform, SafeAreaView, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {useTheme, Button, Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../App';
+import {redirectURI, RootStackParamList, wechatRedirectURI} from '../App';
 import authgear, {
   PersistentTokenStorage,
   TransientTokenStorage,
@@ -44,12 +44,6 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
   },
-});
-
-export const redirectURI = 'com.authgear.example.rn://host/path';
-export const wechatRedirectURI = Platform.select<string>({
-  android: 'com.authgear.example.rn://host/open_wechat_app',
-  ios: 'https://authgear-demo-rn.pandawork.com/authgear/open_wechat_app',
 });
 
 type AuthenticationScreenProps = NativeStackScreenProps<

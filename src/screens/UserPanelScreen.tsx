@@ -11,13 +11,13 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
-import {RootStackParamList} from '../App';
+import {biometricOptions, RootStackParamList} from '../App';
 import {useConfig} from '../context/ConfigProvider';
 import {useUserInfo} from '../context/UserInfoProvider';
 import ShowError from '../ShowError';
 import authgear, {Page} from '@authgear/react-native';
 import LoadingSpinner from '../LoadingSpinner';
-import {redirectURI, wechatRedirectURI} from './AuthenticationScreen';
+import {redirectURI, wechatRedirectURI} from '../App';
 
 const styles = StyleSheet.create({
   container: {
@@ -49,21 +49,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
 });
-
-const biometricOptions = {
-  ios: {
-    localizedReason: 'Use biometric to authenticate',
-    constraint: 'biometryCurrentSet' as const,
-  },
-  android: {
-    title: 'Biometric Authentication',
-    subtitle: 'Biometric authentication',
-    description: 'Use biometric to authenticate',
-    negativeButtonText: 'Cancel',
-    constraint: ['BIOMETRIC_STRONG' as const],
-    invalidatedByBiometricEnrollment: true,
-  },
-};
 
 type UserPanelScreenProps = NativeStackScreenProps<
   RootStackParamList,
