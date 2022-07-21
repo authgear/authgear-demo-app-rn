@@ -2,16 +2,22 @@
   "name": "AuthgearDemoAppRN",
   "version": "0.0.1",
   "private": true,
+  "workspaces": [
+    "packages/authgear-core",
+    "packages/authgear-web",
+    "packages/authgear-react-native"
+  ],
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write --list-different \"src/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
-    "@authgear/react-native": "0.22.0",
+    "@authgear/react-native": "./authgear-sdk-js/packages/authgear-react-native",
     "@react-native-async-storage/async-storage": "1.17.7",
     "@react-navigation/native": "6.0.11",
     "@react-navigation/native-stack": "6.7.0",
@@ -38,6 +44,7 @@
     "eslint": "7.32.0",
     "jest": "26.6.3",
     "metro-react-native-babel-preset": "0.70.3",
+    "prettier": "2.7.1",
     "react-test-renderer": "18.0.0",
     "typescript": "4.4.4",
     "yarn": "1.22.19"

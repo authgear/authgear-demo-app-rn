@@ -1,6 +1,6 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { useCallback, useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import {
   Appbar,
   Button,
@@ -10,15 +10,15 @@ import {
   Portal,
   Text,
   useTheme,
-} from 'react-native-paper';
-import {biometricOptions, RootStackParamList} from '../App';
-import {useConfig} from '../context/ConfigProvider';
-import {useUserInfo} from '../context/UserInfoProvider';
-import ShowError from '../ShowError';
-import authgear, {Page} from '@authgear/react-native';
-import LoadingSpinner from '../LoadingSpinner';
-import {redirectURI, wechatRedirectURI} from '../App';
-import {useBiometric} from '../context/BiometricProvider';
+} from "react-native-paper";
+import { biometricOptions, RootStackParamList } from "../App";
+import { useConfig } from "../context/ConfigProvider";
+import { useUserInfo } from "../context/UserInfoProvider";
+import ShowError from "../ShowError";
+import authgear, { Page } from "@authgear/react-native";
+import LoadingSpinner from "../LoadingSpinner";
+import { redirectURI, wechatRedirectURI } from "../App";
+import { useBiometric } from "../context/BiometricProvider";
 
 const styles = StyleSheet.create({
   container: {
@@ -26,18 +26,18 @@ const styles = StyleSheet.create({
   },
   contentText: {
     fontSize: 16,
-    fontWeight: '400',
+    fontWeight: "400",
     lineHeight: 24,
   },
 
   dialogText: {
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: "400",
     lineHeight: 20,
   },
 
   userInfoCard: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
     marginVertical: 16,
   },
 
@@ -46,20 +46,20 @@ const styles = StyleSheet.create({
   },
   buttonContent: {
     marginVertical: 8,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "flex-start",
   },
 });
 
 type UserPanelScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'UserPanel'
+  "UserPanel"
 >;
 
-const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
+const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
   const navigation = props.navigation;
   const theme = useTheme();
-  const {userInfo, setUserInfo} = useUserInfo();
+  const { userInfo, setUserInfo } = useUserInfo();
   const config = useConfig();
   const biometric = useBiometric();
 
@@ -73,9 +73,9 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
   const [logoutDialogVisble, setLogoutDialogVisble] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
-    null,
+    null
   );
-  const [userDisplayName, setUserDisplayName] = useState<string>('User');
+  const [userDisplayName, setUserDisplayName] = useState<string>("User");
 
   useEffect(() => {
     if (loading) {
@@ -93,12 +93,12 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
 
   useEffect(() => {
     if (userInfo == null) {
-      setDispatchAction(() => () => navigation.replace('Authentication'));
+      setDispatchAction(() => () => navigation.replace("Authentication"));
       return;
     }
 
     if (userInfo.isAnonymous) {
-      setUserDisplayName('Guest');
+      setUserDisplayName("Guest");
     }
     if (userInfo.phoneNumber != null) {
       setUserDisplayName(userInfo.phoneNumber);
@@ -113,7 +113,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       setUserDisplayName(userInfo.familyName);
     }
     if (userInfo.givenName != null && userInfo.familyName != null) {
-      setUserDisplayName(userInfo.givenName + ' ' + userInfo.familyName);
+      setUserDisplayName(userInfo.givenName + " " + userInfo.familyName);
     }
   }, [navigation, userInfo]);
 
@@ -124,7 +124,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         colorScheme: config.content?.colorScheme,
         wechatRedirectURI,
       })
-      .catch(e => ShowError(e))
+      .catch((e) => ShowError(e))
       .finally(() => {
         setLoading(false);
       });
@@ -134,7 +134,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
     setLoading(true);
     authgear
       .enableBiometric(biometricOptions)
-      .catch(e => {
+      .catch((e) => {
         ShowError(e);
       })
       .finally(() => {
@@ -148,7 +148,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
     setLoading(true);
     authgear
       .disableBiometric()
-      .catch(e => {
+      .catch((e) => {
         ShowError(e);
       })
       .finally(() => {
@@ -165,10 +165,10 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
         wechatRedirectURI,
         colorScheme: config.content?.colorScheme,
       })
-      .then(result => {
+      .then((result) => {
         setUserInfo(result.userInfo);
       })
-      .catch(e => ShowError(e))
+      .catch((e) => ShowError(e))
       .finally(() => {
         biometric.updateState();
         setLoading(false);
@@ -180,7 +180,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       await authgear.refreshIDToken();
       if (!authgear.canReauthenticate()) {
         throw new Error(
-          'canReauthenticate() returns false for the current user',
+          "canReauthenticate() returns false for the current user"
         );
       }
 
@@ -190,7 +190,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
           colorScheme: config.content?.colorScheme,
           wechatRedirectURI,
         },
-        biometricOptions,
+        biometricOptions
       );
 
       setUserInfo(result.userInfo);
@@ -201,12 +201,12 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
     setReauthDialogVisble(false);
     setLoading(true);
     task()
-      .then(success => {
+      .then((success) => {
         if (success) {
           setReauthSuccessDialogVisble(true);
         }
       })
-      .catch(e => {
+      .catch((e) => {
         ShowError(e);
       })
       .finally(() => {
@@ -220,9 +220,9 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
     authgear
       .logout()
       .then(() => {
-        setDispatchAction(() => () => navigation.replace('Authentication'));
+        setDispatchAction(() => () => navigation.replace("Authentication"));
       })
-      .catch(e => {
+      .catch((e) => {
         ShowError(e);
       })
       .finally(() => {
@@ -245,25 +245,26 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       <Portal>
         <Dialog
           visible={infoDialogVisble}
-          onDismiss={() => setInfoDialogVisible(false)}>
+          onDismiss={() => setInfoDialogVisible(false)}
+        >
           <Dialog.Title>Configuration</Dialog.Title>
           <Dialog.Content>
-            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               Endpoint: {config.content?.endpoint}
             </Text>
-            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               Client ID: {config.content?.clientID}
             </Text>
-            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
-              AUTHUI Color Scheme:{' '}
-              {config.content?.explicitColorScheme ?? 'System'}
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+              AUTHUI Color Scheme:{" "}
+              {config.content?.explicitColorScheme ?? "System"}
             </Text>
-            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
-              Transient Token Storage:{' '}
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+              Transient Token Storage:{" "}
               {config.content?.useTransientTokenStorage.toString()}
             </Text>
-            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
-              Share Session with Device Browser:{' '}
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+              Share Session with Device Browser:{" "}
               {config.content?.shareSessionWithSystemBrowser.toString()}
             </Text>
           </Dialog.Content>
@@ -276,10 +277,11 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       <Portal>
         <Dialog
           visible={authTimeDialogVisble}
-          onDismiss={() => setAuthTimeDialogVisble(false)}>
+          onDismiss={() => setAuthTimeDialogVisble(false)}
+        >
           <Dialog.Title>Auth Time</Dialog.Title>
           <Dialog.Content>
-            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               {authgear.getAuthTime()?.toISOString()}
             </Text>
           </Dialog.Content>
@@ -294,10 +296,11 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       <Portal>
         <Dialog
           visible={logoutDialogVisble}
-          onDismiss={() => setLogoutDialogVisble(false)}>
+          onDismiss={() => setLogoutDialogVisble(false)}
+        >
           <Dialog.Title>Logout?</Dialog.Title>
           <Dialog.Content>
-            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               Are you sure to logout?
             </Text>
           </Dialog.Content>
@@ -311,10 +314,11 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       <Portal>
         <Dialog
           visible={reauthDialogVisble}
-          onDismiss={() => setReauthDialogVisble(false)}>
+          onDismiss={() => setReauthDialogVisble(false)}
+        >
           <Dialog.Title>Reauthenticate user?</Dialog.Title>
           <Dialog.Content>
-            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               The auth time will be updated after reauthentication. This is
               useful to identify the users before sensitive operations.
             </Text>
@@ -329,10 +333,11 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       <Portal>
         <Dialog
           visible={reauthSuccessDialogVisble}
-          onDismiss={() => setReauthSuccessDialogVisble(false)}>
+          onDismiss={() => setReauthSuccessDialogVisble(false)}
+        >
           <Dialog.Title>Reauth success</Dialog.Title>
           <Dialog.Content>
-            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               The auth time is now {authgear.getAuthTime()?.toISOString()}
             </Text>
           </Dialog.Content>
@@ -347,10 +352,11 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
       <Portal>
         <Dialog
           visible={disableBiometricDialogVisble}
-          onDismiss={() => setDisableBiometricDialogVisble(false)}>
+          onDismiss={() => setDisableBiometricDialogVisble(false)}
+        >
           <Dialog.Title>Disable Biometric Login?</Dialog.Title>
           <Dialog.Content>
-            <Text style={[styles.dialogText, {color: theme.colors.disabled}]}>
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               This will remove the biometric key from this device.
             </Text>
           </Dialog.Content>
@@ -377,7 +383,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
             compact={true}
             uppercase={false}
             contentStyle={styles.buttonContent}
-            onPress={() => navigation.navigate('UserInfo')}>
+            onPress={() => navigation.navigate("UserInfo")}
+          >
             <Text style={styles.contentText}>User Information</Text>
           </Button>
           <Divider />
@@ -385,7 +392,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
             compact={true}
             uppercase={false}
             contentStyle={styles.buttonContent}
-            onPress={onPressUserSettingsButton}>
+            onPress={onPressUserSettingsButton}
+          >
             <Text style={styles.contentText}>User Settings</Text>
           </Button>
           <Divider />
@@ -399,11 +407,12 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
                   biometric.enabled
                     ? () => setDisableBiometricDialogVisble(true)
                     : onPressEnableBiometricButton
-                }>
+                }
+              >
                 <Text style={styles.contentText}>
                   {biometric.enabled
-                    ? 'Disable Biometric Login'
-                    : 'Enable Biometric Login'}
+                    ? "Disable Biometric Login"
+                    : "Enable Biometric Login"}
                 </Text>
               </Button>
               <Divider />
@@ -411,7 +420,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
                 compact={true}
                 uppercase={false}
                 contentStyle={styles.buttonContent}
-                onPress={() => setReauthDialogVisble(true)}>
+                onPress={() => setReauthDialogVisble(true)}
+              >
                 <Text style={styles.contentText}>Reauthenticate</Text>
               </Button>
               <Divider />
@@ -421,7 +431,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
             compact={true}
             uppercase={false}
             contentStyle={styles.buttonContent}
-            onPress={() => setAuthTimeDialogVisble(true)}>
+            onPress={() => setAuthTimeDialogVisble(true)}
+          >
             <Text style={styles.contentText}>Show Auth Time</Text>
           </Button>
           <Divider />
@@ -431,7 +442,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
                 compact={true}
                 uppercase={false}
                 contentStyle={styles.buttonContent}
-                onPress={onPressPromoteUserButton}>
+                onPress={onPressPromoteUserButton}
+              >
                 <Text style={styles.contentText}>Promote User</Text>
               </Button>
               <Divider />
@@ -441,8 +453,9 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = props => {
             compact={true}
             uppercase={false}
             contentStyle={styles.buttonContent}
-            onPress={() => setLogoutDialogVisble(true)}>
-            <Text style={{...styles.contentText, color: theme.colors.error}}>
+            onPress={() => setLogoutDialogVisble(true)}
+          >
+            <Text style={{ ...styles.contentText, color: theme.colors.error }}>
               Logout
             </Text>
           </Button>

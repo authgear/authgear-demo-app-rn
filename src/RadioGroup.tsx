@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, { useCallback } from "react";
 import {
   View,
   Text,
@@ -6,7 +6,7 @@ import {
   ViewStyle,
   StyleSheet,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
 
 export interface RadioGroupItemProps<T> {
   label: string;
@@ -29,34 +29,34 @@ interface RadioButtonProps<T> {
 
 const styles = StyleSheet.create({
   root: {
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   button: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     height: 44,
   },
   bigDot: {
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: '#007AFF',
+    borderColor: "#007AFF",
     width: 24,
     height: 24,
     marginRight: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   smallDot: {
     borderRadius: 6,
     borderWidth: 6,
-    borderColor: '#007AFF',
+    borderColor: "#007AFF",
     width: 6,
     height: 6,
   },
 });
 
 function RadioButton<T>(props: RadioButtonProps<T>) {
-  const {value, label, selected, onPress: onPressProp} = props;
+  const { value, label, selected, onPress: onPressProp } = props;
   const onPress = useCallback(() => {
     onPressProp(value);
   }, [value, onPressProp]);
@@ -71,11 +71,11 @@ function RadioButton<T>(props: RadioButtonProps<T>) {
 }
 
 export default function RadioGroup<T>(props: RadioGroupProps<T>) {
-  const {style, items, value: selectedValue, onChange} = props;
+  const { style, items, value: selectedValue, onChange } = props;
   return (
     <View style={[styles.root, style]}>
-      {items.map(item => {
-        const {value, label} = item;
+      {items.map((item) => {
+        const { value, label } = item;
         return (
           <RadioButton
             key={String(value)}

@@ -1,5 +1,5 @@
-import {UserInfo} from '@authgear/react-native';
-import React, {createContext, useContext, useState} from 'react';
+import { UserInfo } from "@authgear/react-native";
+import React, { createContext, useContext, useState } from "react";
 
 interface userInfoContextProviderValue {
   userInfo: UserInfo | null;
@@ -15,11 +15,11 @@ interface UserInfoProviderProps {
   children: React.ReactNode;
 }
 
-const UserInfoProvider: React.FC<UserInfoProviderProps> = ({children}) => {
+const UserInfoProvider: React.FC<UserInfoProviderProps> = ({ children }) => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   return (
-    <userInfoContext.Provider value={{userInfo, setUserInfo}}>
+    <userInfoContext.Provider value={{ userInfo, setUserInfo }}>
       {children}
     </userInfoContext.Provider>
   );

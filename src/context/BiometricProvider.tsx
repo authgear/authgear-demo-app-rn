@@ -1,6 +1,6 @@
-import React, {createContext, useCallback, useContext, useState} from 'react';
-import {biometricOptions} from '../App';
-import authgear from '@authgear/react-native';
+import React, { createContext, useCallback, useContext, useState } from "react";
+import { biometricOptions } from "../App";
+import authgear from "@authgear/react-native";
 
 interface BiometricContextProviderValue {
   enabled: boolean;
@@ -18,7 +18,7 @@ interface BiometricProviderProps {
   children: React.ReactNode;
 }
 
-const BiometricProvider: React.FC<BiometricProviderProps> = ({children}) => {
+const BiometricProvider: React.FC<BiometricProviderProps> = ({ children }) => {
   const [enabled, setEnabled] = useState<boolean>(false);
 
   const updateState = useCallback(() => {
@@ -27,7 +27,7 @@ const BiometricProvider: React.FC<BiometricProviderProps> = ({children}) => {
       .then(() => {
         authgear
           .isBiometricEnabled()
-          .then(result => {
+          .then((result) => {
             setEnabled(result);
           })
           .catch(() => {
@@ -40,7 +40,7 @@ const BiometricProvider: React.FC<BiometricProviderProps> = ({children}) => {
   }, []);
 
   return (
-    <BiometricContext.Provider value={{enabled, setEnabled, updateState}}>
+    <BiometricContext.Provider value={{ enabled, setEnabled, updateState }}>
       {children}
     </BiometricContext.Provider>
   );

@@ -10,10 +10,8 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@authgear/react-native@0.22.0":
+"@authgear/react-native@./authgear-sdk-js/packages/authgear-react-native":
   version "0.22.0"
-  resolved "https://registry.yarnpkg.com/@authgear/react-native/-/react-native-0.22.0.tgz#47f9e4ddc7a66857973ab45e9251bb4582c1a383"
-  integrity sha512-PqyXI1/LKBCc9cLL5BFtUH4wMKLIUFc1kGQbhGrSWo3Lx8hjaDW1hROLESUcFlOVSd7UKWovW3t4/3yNiig4CQ==
 
 "@babel/code-frame@7.12.11":
   version "7.12.11"
@@ -5683,7 +5681,7 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^2.0.2:
+prettier@2.7.1, prettier@^2.0.2:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.7.1.tgz#e235806850d057f97bb08368a4f7d899f7760c64"
   integrity sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==

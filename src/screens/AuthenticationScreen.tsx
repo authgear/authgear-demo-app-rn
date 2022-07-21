@@ -1,53 +1,53 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
-import {useTheme, Button, Text} from 'react-native-paper';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useState } from "react";
+import { SafeAreaView, StyleSheet, View } from "react-native";
+import { useTheme, Button, Text } from "react-native-paper";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
   biometricOptions,
   redirectURI,
   RootStackParamList,
   wechatRedirectURI,
-} from '../App';
+} from "../App";
 import authgear, {
   PersistentTokenStorage,
   TransientTokenStorage,
-} from '@authgear/react-native';
-import {useConfig} from '../context/ConfigProvider';
-import {useUserInfo} from '../context/UserInfoProvider';
-import ShowError from '../ShowError';
-import LoadingSpinner from '../LoadingSpinner';
-import {useBiometric} from '../context/BiometricProvider';
+} from "@authgear/react-native";
+import { useConfig } from "../context/ConfigProvider";
+import { useUserInfo } from "../context/UserInfoProvider";
+import ShowError from "../ShowError";
+import LoadingSpinner from "../LoadingSpinner";
+import { useBiometric } from "../context/BiometricProvider";
 
 const styles = StyleSheet.create({
   container: {
     margin: 16,
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   titleText: {
     marginTop: 64,
     marginBottom: 6,
     fontSize: 34,
-    fontWeight: '400',
+    fontWeight: "400",
     lineHeight: 36,
   },
   subTitleText: {
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: "400",
     lineHeight: 20,
     marginBottom: 15,
   },
   configButton: {
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
     marginLeft: -15,
   },
   actionButtons: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 32,
   },
   button: {
     marginBottom: 20,
-    width: '100%',
+    width: "100%",
   },
   buttonContent: {
     height: 48,
@@ -59,12 +59,12 @@ const styles = StyleSheet.create({
 
 type AuthenticationScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'Authentication'
+  "Authentication"
 >;
 
-const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
+const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
   const theme = useTheme();
-  const {setUserInfo} = useUserInfo();
+  const { setUserInfo } = useUserInfo();
   const navigation = props.navigation;
 
   const config = useConfig();
@@ -72,7 +72,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
-    null,
+    null
   );
 
   useEffect(() => {
@@ -92,7 +92,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
       return;
     }
     if (config.content == null) {
-      navigation.replace('Configuration');
+      navigation.replace("Configuration");
       return;
     }
 
@@ -111,13 +111,13 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
         tokenStorage,
         shareSessionWithSystemBrowser,
       })
-      .catch(e => {
+      .catch((e) => {
         ShowError(e);
       });
   }, [config, navigation]);
 
   const onPressConfigButton = useCallback(() => {
-    return navigation.navigate('Configuration', {fromButton: true});
+    return navigation.navigate("Configuration", { fromButton: true });
   }, [navigation]);
 
   const authenticate = useCallback(
@@ -130,13 +130,13 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
           page,
           colorScheme: config.content?.colorScheme,
         })
-        .then(({userInfo}) => {
+        .then(({ userInfo }) => {
           setUserInfo(userInfo);
           setDispatchAction(() => () => {
-            navigation.replace('UserPanel');
+            navigation.replace("UserPanel");
           });
         })
-        .catch(e => {
+        .catch((e) => {
           ShowError(e);
         })
         .finally(() => {
@@ -144,26 +144,26 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
           setLoading(false);
         });
     },
-    [biometric, config.content?.colorScheme, navigation, setUserInfo],
+    [biometric, config.content?.colorScheme, navigation, setUserInfo]
   );
 
   const onPressSignupButton = useCallback(() => {
-    authenticate('signup');
+    authenticate("signup");
   }, [authenticate]);
 
   const onPressLoginButton = useCallback(() => {
-    authenticate('login');
+    authenticate("login");
   }, [authenticate]);
 
   const onPressBiometricLoginButton = useCallback(() => {
     setLoading(true);
     authgear
       .authenticateBiometric(biometricOptions)
-      .then(({userInfo}) => {
+      .then(({ userInfo }) => {
         setUserInfo(userInfo);
-        setDispatchAction(() => () => navigation.replace('UserPanel'));
+        setDispatchAction(() => () => navigation.replace("UserPanel"));
       })
-      .catch(e => ShowError(e))
+      .catch((e) => ShowError(e))
       .finally(() => {
         biometric.updateState();
         setLoading(false);
@@ -174,11 +174,11 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
     setLoading(true);
     authgear
       .authenticateAnonymously()
-      .then(({userInfo}) => {
+      .then(({ userInfo }) => {
         setUserInfo(userInfo);
-        setDispatchAction(() => () => navigation.replace('UserPanel'));
+        setDispatchAction(() => () => navigation.replace("UserPanel"));
       })
-      .catch(e => {
+      .catch((e) => {
         ShowError(e);
       })
       .finally(() => {
@@ -193,7 +193,9 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
         <LoadingSpinner loading={loading} />
         <View>
           <Text style={styles.titleText}>Authgear Demo</Text>
-          <Text style={{...styles.subTitleText, color: theme.colors.disabled}}>
+          <Text
+            style={{ ...styles.subTitleText, color: theme.colors.disabled }}
+          >
             https://demo.authgear.apps.com/
           </Text>
           <View style={styles.configButton}>
@@ -208,7 +210,8 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
             style={styles.button}
             contentStyle={styles.buttonContent}
             labelStyle={styles.buttonText}
-            onPress={onPressSignupButton}>
+            onPress={onPressSignupButton}
+          >
             Signup
           </Button>
           <Button
@@ -216,7 +219,8 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
             style={styles.button}
             contentStyle={styles.buttonContent}
             labelStyle={styles.buttonText}
-            onPress={onPressLoginButton}>
+            onPress={onPressLoginButton}
+          >
             Login
           </Button>
           <Button
@@ -224,7 +228,8 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
             style={styles.button}
             contentStyle={styles.buttonContent}
             labelStyle={styles.buttonText}
-            onPress={onPressBiometricLoginButton}>
+            onPress={onPressBiometricLoginButton}
+          >
             Login with biometric
           </Button>
           <Button
@@ -232,7 +237,8 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
             style={styles.button}
             contentStyle={styles.buttonContent}
             labelStyle={styles.buttonText}
-            onPress={onPressGuestLoginButton}>
+            onPress={onPressGuestLoginButton}
+          >
             Continue as guest
           </Button>
         </View>
