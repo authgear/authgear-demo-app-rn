@@ -1,7 +1,20 @@
-import { ColorScheme } from "@authgear/react-native";
+import {
+  ColorScheme,
+  PersistentTokenStorage,
+  TransientTokenStorage,
+} from "@authgear/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import ShowError from "../ShowError";
+import authgear from "@authgear/react-native";
 
 export interface Config {
   clientID: string;
@@ -35,6 +48,19 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   useEffect(() => {
     if (content != null) {
       setLoading(true);
+
+      authgear
+        .configure({
+          clientID: content.clientID,
+          endpoint: content.endpoint,
+          tokenStorage: content.useTransientTokenStorage
+            ? new TransientTokenStorage()
+            : new PersistentTokenStorage(),
+          shareSessionWithSystemBrowser: content.shareSessionWithSystemBrowser,
+        })
+        .catch((e) => {
+          ShowError(e);
+        });
       AsyncStorage.setItem("config", JSON.stringify(content))
         .catch((e: any) => {
           Alert.alert("Error", JSON.parse(JSON.stringify(e)));

@@ -8,15 +8,12 @@ import {
   RootStackParamList,
   wechatRedirectURI,
 } from "../App";
-import authgear, {
-  PersistentTokenStorage,
-  TransientTokenStorage,
-} from "@authgear/react-native";
 import { useConfig } from "../context/ConfigProvider";
 import { useUserInfo } from "../context/UserInfoProvider";
 import ShowError from "../ShowError";
 import LoadingSpinner from "../LoadingSpinner";
 import { useBiometric } from "../context/BiometricProvider";
+import authgear from "@authgear/react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -76,6 +73,12 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
   );
 
   useEffect(() => {
+    if (config.content == null) {
+      navigation.replace("Configuration");
+    }
+  });
+
+  useEffect(() => {
     if (loading) {
       return;
     }
@@ -86,35 +89,6 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
     setTimeout(dispatchAction, 100);
     setDispatchAction(null);
   }, [dispatchAction, loading]);
-
-  useEffect(() => {
-    if (config.loading) {
-      return;
-    }
-    if (config.content == null) {
-      navigation.replace("Configuration");
-      return;
-    }
-
-    const clientID = config.content?.clientID;
-    const endpoint = config.content?.endpoint;
-    const tokenStorage = config.content?.useTransientTokenStorage
-      ? new TransientTokenStorage()
-      : new PersistentTokenStorage();
-    const shareSessionWithSystemBrowser =
-      config.content?.shareSessionWithSystemBrowser;
-
-    authgear
-      .configure({
-        clientID,
-        endpoint,
-        tokenStorage,
-        shareSessionWithSystemBrowser,
-      })
-      .catch((e) => {
-        ShowError(e);
-      });
-  }, [config, navigation]);
 
   const onPressConfigButton = useCallback(() => {
     return navigation.navigate("Configuration", { fromButton: true });
