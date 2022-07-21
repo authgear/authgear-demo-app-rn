@@ -2,11 +2,11 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {
   StyleSheet,
   View,
-  TouchableWithoutFeedback,
-  Keyboard,
   useColorScheme,
   Alert,
   SafeAreaView,
+  ScrollView,
+  Pressable,
 } from 'react-native';
 import {
   useTheme,
@@ -51,12 +51,7 @@ const styles = StyleSheet.create({
   },
 
   colorSchemeLabelButton: {
-    marginHorizontal: -8,
-  },
-  colorSchemeLabelButtonContent: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    paddingVertical: 16,
   },
   colorSchemeLabel: {
     flexDirection: 'column',
@@ -191,8 +186,8 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
   }, [navigation]);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
         <View>
           <Text style={styles.titleText}>Authgear Demo</Text>
           <Text style={{...styles.subTitleText, color: theme.colors.disabled}}>
@@ -220,12 +215,8 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
         </View>
 
         <View>
-          <Button
-            mode="text"
-            compact={true}
-            uppercase={false}
+          <Pressable
             style={styles.colorSchemeLabelButton}
-            contentStyle={styles.colorSchemeLabelButtonContent}
             onPress={showColorSchemeDialog}>
             <View style={styles.colorSchemeLabel}>
               <Text style={styles.labelText}>AUTHUI Color Scheme</Text>
@@ -233,7 +224,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
                 {colorSchemeLabel}
               </Text>
             </View>
-          </Button>
+          </Pressable>
           <Divider />
 
           <Portal>
@@ -299,8 +290,8 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
             )}
           </View>
         </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
