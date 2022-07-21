@@ -1,8 +1,16 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useMemo } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Appbar, Divider, Text, useTheme } from 'react-native-paper';
+import React, { useCallback, useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Appbar,
+  Divider,
+  Portal,
+  Snackbar,
+  Text,
+  useTheme,
+} from 'react-native-paper';
 import { RootStackParamList } from '../App';
+import Clipboard from '@react-native-clipboard/clipboard';
 import authgear from '@authgear/react-native';
 
 const styles = StyleSheet.create({
@@ -33,14 +41,48 @@ interface UserInfoItemProps {
 
 const UserInfoItem: React.FC<UserInfoItemProps> = (props) => {
   const theme = useTheme();
+  const label = props.label;
+  const value = props.value ?? '';
+
+  const [snackBarVisible, setSnackBarVisble] = useState(false);
+
+  const hideSnackBar = useCallback(() => {
+    setSnackBarVisble(false);
+  }, []);
+
+  const copyItemValue = useCallback(() => {
+    Clipboard.setString(label + ': ' + value);
+    setSnackBarVisble(true);
+  }, [label, value]);
 
   return (
-    <View style={styles.itemContainer}>
-      <Text style={styles.itemLabelText}>{props.label}</Text>
-      <Text style={{ ...styles.itemValueText, color: theme.colors.disabled }}>
-        {props.value ?? ''}
-      </Text>
-    </View>
+    <>
+      <Portal>
+        <Snackbar
+          visible={snackBarVisible}
+          onDismiss={hideSnackBar}
+          action={{
+            label: 'OK',
+            onPress: hideSnackBar,
+          }}
+        >
+          Copied!
+        </Snackbar>
+      </Portal>
+      <TouchableOpacity onLongPress={copyItemValue}>
+        <View>
+          <View style={styles.itemContainer}>
+            <Text style={styles.itemLabelText}>{label}</Text>
+            <Text
+              style={{ ...styles.itemValueText, color: theme.colors.disabled }}
+            >
+              {value}
+            </Text>
+          </View>
+          <Divider />
+        </View>
+      </TouchableOpacity>
+    </>
   );
 };
 
@@ -54,14 +96,11 @@ const UserInfoList: React.FC<UserInfoListProps> = (props) => {
   return (
     <ScrollView style={styles.container}>
       {list.map((item) => (
-        <>
-          <UserInfoItem
-            key={item.label + '_item'}
-            label={item.label}
-            value={item.value}
-          />
-          <Divider key={item.label + '_divider'} />
-        </>
+        <UserInfoItem
+          key={item.label + '_item'}
+          label={item.label}
+          value={item.value}
+        />
       ))}
     </ScrollView>
   );
