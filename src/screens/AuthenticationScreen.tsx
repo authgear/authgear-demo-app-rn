@@ -189,8 +189,19 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
         </View>
       </View>
       <View style={styles.actionButtons}>
+        {biometric.enabled ? (
+          <Button
+            mode="contained"
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            onPress={onPressBiometricLoginButton}
+          >
+            Login with biometric
+          </Button>
+        ) : null}
         <Button
-          mode="contained"
+          mode={biometric.enabled ? 'outlined' : 'contained'}
           style={styles.button}
           contentStyle={styles.buttonContent}
           labelStyle={styles.buttonText}
@@ -206,15 +217,6 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
           onPress={onPressLoginButton}
         >
           Login
-        </Button>
-        <Button
-          mode="outlined"
-          style={styles.button}
-          contentStyle={styles.buttonContent}
-          labelStyle={styles.buttonText}
-          onPress={onPressBiometricLoginButton}
-        >
-          Login with biometric
         </Button>
         <Button
           mode="outlined"
