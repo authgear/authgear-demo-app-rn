@@ -48,7 +48,12 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 20,
     width: '100%',
-    textAlign: 'center',
+  },
+  buttonContent: {
+    height: 48,
+  },
+  buttonText: {
+    fontSize: 16,
   },
 });
 
@@ -201,24 +206,32 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = props => {
           <Button
             mode="contained"
             style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
             onPress={onPressSignupButton}>
             Signup
           </Button>
           <Button
             mode="outlined"
             style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
             onPress={onPressLoginButton}>
             Login
           </Button>
           <Button
             mode="outlined"
             style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
             onPress={onPressBiometricLoginButton}>
             Login with biometric
           </Button>
           <Button
             mode="outlined"
             style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
             onPress={onPressGuestLoginButton}>
             Continue as guest
           </Button>

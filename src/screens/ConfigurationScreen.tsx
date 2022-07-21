@@ -80,6 +80,12 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 16,
   },
+  buttonContent: {
+    height: 48,
+  },
+  buttonText: {
+    fontSize: 16,
+  },
 });
 
 const colorSchemeItems: RadioGroupItemProps<ColorScheme | null>[] = [
@@ -271,13 +277,20 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = props => {
           <Divider />
 
           <View style={styles.buttonContainer}>
-            <Button mode="contained" style={styles.button} onPress={onSave}>
+            <Button
+              mode="contained"
+              style={styles.button}
+              contentStyle={styles.buttonContent}
+              labelStyle={styles.buttonText}
+              onPress={onSave}>
               Save
             </Button>
             {fromButton ? (
               <Button
                 mode="outlined"
                 style={styles.button}
+                contentStyle={styles.buttonContent}
+                labelStyle={styles.buttonText}
                 onPress={onCancelButtonClick}>
                 Cancel
               </Button>
