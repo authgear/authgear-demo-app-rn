@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
-import { useTheme, Button, Text } from 'react-native-paper';
+import { useTheme, Button, Text, IconButton } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   biometricOptions,
@@ -20,23 +20,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
   },
-  titleText: {
+  headerContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 64,
     marginBottom: 6,
+  },
+  titleText: {
     fontSize: 34,
     fontWeight: '400',
-    lineHeight: 36,
+    lineHeight: 42,
   },
   subTitleText: {
     fontSize: 14,
     fontWeight: '400',
     lineHeight: 20,
-    marginBottom: 15,
   },
-  configButton: {
-    alignItems: 'flex-start',
-    marginLeft: -15,
-  },
+
   actionButtons: {
     alignItems: 'center',
     marginBottom: 32,
@@ -168,17 +169,17 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
     <>
       <SafeAreaView style={styles.container}>
         <LoadingSpinner loading={loading} />
-        <View>
-          <Text style={styles.titleText}>Authgear Demo</Text>
-          <Text
-            style={{ ...styles.subTitleText, color: theme.colors.disabled }}
-          >
-            https://demo.authgear.apps.com/
-          </Text>
-          <View style={styles.configButton}>
-            <Button mode="text" onPress={onPressConfigButton}>
-              Configure
-            </Button>
+        <View style={styles.headerContainer}>
+          <View>
+            <Text style={styles.titleText}>Authgear Demo</Text>
+            <Text
+              style={{ ...styles.subTitleText, color: theme.colors.disabled }}
+            >
+              {config.content?.endpoint}
+            </Text>
+          </View>
+          <View>
+            <IconButton icon="cog-outline" onPress={onPressConfigButton} />
           </View>
         </View>
         <View style={styles.actionButtons}>
