@@ -77,6 +77,16 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     props.route.params?.userInfo ?? null
   );
 
+  const updateUserInfo = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await authgear.fetchUserInfo();
+      setUserInfo(result);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (loading) {
       return;
@@ -93,17 +103,12 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
   useEffect(() => {
     if (userInfo == null) {
-      setLoading(true);
-      authgear
-        .fetchUserInfo()
-        .then((result) => setUserInfo(result))
-        .catch((e) => {
-          ShowError(e);
-          setDispatchAction(() => () => navigation.replace('Authentication'));
-        })
-        .finally(() => setLoading(false));
+      updateUserInfo().catch((e) => {
+        ShowError(e);
+        setDispatchAction(() => () => navigation.replace('Authentication'));
+      });
     }
-  }, [navigation, userInfo]);
+  }, [navigation, updateUserInfo, userInfo]);
 
   const userDisplayName = useMemo(() => {
     if (userInfo == null) {
@@ -131,133 +136,143 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
   }, [userInfo]);
 
   const onPressUserInfoButton = useCallback(() => {
-    setLoading(true);
-    authgear
-      .fetchUserInfo()
-      .then((result) =>
+    async function navigateToUserInfoScreen() {
+      setLoading(true);
+      try {
+        await updateUserInfo();
         setDispatchAction(
-          () => () => navigation.navigate('UserInfo', { userInfo: result })
-        )
-      )
-      .catch((e) => {
-        ShowError(e);
-      })
-      .finally(() => {
+          () => () => navigation.navigate('UserInfo', { userInfo })
+        );
+      } finally {
         setLoading(false);
-      });
-  }, [navigation]);
+      }
+    }
+
+    navigateToUserInfoScreen().catch((e) => {
+      ShowError(e);
+      setDispatchAction(() => () => navigation.replace('Authentication'));
+    });
+  }, [navigation, updateUserInfo, userInfo]);
 
   const onPressUserSettingsButton = useCallback(() => {
-    setLoading(true);
-    authgear
-      .open(Page.Settings, {
-        colorScheme: config.content?.colorScheme,
-        wechatRedirectURI,
-      })
-      .catch((e) => ShowError(e))
-      .finally(() => {
+    async function userSettings() {
+      setLoading(true);
+      try {
+        await authgear.open(Page.Settings, {
+          colorScheme: config.content?.colorScheme,
+          wechatRedirectURI,
+        });
+      } finally {
         setLoading(false);
-      });
+      }
+    }
+
+    userSettings().catch((e) => {
+      ShowError(e);
+    });
   }, [config.content?.colorScheme]);
 
   const onPressEnableBiometricButton = useCallback(() => {
-    setLoading(true);
-    authgear
-      .enableBiometric(biometricOptions)
-      .catch((e) => {
-        ShowError(e);
-      })
-      .finally(() => {
+    async function enableBiometric() {
+      setLoading(true);
+      try {
+        await authgear.enableBiometric(biometricOptions);
+      } finally {
         setLoading(false);
         biometric.updateState();
-      });
+      }
+    }
+
+    enableBiometric().catch((e) => {
+      ShowError(e);
+    });
   }, [biometric]);
 
   const onDisableBiometric = useCallback(() => {
-    setDisableBiometricDialogVisble(false);
-    setLoading(true);
-    authgear
-      .disableBiometric()
-      .catch((e) => {
-        ShowError(e);
-      })
-      .finally(() => {
+    async function disableBiometric() {
+      setDisableBiometricDialogVisble(false);
+      setLoading(true);
+      try {
+        await authgear.disableBiometric();
+      } finally {
         setLoading(false);
         biometric.updateState();
-      });
+      }
+    }
+
+    disableBiometric().catch((e) => {
+      ShowError(e);
+    });
   }, [biometric]);
 
   const onPressPromoteUserButton = useCallback(() => {
-    setLoading(true);
-    authgear
-      .promoteAnonymousUser({
-        redirectURI,
-        wechatRedirectURI,
-        colorScheme: config.content?.colorScheme,
-      })
-      .then((result) => {
+    async function promoteUser() {
+      setLoading(true);
+      try {
+        const result = await authgear.promoteAnonymousUser({
+          redirectURI,
+          wechatRedirectURI,
+          colorScheme: config.content?.colorScheme,
+        });
         setUserInfo(result.userInfo);
-      })
-      .catch((e) => ShowError(e))
-      .finally(() => {
+      } finally {
         biometric.updateState();
         setLoading(false);
-      });
+      }
+    }
+
+    promoteUser().catch((e) => {
+      ShowError(e);
+    });
   }, [biometric, config.content?.colorScheme, setUserInfo]);
 
   const onReauthenticate = useCallback(() => {
-    async function task() {
-      await authgear.refreshIDToken();
-      if (!authgear.canReauthenticate()) {
-        throw new Error(
-          'canReauthenticate() returns false for the current user'
+    async function reauth() {
+      setReauthDialogVisble(false);
+      setLoading(true);
+      try {
+        await authgear.refreshIDToken();
+        if (!authgear.canReauthenticate()) {
+          throw new Error(
+            'canReauthenticate() returns false for the current user'
+          );
+        }
+
+        const result = await authgear.reauthenticate(
+          {
+            redirectURI,
+            colorScheme: config.content?.colorScheme,
+            wechatRedirectURI,
+          },
+          biometricOptions
         );
+        setUserInfo(result.userInfo);
+      } finally {
+        setReauthSuccessDialogVisble(true);
+        setLoading(false);
       }
-
-      const result = await authgear.reauthenticate(
-        {
-          redirectURI,
-          colorScheme: config.content?.colorScheme,
-          wechatRedirectURI,
-        },
-        biometricOptions
-      );
-
-      setUserInfo(result.userInfo);
-
-      return true;
     }
 
-    setReauthDialogVisble(false);
-    setLoading(true);
-    task()
-      .then((success) => {
-        if (success) {
-          setReauthSuccessDialogVisble(true);
-        }
-      })
-      .catch((e) => {
-        ShowError(e);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    reauth().catch((e) => {
+      ShowError(e);
+    });
   }, [config.content?.colorScheme, setUserInfo]);
 
   const onLogout = useCallback(() => {
-    setLogoutDialogVisble(false);
-    setLoading(true);
-    authgear
-      .logout()
-      .then(() => {
+    async function logout() {
+      setLogoutDialogVisble(false);
+      setLoading(true);
+      try {
+        await authgear.logout();
+      } finally {
         setDispatchAction(() => () => navigation.replace('Authentication'));
-      })
-      .catch((e) => {
-        ShowError(e);
-      })
-      .finally(() => {
         setLoading(false);
-      });
+      }
+    }
+
+    logout().catch((e) => {
+      ShowError(e);
+    });
   }, [navigation]);
 
   return (

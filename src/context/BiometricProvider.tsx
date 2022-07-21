@@ -22,21 +22,22 @@ const BiometricProvider: React.FC<BiometricProviderProps> = ({ children }) => {
   const [enabled, setEnabled] = useState<boolean>(false);
 
   const updateState = useCallback(() => {
-    authgear
-      .checkBiometricSupported(biometricOptions)
-      .then(() => {
-        authgear
-          .isBiometricEnabled()
-          .then((result) => {
-            setEnabled(result);
-          })
-          .catch(() => {
-            // ignore the error.
-          });
-      })
-      .catch(() => {
-        // ignore the error.
-      });
+    async function update() {
+      try {
+        await authgear.checkBiometricSupported(biometricOptions);
+      } finally {
+        try {
+          const result = await authgear.isBiometricEnabled();
+          setEnabled(result);
+        } catch {
+          // ignore the error.
+        }
+      }
+    }
+
+    update().catch(() => {
+      // ignore the error.
+    });
   }, []);
 
   return (

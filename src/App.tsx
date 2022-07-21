@@ -16,8 +16,8 @@ import { UserInfo } from '@authgear/react-native';
 export type RootStackParamList = {
   Authentication: undefined;
   Configuration: { fromButton: boolean } | undefined;
-  UserPanel: { userInfo: UserInfo } | undefined;
-  UserInfo: { userInfo: UserInfo } | undefined;
+  UserPanel: { userInfo: UserInfo | null } | undefined;
+  UserInfo: { userInfo: UserInfo | null } | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

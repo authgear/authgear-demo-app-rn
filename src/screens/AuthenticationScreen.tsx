@@ -99,26 +99,27 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
 
   const authenticate = useCallback(
     (page: string) => {
-      setLoading(true);
-      authgear
-        .authenticate({
-          redirectURI,
-          wechatRedirectURI,
-          page,
-          colorScheme: config.content?.colorScheme,
-        })
-        .then(({ userInfo }) => {
+      async function auth() {
+        setLoading(true);
+        try {
+          const { userInfo } = await authgear.authenticate({
+            redirectURI,
+            wechatRedirectURI,
+            page,
+            colorScheme: config.content?.colorScheme,
+          });
           setDispatchAction(() => () => {
             navigation.replace('UserPanel', { userInfo });
           });
-        })
-        .catch((e) => {
-          ShowError(e);
-        })
-        .finally(() => {
+        } finally {
           biometric.updateState();
           setLoading(false);
-        });
+        }
+      }
+
+      auth().catch((e) => {
+        ShowError(e);
+      });
     },
     [biometric, config.content?.colorScheme, navigation]
   );
@@ -132,37 +133,43 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
   }, [authenticate]);
 
   const onPressBiometricLoginButton = useCallback(() => {
-    setLoading(true);
-    authgear
-      .authenticateBiometric(biometricOptions)
-      .then(({ userInfo }) => {
+    async function biometricLogin() {
+      setLoading(true);
+      try {
+        const { userInfo } = await authgear.authenticateBiometric(
+          biometricOptions
+        );
         setDispatchAction(
           () => () => navigation.replace('UserPanel', { userInfo })
         );
-      })
-      .catch((e) => ShowError(e))
-      .finally(() => {
+      } finally {
         biometric.updateState();
         setLoading(false);
-      });
+      }
+    }
+
+    biometricLogin().catch((e) => {
+      ShowError(e);
+    });
   }, [biometric, navigation]);
 
   const onPressGuestLoginButton = useCallback(() => {
-    setLoading(true);
-    authgear
-      .authenticateAnonymously()
-      .then(({ userInfo }) => {
+    async function guestLogin() {
+      setLoading(true);
+      try {
+        const { userInfo } = await authgear.authenticateAnonymously();
         setDispatchAction(
           () => () => navigation.replace('UserPanel', { userInfo })
         );
-      })
-      .catch((e) => {
-        ShowError(e);
-      })
-      .finally(() => {
+      } finally {
         biometric.updateState();
         setLoading(false);
-      });
+      }
+    }
+
+    guestLogin().catch((e) => {
+      ShowError(e);
+    });
   }, [biometric, navigation]);
 
   return (

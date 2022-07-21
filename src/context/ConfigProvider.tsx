@@ -4,15 +4,7 @@ import {
   TransientTokenStorage,
 } from '@authgear/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import ShowError from '../ShowError';
 import authgear from '@authgear/react-native';
 
@@ -46,41 +38,48 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (content != null) {
-      setLoading(true);
+    async function updateStorage() {
+      if (content == null) {
+        return;
+      }
 
-      authgear
-        .configure({
+      setLoading(true);
+      try {
+        await authgear.configure({
           clientID: content.clientID,
           endpoint: content.endpoint,
           tokenStorage: content.useTransientTokenStorage
             ? new TransientTokenStorage()
             : new PersistentTokenStorage(),
           shareSessionWithSystemBrowser: content.shareSessionWithSystemBrowser,
-        })
-        .catch((e) => {
-          ShowError(e);
         });
-      AsyncStorage.setItem('config', JSON.stringify(content))
-        .catch((e: any) => {
-          Alert.alert('Error', JSON.parse(JSON.stringify(e)));
-        })
-        .finally(() => setLoading(false));
+        await AsyncStorage.setItem('config', JSON.stringify(content));
+      } finally {
+        setLoading(false);
+      }
     }
+
+    updateStorage().catch((e) => {
+      ShowError(e);
+    });
   }, [content]);
 
   useEffect(() => {
-    setLoading(true);
-    AsyncStorage.getItem('config')
-      .then((value) => {
+    async function updateContent() {
+      setLoading(true);
+      try {
+        const value = await AsyncStorage.getItem('config');
         if (value != null) {
           setContent(JSON.parse(value));
         }
-      })
-      .catch((e: any) => {
-        Alert.alert('Error', JSON.parse(JSON.stringify(e)));
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    updateContent().catch((e) => {
+      ShowError(e);
+    });
   }, []);
 
   return (
