@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,7 @@ import {
   ViewStyle,
   StyleSheet,
   TouchableOpacity,
-} from "react-native";
+} from 'react-native';
 
 export interface RadioGroupItemProps<T> {
   label: string;
@@ -29,27 +29,27 @@ interface RadioButtonProps<T> {
 
 const styles = StyleSheet.create({
   root: {
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   button: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 44,
   },
   bigDot: {
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#007AFF",
+    borderColor: '#007AFF',
     width: 24,
     height: 24,
     marginRight: 8,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   smallDot: {
     borderRadius: 6,
     borderWidth: 6,
-    borderColor: "#007AFF",
+    borderColor: '#007AFF',
     width: 6,
     height: 6,
   },

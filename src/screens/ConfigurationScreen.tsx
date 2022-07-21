@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
-} from "react-native";
+} from 'react-native';
 import {
   useTheme,
   Button,
@@ -17,29 +17,29 @@ import {
   Divider,
   Portal,
   Dialog,
-} from "react-native-paper";
-import { ColorScheme } from "@authgear/react-native";
-import RadioGroup, { RadioGroupItemProps } from "../RadioGroup";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../App";
-import { useConfig } from "../context/ConfigProvider";
+} from 'react-native-paper';
+import { ColorScheme } from '@authgear/react-native';
+import RadioGroup, { RadioGroupItemProps } from '../RadioGroup';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App';
+import { useConfig } from '../context/ConfigProvider';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 16,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   titleText: {
     marginTop: 40,
     marginBottom: 6,
     fontSize: 34,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 36,
   },
   subTitleText: {
     fontSize: 14,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 20,
   },
 
@@ -54,18 +54,18 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   colorSchemeLabel: {
-    flexDirection: "column",
+    flexDirection: 'column',
   },
 
   switch: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 15,
-    alignItems: "center",
+    alignItems: 'center',
   },
   labelText: {
     fontSize: 16,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 24,
   },
 
@@ -85,22 +85,22 @@ const styles = StyleSheet.create({
 
 const colorSchemeItems: RadioGroupItemProps<ColorScheme | null>[] = [
   {
-    label: "Use system",
+    label: 'Use system',
     value: null,
   },
   {
-    label: "Light",
-    value: "light",
+    label: 'Light',
+    value: 'light',
   },
   {
-    label: "Dark",
-    value: "dark",
+    label: 'Dark',
+    value: 'dark',
   },
 ];
 
 type ConfigurationScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  "Configuration"
+  'Configuration'
 >;
 
 const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
@@ -111,10 +111,10 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
   const config = useConfig();
 
   const [endpoint, setEndpoint] = useState<string>(
-    config.content?.endpoint ?? ""
+    config.content?.endpoint ?? ''
   );
   const [clientID, setClientID] = useState<string>(
-    config.content?.clientID ?? ""
+    config.content?.clientID ?? ''
   );
   const [explicitColorScheme, setExplicitColorScheme] =
     useState<ColorScheme | null>(config.content?.explicitColorScheme ?? null);
@@ -131,13 +131,13 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
   const colorScheme = explicitColorScheme ?? systemColorScheme;
 
   const colorSchemeLabel = useMemo(() => {
-    if (explicitColorScheme === "dark") {
-      return "Dark";
+    if (explicitColorScheme === 'dark') {
+      return 'Dark';
     }
-    if (explicitColorScheme === "light") {
-      return "Light";
+    if (explicitColorScheme === 'light') {
+      return 'Light';
     }
-    return "System";
+    return 'System';
   }, [explicitColorScheme]);
 
   const showColorSchemeDialog = useCallback(() => {
@@ -149,8 +149,8 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
   }, [setIsColorSchemeDialogVisible]);
 
   const onSave = useCallback(async () => {
-    if (clientID === "" || endpoint === "") {
-      Alert.alert("Error", "Please fill in client ID and endpoint");
+    if (clientID === '' || endpoint === '') {
+      Alert.alert('Error', 'Please fill in client ID and endpoint');
       return;
     }
 
@@ -169,7 +169,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
       return;
     }
 
-    navigation.replace("Authentication");
+    navigation.replace('Authentication');
   }, [
     clientID,
     colorScheme,

@@ -1,6 +1,6 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
-import { biometricOptions } from "../App";
-import authgear from "@authgear/react-native";
+import React, { createContext, useCallback, useContext, useState } from 'react';
+import { biometricOptions } from '../App';
+import authgear from '@authgear/react-native';
 
 interface BiometricContextProviderValue {
   enabled: boolean;

@@ -2,19 +2,19 @@ import {
   ColorScheme,
   PersistentTokenStorage,
   TransientTokenStorage,
-} from "@authgear/react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+} from '@authgear/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   createContext,
   useCallback,
   useContext,
   useEffect,
   useState,
-} from "react";
-import { Alert } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import ShowError from "../ShowError";
-import authgear from "@authgear/react-native";
+} from 'react';
+import { Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import ShowError from '../ShowError';
+import authgear from '@authgear/react-native';
 
 export interface Config {
   clientID: string;
@@ -61,9 +61,9 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
         .catch((e) => {
           ShowError(e);
         });
-      AsyncStorage.setItem("config", JSON.stringify(content))
+      AsyncStorage.setItem('config', JSON.stringify(content))
         .catch((e: any) => {
-          Alert.alert("Error", JSON.parse(JSON.stringify(e)));
+          Alert.alert('Error', JSON.parse(JSON.stringify(e)));
         })
         .finally(() => setLoading(false));
     }
@@ -71,14 +71,14 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
 
   useEffect(() => {
     setLoading(true);
-    AsyncStorage.getItem("config")
+    AsyncStorage.getItem('config')
       .then((value) => {
         if (value != null) {
           setContent(JSON.parse(value));
         }
       })
       .catch((e: any) => {
-        Alert.alert("Error", JSON.parse(JSON.stringify(e)));
+        Alert.alert('Error', JSON.parse(JSON.stringify(e)));
       })
       .finally(() => setLoading(false));
   }, []);

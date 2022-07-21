@@ -1,16 +1,16 @@
-import React from "react";
-import { StyleSheet } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
 
 const styles = StyleSheet.create({
   loading: {
-    position: "absolute",
+    position: 'absolute',
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

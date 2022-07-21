@@ -1,6 +1,6 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import {
   Appbar,
   Button,
@@ -10,14 +10,14 @@ import {
   Portal,
   Text,
   useTheme,
-} from "react-native-paper";
-import { biometricOptions, RootStackParamList } from "../App";
-import { useConfig } from "../context/ConfigProvider";
-import ShowError from "../ShowError";
-import authgear, { Page, UserInfo } from "@authgear/react-native";
-import LoadingSpinner from "../LoadingSpinner";
-import { redirectURI, wechatRedirectURI } from "../App";
-import { useBiometric } from "../context/BiometricProvider";
+} from 'react-native-paper';
+import { biometricOptions, RootStackParamList } from '../App';
+import { useConfig } from '../context/ConfigProvider';
+import ShowError from '../ShowError';
+import authgear, { Page, UserInfo } from '@authgear/react-native';
+import LoadingSpinner from '../LoadingSpinner';
+import { redirectURI, wechatRedirectURI } from '../App';
+import { useBiometric } from '../context/BiometricProvider';
 
 const styles = StyleSheet.create({
   container: {
@@ -25,18 +25,18 @@ const styles = StyleSheet.create({
   },
   contentText: {
     fontSize: 16,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 24,
   },
 
   dialogText: {
     fontSize: 14,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 20,
   },
 
   userInfoCard: {
-    backgroundColor: "#F5F5F5",
+    backgroundColor: '#F5F5F5',
     marginVertical: 16,
   },
 
@@ -45,14 +45,14 @@ const styles = StyleSheet.create({
   },
   buttonContent: {
     marginVertical: 8,
-    flexDirection: "row",
-    justifyContent: "flex-start",
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
 });
 
 type UserPanelScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  "UserPanel"
+  'UserPanel'
 >;
 
 const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
@@ -76,7 +76,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(
     props.route.params?.userInfo ?? null
   );
-  const [userDisplayName, setUserDisplayName] = useState<string>("User");
+  const [userDisplayName, setUserDisplayName] = useState<string>('User');
 
   useEffect(() => {
     if (loading) {
@@ -99,14 +99,14 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
         .then((result) => setUserInfo(result))
         .catch((e) => {
           ShowError(e);
-          setDispatchAction(() => () => navigation.replace("Authentication"));
+          setDispatchAction(() => () => navigation.replace('Authentication'));
         });
 
       return;
     }
 
     if (userInfo.isAnonymous) {
-      setUserDisplayName("Guest");
+      setUserDisplayName('Guest');
     }
     if (userInfo.phoneNumber != null) {
       setUserDisplayName(userInfo.phoneNumber);
@@ -121,7 +121,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
       setUserDisplayName(userInfo.familyName);
     }
     if (userInfo.givenName != null && userInfo.familyName != null) {
-      setUserDisplayName(userInfo.givenName + " " + userInfo.familyName);
+      setUserDisplayName(userInfo.givenName + ' ' + userInfo.familyName);
     }
   }, [navigation, userInfo, loading]);
 
@@ -131,7 +131,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
       .fetchUserInfo()
       .then((result) =>
         setDispatchAction(
-          () => () => navigation.navigate("UserInfo", { userInfo: result })
+          () => () => navigation.navigate('UserInfo', { userInfo: result })
         )
       )
       .catch((e) => {
@@ -140,7 +140,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [navigation]);
 
   const onPressUserSettingsButton = useCallback(() => {
     setLoading(true);
@@ -205,7 +205,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
       await authgear.refreshIDToken();
       if (!authgear.canReauthenticate()) {
         throw new Error(
-          "canReauthenticate() returns false for the current user"
+          'canReauthenticate() returns false for the current user'
         );
       }
 
@@ -245,7 +245,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     authgear
       .logout()
       .then(() => {
-        setDispatchAction(() => () => navigation.replace("Authentication"));
+        setDispatchAction(() => () => navigation.replace('Authentication'));
       })
       .catch((e) => {
         ShowError(e);
@@ -281,15 +281,15 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
               Client ID: {config.content?.clientID}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              AUTHUI Color Scheme:{" "}
-              {config.content?.explicitColorScheme ?? "System"}
+              AUTHUI Color Scheme:{' '}
+              {config.content?.explicitColorScheme ?? 'System'}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Transient Token Storage:{" "}
+              Transient Token Storage:{' '}
               {config.content?.useTransientTokenStorage.toString()}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Share Session with Device Browser:{" "}
+              Share Session with Device Browser:{' '}
               {config.content?.shareSessionWithSystemBrowser.toString()}
             </Text>
           </Dialog.Content>
@@ -436,8 +436,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
               >
                 <Text style={styles.contentText}>
                   {biometric.enabled
-                    ? "Disable Biometric Login"
-                    : "Enable Biometric Login"}
+                    ? 'Disable Biometric Login'
+                    : 'Enable Biometric Login'}
                 </Text>
               </Button>
               <Divider />

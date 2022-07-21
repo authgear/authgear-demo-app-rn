@@ -1,49 +1,49 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
-import { useTheme, Button, Text } from "react-native-paper";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { useCallback, useEffect, useState } from 'react';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { useTheme, Button, Text } from 'react-native-paper';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   biometricOptions,
   redirectURI,
   RootStackParamList,
   wechatRedirectURI,
-} from "../App";
-import { useConfig } from "../context/ConfigProvider";
-import ShowError from "../ShowError";
-import LoadingSpinner from "../LoadingSpinner";
-import { useBiometric } from "../context/BiometricProvider";
-import authgear from "@authgear/react-native";
+} from '../App';
+import { useConfig } from '../context/ConfigProvider';
+import ShowError from '../ShowError';
+import LoadingSpinner from '../LoadingSpinner';
+import { useBiometric } from '../context/BiometricProvider';
+import authgear from '@authgear/react-native';
 
 const styles = StyleSheet.create({
   container: {
     margin: 16,
     flex: 1,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   titleText: {
     marginTop: 64,
     marginBottom: 6,
     fontSize: 34,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 36,
   },
   subTitleText: {
     fontSize: 14,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 20,
     marginBottom: 15,
   },
   configButton: {
-    alignItems: "flex-start",
+    alignItems: 'flex-start',
     marginLeft: -15,
   },
   actionButtons: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 32,
   },
   button: {
     marginBottom: 20,
-    width: "100%",
+    width: '100%',
   },
   buttonContent: {
     height: 48,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 
 type AuthenticationScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  "Authentication"
+  'Authentication'
 >;
 
 const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
@@ -72,7 +72,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
 
   useEffect(() => {
     if (config.content == null) {
-      navigation.replace("Configuration");
+      navigation.replace('Configuration');
     }
   });
 
@@ -89,7 +89,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
   }, [dispatchAction, loading]);
 
   const onPressConfigButton = useCallback(() => {
-    return navigation.navigate("Configuration", { fromButton: true });
+    return navigation.navigate('Configuration', { fromButton: true });
   }, [navigation]);
 
   const authenticate = useCallback(
@@ -104,7 +104,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
         })
         .then(({ userInfo }) => {
           setDispatchAction(() => () => {
-            navigation.replace("UserPanel", { userInfo });
+            navigation.replace('UserPanel', { userInfo });
           });
         })
         .catch((e) => {
@@ -119,11 +119,11 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
   );
 
   const onPressSignupButton = useCallback(() => {
-    authenticate("signup");
+    authenticate('signup');
   }, [authenticate]);
 
   const onPressLoginButton = useCallback(() => {
-    authenticate("login");
+    authenticate('login');
   }, [authenticate]);
 
   const onPressBiometricLoginButton = useCallback(() => {
@@ -132,7 +132,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
       .authenticateBiometric(biometricOptions)
       .then(({ userInfo }) => {
         setDispatchAction(
-          () => () => navigation.replace("UserPanel", { userInfo })
+          () => () => navigation.replace('UserPanel', { userInfo })
         );
       })
       .catch((e) => ShowError(e))
@@ -148,7 +148,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
       .authenticateAnonymously()
       .then(({ userInfo }) => {
         setDispatchAction(
-          () => () => navigation.replace("UserPanel", { userInfo })
+          () => () => navigation.replace('UserPanel', { userInfo })
         );
       })
       .catch((e) => {
