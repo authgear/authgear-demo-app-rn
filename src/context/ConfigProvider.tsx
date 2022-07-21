@@ -36,10 +36,10 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     if (content != null) {
       setLoading(true);
       AsyncStorage.setItem("config", JSON.stringify(content))
-        .then(() => setLoading(false))
         .catch((e: any) => {
           Alert.alert("Error", JSON.parse(JSON.stringify(e)));
-        });
+        })
+        .finally(() => setLoading(false));
     }
   }, [content]);
 
@@ -50,11 +50,11 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
         if (value != null) {
           setContent(JSON.parse(value));
         }
-        setLoading(false);
       })
       .catch((e: any) => {
         Alert.alert("Error", JSON.parse(JSON.stringify(e)));
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   return (
