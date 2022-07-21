@@ -19,8 +19,6 @@ target 'AuthgearDemoAppRN' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  pod 'WechatOpenSDK'
-
   target 'AuthgearDemoAppRNTests' do
     inherit! :complete
     # Pods for testing

@@ -4,7 +4,6 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <AGAuthgearReactNative.h>
-#import "RCTWechatAuthModule.h"
 
 #import <React/RCTAppSetupUtils.h>
 
@@ -28,13 +27,6 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 }
 @end
 #endif
-
-// config
-NSString* const WechatAppID = @"wxe64ed6a7605b5021";
-NSString* const WechatUniversalLink = @"https://authgear-demo-rn.pandawork.com/wechat/";
-
-// Error domain
-NSString* const WechatAuthErrorDomain = @"com.authgear.example.reactnative.wechatauth_error";
 
 @implementation AppDelegate
 
@@ -67,9 +59,6 @@ NSString* const WechatAuthErrorDomain = @"com.authgear.example.reactnative.wecha
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
 
-  // Setup Wechat SDK
-  [WXApi registerApp:WechatAppID universalLink:WechatUniversalLink];
-
   return YES;
 }
 
@@ -95,12 +84,6 @@ NSString* const WechatAuthErrorDomain = @"com.authgear.example.reactnative.wecha
   return initProps;
 }
 
-- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
-  [WXApi handleOpenUniversalLink:userActivity delegate:self];
-  [AGAuthgearReactNative application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
-  return YES;
-}
-
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
@@ -108,49 +91,6 @@ NSString* const WechatAuthErrorDomain = @"com.authgear.example.reactnative.wecha
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
-}
-
--(void) onReq:(BaseReq*)req
-{
-}
-
--(void) onResp:(BaseResp*)resp
-{
-  SendAuthResp *sendAuthResp;
-  if([resp isKindOfClass:[SendAuthResp class]])
-  {
-    sendAuthResp = (SendAuthResp*)resp;
-    NSDictionary<NSString *, id> *payload;
-    if (sendAuthResp.errCode == WXSuccess) {
-      payload = @{
-        @"code": sendAuthResp.code,
-        @"state": sendAuthResp.state,
-      };
-    } else {
-      NSString *message;
-      switch (resp.errCode) {
-        case WXErrCodeUserCancel:
-          message = @"errcode_cancel";
-          break;
-        case WXErrCodeAuthDeny:
-          message = @"errcode_deny";
-          break;
-        case WXErrCodeUnsupport:
-          message = @"errcode_unsupported";
-          break;
-        default:
-          message = @"errcode_unknown";
-          break;
-      }
-      payload = @{
-        @"error": [NSError errorWithDomain:WechatAuthErrorDomain code:resp.errCode userInfo:nil],
-        @"error_message": message,
-      };
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:kWechatAuthResultNotification
-                                                        object:nil
-                                                      userInfo:payload];
-  }
 }
 
 #if RCT_NEW_ARCH_ENABLED
