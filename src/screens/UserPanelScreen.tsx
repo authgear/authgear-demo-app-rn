@@ -13,9 +13,8 @@ import {
 } from "react-native-paper";
 import { biometricOptions, RootStackParamList } from "../App";
 import { useConfig } from "../context/ConfigProvider";
-import { useUserInfo } from "../context/UserInfoProvider";
 import ShowError from "../ShowError";
-import authgear, { Page } from "@authgear/react-native";
+import authgear, { Page, UserInfo } from "@authgear/react-native";
 import LoadingSpinner from "../LoadingSpinner";
 import { redirectURI, wechatRedirectURI } from "../App";
 import { useBiometric } from "../context/BiometricProvider";
@@ -59,7 +58,6 @@ type UserPanelScreenProps = NativeStackScreenProps<
 const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
   const navigation = props.navigation;
   const theme = useTheme();
-  const { userInfo, setUserInfo } = useUserInfo();
   const config = useConfig();
   const biometric = useBiometric();
 
@@ -74,6 +72,9 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
     null
+  );
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(
+    props.route.params?.userInfo ?? null
   );
   const [userDisplayName, setUserDisplayName] = useState<string>("User");
 
@@ -93,7 +94,14 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
   useEffect(() => {
     if (userInfo == null) {
-      setDispatchAction(() => () => navigation.replace("Authentication"));
+      authgear
+        .fetchUserInfo()
+        .then((result) => setUserInfo(result))
+        .catch((e) => {
+          ShowError(e);
+          setDispatchAction(() => () => navigation.replace("Authentication"));
+        });
+
       return;
     }
 
@@ -115,7 +123,24 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     if (userInfo.givenName != null && userInfo.familyName != null) {
       setUserDisplayName(userInfo.givenName + " " + userInfo.familyName);
     }
-  }, [navigation, userInfo]);
+  }, [navigation, userInfo, loading]);
+
+  const onPressUserInfoButton = useCallback(() => {
+    setLoading(true);
+    authgear
+      .fetchUserInfo()
+      .then((result) =>
+        setDispatchAction(
+          () => () => navigation.navigate("UserInfo", { userInfo: result })
+        )
+      )
+      .catch((e) => {
+        ShowError(e);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   const onPressUserSettingsButton = useCallback(() => {
     setLoading(true);
@@ -383,7 +408,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
             compact={true}
             uppercase={false}
             contentStyle={styles.buttonContent}
-            onPress={() => navigation.navigate("UserInfo")}
+            onPress={onPressUserInfoButton}
           >
             <Text style={styles.contentText}>User Information</Text>
           </Button>

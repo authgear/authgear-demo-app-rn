@@ -9,7 +9,6 @@ import {
   wechatRedirectURI,
 } from "../App";
 import { useConfig } from "../context/ConfigProvider";
-import { useUserInfo } from "../context/UserInfoProvider";
 import ShowError from "../ShowError";
 import LoadingSpinner from "../LoadingSpinner";
 import { useBiometric } from "../context/BiometricProvider";
@@ -61,7 +60,6 @@ type AuthenticationScreenProps = NativeStackScreenProps<
 
 const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
   const theme = useTheme();
-  const { setUserInfo } = useUserInfo();
   const navigation = props.navigation;
 
   const config = useConfig();
@@ -105,9 +103,8 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
           colorScheme: config.content?.colorScheme,
         })
         .then(({ userInfo }) => {
-          setUserInfo(userInfo);
           setDispatchAction(() => () => {
-            navigation.replace("UserPanel");
+            navigation.replace("UserPanel", { userInfo });
           });
         })
         .catch((e) => {
@@ -118,7 +115,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
           setLoading(false);
         });
     },
-    [biometric, config.content?.colorScheme, navigation, setUserInfo]
+    [biometric, config.content?.colorScheme, navigation]
   );
 
   const onPressSignupButton = useCallback(() => {
@@ -134,23 +131,25 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
     authgear
       .authenticateBiometric(biometricOptions)
       .then(({ userInfo }) => {
-        setUserInfo(userInfo);
-        setDispatchAction(() => () => navigation.replace("UserPanel"));
+        setDispatchAction(
+          () => () => navigation.replace("UserPanel", { userInfo })
+        );
       })
       .catch((e) => ShowError(e))
       .finally(() => {
         biometric.updateState();
         setLoading(false);
       });
-  }, [biometric, navigation, setUserInfo]);
+  }, [biometric, navigation]);
 
   const onPressGuestLoginButton = useCallback(() => {
     setLoading(true);
     authgear
       .authenticateAnonymously()
       .then(({ userInfo }) => {
-        setUserInfo(userInfo);
-        setDispatchAction(() => () => navigation.replace("UserPanel"));
+        setDispatchAction(
+          () => () => navigation.replace("UserPanel", { userInfo })
+        );
       })
       .catch((e) => {
         ShowError(e);
@@ -159,7 +158,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
         biometric.updateState();
         setLoading(false);
       });
-  }, [biometric, navigation, setUserInfo]);
+  }, [biometric, navigation]);
 
   return (
     <>

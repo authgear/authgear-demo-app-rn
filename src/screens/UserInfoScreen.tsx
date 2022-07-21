@@ -1,10 +1,9 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Appbar, Divider, Text, useTheme } from "react-native-paper";
 import { RootStackParamList } from "../App";
-import { useUserInfo } from "../context/UserInfoProvider";
-import authgear from "@authgear/react-native";
+import authgear, { UserInfo } from "@authgear/react-native";
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -75,7 +74,7 @@ type UserInfoScreenProps = NativeStackScreenProps<
 
 const UserInfoScreen: React.FC<UserInfoScreenProps> = (props) => {
   const navigation = props.navigation;
-  const { userInfo } = useUserInfo();
+  const userInfo = props.route.params?.userInfo;
 
   const userInfoList = useMemo(
     () => [
