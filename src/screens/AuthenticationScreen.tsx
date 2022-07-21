@@ -71,10 +71,14 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
   );
 
   useEffect(() => {
+    if (config.loading) {
+      return;
+    }
+
     if (config.content == null) {
       navigation.replace('Configuration');
     }
-  });
+  }, [config.content, config.loading, navigation]);
 
   useEffect(() => {
     if (loading) {
