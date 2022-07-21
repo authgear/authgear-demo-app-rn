@@ -166,62 +166,60 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
   }, [biometric, navigation]);
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <LoadingSpinner loading={loading} />
-        <View style={styles.headerContainer}>
-          <View>
-            <Text style={styles.titleText}>Authgear Demo</Text>
-            <Text
-              style={{ ...styles.subTitleText, color: theme.colors.disabled }}
-            >
-              {config.content?.endpoint}
-            </Text>
-          </View>
-          <View>
-            <IconButton icon="cog-outline" onPress={onPressConfigButton} />
-          </View>
+    <SafeAreaView style={styles.container}>
+      <LoadingSpinner loading={loading} />
+      <View style={styles.headerContainer}>
+        <View>
+          <Text style={styles.titleText}>Authgear Demo</Text>
+          <Text
+            style={{ ...styles.subTitleText, color: theme.colors.disabled }}
+          >
+            {config.content?.endpoint}
+          </Text>
         </View>
-        <View style={styles.actionButtons}>
-          <Button
-            mode="contained"
-            style={styles.button}
-            contentStyle={styles.buttonContent}
-            labelStyle={styles.buttonText}
-            onPress={onPressSignupButton}
-          >
-            Signup
-          </Button>
-          <Button
-            mode="outlined"
-            style={styles.button}
-            contentStyle={styles.buttonContent}
-            labelStyle={styles.buttonText}
-            onPress={onPressLoginButton}
-          >
-            Login
-          </Button>
-          <Button
-            mode="outlined"
-            style={styles.button}
-            contentStyle={styles.buttonContent}
-            labelStyle={styles.buttonText}
-            onPress={onPressBiometricLoginButton}
-          >
-            Login with biometric
-          </Button>
-          <Button
-            mode="outlined"
-            style={styles.button}
-            contentStyle={styles.buttonContent}
-            labelStyle={styles.buttonText}
-            onPress={onPressGuestLoginButton}
-          >
-            Continue as guest
-          </Button>
+        <View>
+          <IconButton icon="cog-outline" onPress={onPressConfigButton} />
         </View>
-      </SafeAreaView>
-    </>
+      </View>
+      <View style={styles.actionButtons}>
+        <Button
+          mode="contained"
+          style={styles.button}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonText}
+          onPress={onPressSignupButton}
+        >
+          Signup
+        </Button>
+        <Button
+          mode="outlined"
+          style={styles.button}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonText}
+          onPress={onPressLoginButton}
+        >
+          Login
+        </Button>
+        <Button
+          mode="outlined"
+          style={styles.button}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonText}
+          onPress={onPressBiometricLoginButton}
+        >
+          Login with biometric
+        </Button>
+        <Button
+          mode="outlined"
+          style={styles.button}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonText}
+          onPress={onPressGuestLoginButton}
+        >
+          Continue as guest
+        </Button>
+      </View>
+    </SafeAreaView>
   );
 };
 
