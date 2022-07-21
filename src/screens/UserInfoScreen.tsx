@@ -56,11 +56,11 @@ const UserInfoList: React.FC<UserInfoListProps> = (props) => {
       {list.map((item) => (
         <>
           <UserInfoItem
-            key={item.label}
+            key={item.label + '_item'}
             label={item.label}
             value={item.value}
           />
-          <Divider />
+          <Divider key={item.label + '_divider'} />
         </>
       ))}
     </ScrollView>
