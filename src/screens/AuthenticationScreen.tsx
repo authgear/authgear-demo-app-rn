@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 64,
     marginBottom: 6,
+    marginRight: -12,
   },
   titleText: {
     fontSize: 34,
