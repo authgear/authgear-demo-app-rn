@@ -28,6 +28,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 16,
+  },
+  contentContainer: {
+    flex: 1,
     justifyContent: 'space-between',
   },
   titleText: {
@@ -44,14 +47,14 @@ const styles = StyleSheet.create({
   },
 
   textInputs: {
-    marginVertical: 16,
+    marginVertical: 8,
   },
   textInput: {
     marginVertical: 8,
   },
 
   colorSchemeLabelButton: {
-    paddingVertical: 16,
+    paddingVertical: 12,
   },
   colorSchemeLabel: {
     flexDirection: 'column',
@@ -187,7 +190,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
         <View>
           <Text style={styles.titleText}>Authgear Demo</Text>
           <Text
