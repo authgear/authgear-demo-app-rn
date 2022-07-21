@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
   Appbar,
@@ -76,7 +76,6 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(
     props.route.params?.userInfo ?? null
   );
-  const [userDisplayName, setUserDisplayName] = useState<string>('User');
 
   useEffect(() => {
     if (loading) {
@@ -94,36 +93,42 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
   useEffect(() => {
     if (userInfo == null) {
+      setLoading(true);
       authgear
         .fetchUserInfo()
         .then((result) => setUserInfo(result))
         .catch((e) => {
           ShowError(e);
           setDispatchAction(() => () => navigation.replace('Authentication'));
-        });
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [navigation, userInfo]);
 
+  const userDisplayName = useMemo(() => {
+    if (userInfo == null) {
       return;
     }
 
     if (userInfo.isAnonymous) {
-      setUserDisplayName('Guest');
+      return 'Guest';
     }
     if (userInfo.phoneNumber != null) {
-      setUserDisplayName(userInfo.phoneNumber);
+      return userInfo.phoneNumber;
     }
     if (userInfo.email != null) {
-      setUserDisplayName(userInfo.email);
+      return userInfo.email;
     }
     if (userInfo.givenName != null) {
-      setUserDisplayName(userInfo.givenName);
+      return userInfo.givenName;
     }
     if (userInfo.familyName != null) {
-      setUserDisplayName(userInfo.familyName);
+      return userInfo.familyName;
     }
     if (userInfo.givenName != null && userInfo.familyName != null) {
-      setUserDisplayName(userInfo.givenName + ' ' + userInfo.familyName);
+      return userInfo.givenName + ' ' + userInfo.familyName;
     }
-  }, [navigation, userInfo, loading]);
+  }, [userInfo]);
 
   const onPressUserInfoButton = useCallback(() => {
     setLoading(true);
