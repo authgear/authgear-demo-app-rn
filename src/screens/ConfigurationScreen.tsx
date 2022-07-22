@@ -254,26 +254,38 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
             </Dialog>
           </Portal>
 
-          <View style={styles.switch}>
-            <Text style={styles.labelText}>Transient TokenStorage</Text>
-            <Switch
-              color={theme.colors.primary}
-              value={useTransientTokenStorage}
-              onValueChange={setUseTransientTokenStorage}
-            />
-          </View>
+          <Pressable
+            onPress={() =>
+              setUseTransientTokenStorage(!useTransientTokenStorage)
+            }
+          >
+            <View style={styles.switch}>
+              <Text style={styles.labelText}>Transient TokenStorage</Text>
+              <Switch
+                color={theme.colors.primary}
+                value={useTransientTokenStorage}
+                onValueChange={setUseTransientTokenStorage}
+              />
+            </View>
+          </Pressable>
           <Divider />
 
-          <View style={styles.switch}>
-            <Text style={styles.labelText}>
-              Share Session with Device Browser
-            </Text>
-            <Switch
-              color={theme.colors.primary}
-              value={shareSessionWithSystemBrowser}
-              onValueChange={setShareSessionWithSystemBrowser}
-            />
-          </View>
+          <Pressable
+            onPress={() =>
+              setShareSessionWithSystemBrowser(!shareSessionWithSystemBrowser)
+            }
+          >
+            <View style={styles.switch}>
+              <Text style={styles.labelText}>
+                Share Session with Device Browser
+              </Text>
+              <Switch
+                color={theme.colors.primary}
+                value={shareSessionWithSystemBrowser}
+                onValueChange={setShareSessionWithSystemBrowser}
+              />
+            </View>
+          </Pressable>
           <Divider />
 
           <View style={styles.buttonContainer}>
