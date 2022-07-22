@@ -82,6 +82,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     try {
       const result = await authgear.fetchUserInfo();
       setUserInfo(result);
+      return result;
     } finally {
       setLoading(false);
     }
@@ -139,9 +140,9 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     async function navigateToUserInfoScreen() {
       setLoading(true);
       try {
-        await updateUserInfo();
+        const result = await updateUserInfo();
         setDispatchAction(
-          () => () => navigation.navigate('UserInfo', { userInfo })
+          () => () => navigation.navigate('UserInfo', { userInfo: result })
         );
       } finally {
         setLoading(false);
@@ -152,7 +153,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
       ShowError(e);
       setDispatchAction(() => () => navigation.replace('Authentication'));
     });
-  }, [navigation, updateUserInfo, userInfo]);
+  }, [navigation, updateUserInfo]);
 
   const onPressUserSettingsButton = useCallback(() => {
     async function userSettings() {
@@ -163,14 +164,20 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
           wechatRedirectURI,
         });
       } finally {
-        setLoading(false);
+        try {
+          await updateUserInfo();
+        } catch (e) {
+          ShowError(e);
+        } finally {
+          setLoading(false);
+        }
       }
     }
 
     userSettings().catch((e) => {
       ShowError(e);
     });
-  }, [config.content?.colorScheme]);
+  }, [config.content?.colorScheme, updateUserInfo]);
 
   const onPressEnableBiometricButton = useCallback(() => {
     async function enableBiometric() {
