@@ -119,11 +119,30 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     if (userInfo.isAnonymous) {
       return 'Guest';
     }
-    if (userInfo.phoneNumber != null) {
-      return userInfo.phoneNumber;
+    if (userInfo.name != null) {
+      return userInfo.name;
     }
-    if (userInfo.email != null) {
-      return userInfo.email;
+    if (userInfo.nickname != null) {
+      return userInfo.nickname;
+    }
+    if (userInfo.preferredUsername != null) {
+      return userInfo.preferredUsername;
+    }
+    if (
+      userInfo.givenName != null &&
+      userInfo.middleName != null &&
+      userInfo.familyName != null
+    ) {
+      return (
+        userInfo.givenName +
+        ' ' +
+        userInfo.middleName +
+        ' ' +
+        userInfo.familyName
+      );
+    }
+    if (userInfo.givenName != null && userInfo.familyName != null) {
+      return userInfo.givenName + ' ' + userInfo.familyName;
     }
     if (userInfo.givenName != null) {
       return userInfo.givenName;
@@ -131,8 +150,11 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     if (userInfo.familyName != null) {
       return userInfo.familyName;
     }
-    if (userInfo.givenName != null && userInfo.familyName != null) {
-      return userInfo.givenName + ' ' + userInfo.familyName;
+    if (userInfo.email != null) {
+      return userInfo.email;
+    }
+    if (userInfo.phoneNumber != null) {
+      return userInfo.phoneNumber;
     }
   }, [userInfo]);
 
