@@ -80,7 +80,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
     if (config.content == null) {
       navigation.replace('Configuration');
     }
-  }, [config.content, config.loading, navigation]);
+  }, [biometric, config.content, config.loading, navigation]);
 
   useEffect(() => {
     if (loading) {

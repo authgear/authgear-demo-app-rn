@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { biometricOptions } from '../App';
 import authgear from '@authgear/react-native';
 
@@ -39,6 +45,10 @@ const BiometricProvider: React.FC<BiometricProviderProps> = ({ children }) => {
       // ignore the error.
     });
   }, []);
+
+  useEffect(() => {
+    updateState();
+  }, [updateState]);
 
   return (
     <BiometricContext.Provider value={{ enabled, setEnabled, updateState }}>
