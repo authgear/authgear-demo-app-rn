@@ -11,7 +11,7 @@ import {
 import { useConfig } from '../context/ConfigProvider';
 import ShowError from '../ShowError';
 import LoadingSpinner from '../LoadingSpinner';
-import { useBiometric } from '../context/BiometricProvider';
+import { useUser } from '../context/UserProvider';
 import authgear from '@authgear/react-native';
 
 const styles = StyleSheet.create({
@@ -65,7 +65,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
   const navigation = props.navigation;
 
   const config = useConfig();
-  const biometric = useBiometric();
+  const user = useUser();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
@@ -80,7 +80,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
     if (config.content == null) {
       navigation.replace('Configuration');
     }
-  }, [biometric, config.content, config.loading, navigation]);
+  }, [config.content, config.loading, navigation]);
 
   useEffect(() => {
     if (loading) {
@@ -113,7 +113,6 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
             navigation.replace('UserPanel', { userInfo });
           });
         } finally {
-          biometric.updateState();
           setLoading(false);
         }
       }
@@ -122,7 +121,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
         ShowError(e);
       });
     },
-    [biometric, config.content?.colorScheme, navigation]
+    [config.content?.colorScheme, navigation]
   );
 
   const onPressSignupButton = useCallback(() => {
@@ -144,7 +143,6 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
           () => () => navigation.replace('UserPanel', { userInfo })
         );
       } finally {
-        biometric.updateState();
         setLoading(false);
       }
     }
@@ -152,7 +150,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
     biometricLogin().catch((e) => {
       ShowError(e);
     });
-  }, [biometric, navigation]);
+  }, [navigation]);
 
   const onPressGuestLoginButton = useCallback(() => {
     async function guestLogin() {
@@ -163,7 +161,6 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
           () => () => navigation.replace('UserPanel', { userInfo })
         );
       } finally {
-        biometric.updateState();
         setLoading(false);
       }
     }
@@ -171,7 +168,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
     guestLogin().catch((e) => {
       ShowError(e);
     });
-  }, [biometric, navigation]);
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -190,7 +187,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
         </View>
       </View>
       <View style={styles.actionButtons}>
-        {biometric.enabled ? (
+        {user.isBiometricEnabled ? (
           <Button
             mode="contained"
             style={styles.button}
@@ -202,7 +199,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
           </Button>
         ) : null}
         <Button
-          mode={biometric.enabled ? 'outlined' : 'contained'}
+          mode={user.isBiometricEnabled ? 'outlined' : 'contained'}
           style={styles.button}
           contentStyle={styles.buttonContent}
           labelStyle={styles.buttonText}

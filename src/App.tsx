@@ -10,7 +10,7 @@ import ConfigProvider from './context/ConfigProvider';
 import UserPanelScreen from './screens/UserPanelScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
 import { Platform } from 'react-native';
-import BiometricProvider from './context/BiometricProvider';
+import UserProvider from './context/UserProvider';
 import { UserInfo } from '@authgear/react-native';
 
 export type RootStackParamList = {
@@ -46,7 +46,7 @@ export const biometricOptions = {
 const App: React.FC = () => {
   return (
     <ConfigProvider>
-      <BiometricProvider>
+      <UserProvider>
         <Stack.Navigator
           initialRouteName="Authentication"
           screenOptions={{ headerShown: false }}
@@ -59,7 +59,7 @@ const App: React.FC = () => {
           <Stack.Screen name="UserPanel" component={UserPanelScreen} />
           <Stack.Screen name="UserInfo" component={UserInfoScreen} />
         </Stack.Navigator>
-      </BiometricProvider>
+      </UserProvider>
     </ConfigProvider>
   );
 };

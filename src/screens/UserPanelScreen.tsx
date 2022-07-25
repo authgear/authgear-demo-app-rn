@@ -17,7 +17,7 @@ import ShowError from '../ShowError';
 import authgear, { Page, UserInfo } from '@authgear/react-native';
 import LoadingSpinner from '../LoadingSpinner';
 import { redirectURI, wechatRedirectURI } from '../App';
-import { useBiometric } from '../context/BiometricProvider';
+import { useUser } from '../context/UserProvider';
 
 const styles = StyleSheet.create({
   container: {
@@ -59,7 +59,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
   const navigation = props.navigation;
   const theme = useTheme();
   const config = useConfig();
-  const biometric = useBiometric();
+  const user = useUser();
 
   const [infoDialogVisble, setInfoDialogVisible] = useState(false);
   const [authTimeDialogVisble, setAuthTimeDialogVisble] = useState(false);
@@ -208,14 +208,14 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
         await authgear.enableBiometric(biometricOptions);
       } finally {
         setLoading(false);
-        biometric.updateState();
+        user.updateState(authgear);
       }
     }
 
     enableBiometric().catch((e) => {
       ShowError(e);
     });
-  }, [biometric]);
+  }, [user]);
 
   const onDisableBiometric = useCallback(() => {
     async function disableBiometric() {
@@ -225,14 +225,14 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
         await authgear.disableBiometric();
       } finally {
         setLoading(false);
-        biometric.updateState();
+        user.updateState(authgear);
       }
     }
 
     disableBiometric().catch((e) => {
       ShowError(e);
     });
-  }, [biometric]);
+  }, [user]);
 
   const onPressPromoteUserButton = useCallback(() => {
     async function promoteUser() {
@@ -245,7 +245,6 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
         });
         setUserInfo(result.userInfo);
       } finally {
-        biometric.updateState();
         setLoading(false);
       }
     }
@@ -253,7 +252,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     promoteUser().catch((e) => {
       ShowError(e);
     });
-  }, [biometric, config.content?.colorScheme, setUserInfo]);
+  }, [config.content?.colorScheme, setUserInfo]);
 
   const onReauthenticate = useCallback(() => {
     async function reauth() {
@@ -478,13 +477,13 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
                 uppercase={false}
                 contentStyle={styles.buttonContent}
                 onPress={
-                  biometric.enabled
+                  user.isBiometricEnabled
                     ? () => setDisableBiometricDialogVisble(true)
                     : onPressEnableBiometricButton
                 }
               >
                 <Text style={styles.contentText}>
-                  {biometric.enabled
+                  {user.isBiometricEnabled
                     ? 'Disable Biometric Login'
                     : 'Enable Biometric Login'}
                 </Text>
