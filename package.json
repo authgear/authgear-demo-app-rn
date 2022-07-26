@@ -2,11 +2,6 @@
   "name": "AuthgearDemoAppRN",
   "version": "0.0.1",
   "private": true,
-  "workspaces": [
-    "packages/authgear-core",
-    "packages/authgear-web",
-    "packages/authgear-react-native"
-  ],
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -17,7 +12,7 @@
     "format": "prettier --write --list-different \"src/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
-    "@authgear/react-native": "./authgear-sdk-js/packages/authgear-react-native",
+    "@authgear/react-native": "1.0.0",
     "@react-native-async-storage/async-storage": "1.17.7",
     "@react-native-clipboard/clipboard": "1.10.0",
     "@react-navigation/native": "6.0.11",

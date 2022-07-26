@@ -10,8 +10,10 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@authgear/react-native@./authgear-sdk-js/packages/authgear-react-native":
-  version "0.22.0"
+"@authgear/react-native@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@authgear/react-native/-/react-native-1.0.0.tgz#b6ad3ae6ed658afa86a63a3e01baa8ca1c827361"
+  integrity sha512-MNEqkhQHig+JdTk+rPOF1S8ezA2Hx9G1fqg0DUVlwNwnWOgdbCphpo448Wn/6cDt6jQ9ttXBiZsiMJH3ELw1nw==
 
 "@babel/code-frame@7.12.11":
   version "7.12.11"
