@@ -421,7 +421,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setReauthSuccessDialogVisble(false)}>
-              Cancel
+              Dismiss
             </Button>
           </Dialog.Actions>
         </Dialog>
