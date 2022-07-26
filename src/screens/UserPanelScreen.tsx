@@ -281,8 +281,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
           biometricOptions
         );
         setUserInfo(result.userInfo);
-      } finally {
         setReauthSuccessDialogVisble(true);
+      } finally {
         setLoading(false);
       }
     }
