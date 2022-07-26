@@ -77,6 +77,12 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     props.route.params?.userInfo ?? null
   );
 
+  useEffect(() => {
+    if (user.sessionState !== 'AUTHENTICATED') {
+      setDispatchAction(() => () => navigation.replace('Authentication'));
+    }
+  }, [navigation, user.sessionState]);
+
   const updateUserInfo = useCallback(async () => {
     setLoading(true);
     try {
@@ -293,7 +299,6 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
       try {
         await authgear.logout();
       } finally {
-        setDispatchAction(() => () => navigation.replace('Authentication'));
         setLoading(false);
       }
     }
@@ -301,7 +306,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     logout().catch((e) => {
       ShowError(e);
     });
-  }, [navigation]);
+  }, []);
 
   return (
     <>
