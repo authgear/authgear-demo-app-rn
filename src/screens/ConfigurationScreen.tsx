@@ -225,7 +225,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
             onPress={showColorSchemeDialog}
           >
             <View style={styles.colorSchemeLabel}>
-              <Text style={styles.labelText}>AUTHUI Color Scheme</Text>
+              <Text style={styles.labelText}>AuthUI Color Scheme</Text>
               <Text
                 style={{ ...styles.labelText, color: theme.colors.disabled }}
               >
