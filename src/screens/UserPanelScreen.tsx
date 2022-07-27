@@ -211,6 +211,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     async function enableBiometric() {
       setLoading(true);
       try {
+        await authgear.checkBiometricSupported(biometricOptions);
         await authgear.enableBiometric(biometricOptions);
       } finally {
         setLoading(false);

@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { biometricOptions } from '../App';
 import authgear, {
+  BiometricNoEnrollmentError,
   ReactNativeContainer,
   SessionState,
 } from '@authgear/react-native';
@@ -39,6 +40,10 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
 
     update().catch((e) => {
+      if (e instanceof BiometricNoEnrollmentError) {
+        setIsBiometricEnabled(false);
+        return;
+      }
       ShowError(e);
     });
   }, []);
