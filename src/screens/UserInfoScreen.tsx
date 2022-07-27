@@ -61,6 +61,7 @@ const UserInfoItem: React.FC<UserInfoItemProps> = (props) => {
         <Snackbar
           visible={snackBarVisible}
           onDismiss={hideSnackBar}
+          duration={1000}
           action={{
             label: 'OK',
             onPress: hideSnackBar,
