@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
   },
 
   userInfoCard: {
-    backgroundColor: '#F5F5F5',
     marginVertical: 16,
   },
 
@@ -454,7 +453,11 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
         <Card.Title
           title={userDisplayName}
           subtitle={userInfo?.sub}
-          style={styles.userInfoCard}
+          style={[
+            styles.userInfoCard,
+            // @ts-expect-error
+            { backgroundColor: theme.colors.shadedBackground },
+          ]}
         />
 
         <View style={styles.buttonContainer}>
