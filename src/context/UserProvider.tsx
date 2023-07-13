@@ -14,7 +14,7 @@ interface UserContextProviderValue {
 }
 
 const UserContext = createContext<UserContextProviderValue>({
-  sessionState: 'NO_SESSION',
+  sessionState: SessionState.NoSession,
   isBiometricEnabled: false,
   updateState: () => {},
 });
@@ -24,7 +24,9 @@ interface UserProviderProps {
 }
 
 const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [sessionState, setSessionState] = useState<SessionState>('NO_SESSION');
+  const [sessionState, setSessionState] = useState<SessionState>(
+    SessionState.NoSession
+  );
   const [isBiometricEnabled, setIsBiometricEnabled] = useState<boolean>(false);
 
   const updateState = useCallback((container: ReactNativeContainer) => {

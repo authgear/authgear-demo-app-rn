@@ -93,11 +93,11 @@ const colorSchemeItems: RadioGroupItemProps<ColorScheme | null>[] = [
   },
   {
     label: 'Light',
-    value: 'light',
+    value: ColorScheme.Light,
   },
   {
     label: 'Dark',
-    value: 'dark',
+    value: ColorScheme.Dark,
   },
 ];
 
@@ -105,6 +105,17 @@ type ConfigurationScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'Configuration'
 >;
+
+function useCorrectedColorScheme(): ColorScheme | undefined {
+  const native = useColorScheme();
+  if (native === 'light') {
+    return ColorScheme.Light;
+  }
+  if (native === 'dark') {
+    return ColorScheme.Dark;
+  }
+  return undefined;
+}
 
 const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
   const theme = useTheme();
@@ -128,8 +139,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
   const [isColorSchemeDialogVisible, setIsColorSchemeDialogVisible] =
     useState<boolean>(false);
 
-  const systemColorSchemeNull = useColorScheme();
-  const systemColorScheme = systemColorSchemeNull ?? undefined;
+  const systemColorScheme = useCorrectedColorScheme();
 
   const colorScheme = explicitColorScheme ?? systemColorScheme;
 

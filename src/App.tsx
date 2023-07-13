@@ -21,7 +21,13 @@ import UserPanelScreen from './screens/UserPanelScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
 import { Platform, useColorScheme } from 'react-native';
 import UserProvider from './context/UserProvider';
-import { UserInfo } from '@authgear/react-native';
+import {
+  UserInfo,
+  BiometricOptions,
+  BiometricAccessConstraintIOS,
+  BiometricLAPolicy,
+  BiometricAccessConstraintAndroid,
+} from '@authgear/react-native';
 
 export type RootStackParamList = {
   Authentication: undefined;
@@ -38,17 +44,18 @@ export const wechatRedirectURI = Platform.select<string>({
   ios: 'https://authgear-demo-rn.pandawork.com/authgear/open_wechat_app',
 });
 
-export const biometricOptions = {
+export const biometricOptions: BiometricOptions = {
   ios: {
     localizedReason: 'Use biometric to authenticate',
-    constraint: 'biometryCurrentSet' as const,
+    constraint: BiometricAccessConstraintIOS.BiometryCurrentSet,
+    policy: BiometricLAPolicy.deviceOwnerAuthenticationWithBiometrics,
   },
   android: {
     title: 'Biometric Authentication',
     subtitle: 'Biometric authentication',
     description: 'Use biometric to authenticate',
     negativeButtonText: 'Cancel',
-    constraint: ['BIOMETRIC_STRONG' as const],
+    constraint: [BiometricAccessConstraintAndroid.BiometricStrong],
     invalidatedByBiometricEnrollment: true,
   },
 };

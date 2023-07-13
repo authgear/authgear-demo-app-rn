@@ -51,7 +51,7 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
           tokenStorage: content.useTransientTokenStorage
             ? new TransientTokenStorage()
             : new PersistentTokenStorage(),
-          shareSessionWithSystemBrowser: content.shareSessionWithSystemBrowser,
+          isSSOEnabled: false,
         });
         await AsyncStorage.setItem('config', JSON.stringify(content));
       } finally {
