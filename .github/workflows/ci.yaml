@@ -13,7 +13,7 @@ on:
 
 jobs:
   react_native_ios:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/action'
     runs-on: macos-14
     steps:
     - uses: actions/checkout@v3
