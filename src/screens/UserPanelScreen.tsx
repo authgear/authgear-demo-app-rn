@@ -345,6 +345,10 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
               Share Session with Device Browser:{' '}
               {config.content?.shareSessionWithSystemBrowser.toString()}
             </Text>
+            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+              Webkit Webview:{' '}
+              {config.content?.useWebkitWebView?.toString() ?? 'false'}
+            </Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setInfoDialogVisible(false)}>Dismiss</Button>
