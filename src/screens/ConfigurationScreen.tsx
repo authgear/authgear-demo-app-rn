@@ -22,7 +22,7 @@ import { ColorScheme } from '@authgear/react-native';
 import RadioGroup, { RadioGroupItemProps } from '../RadioGroup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
-import { useConfig } from '../context/ConfigProvider';
+import { defaultConfig, useConfig } from '../context/ConfigProvider';
 
 const styles = StyleSheet.create({
   container: {
@@ -125,10 +125,10 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
   const config = useConfig();
 
   const [endpoint, setEndpoint] = useState<string>(
-    config.content?.endpoint ?? ''
+    config.content?.endpoint ?? defaultConfig.endpoint
   );
   const [clientID, setClientID] = useState<string>(
-    config.content?.clientID ?? ''
+    config.content?.clientID ?? defaultConfig.clientID
   );
   const [explicitColorScheme, setExplicitColorScheme] =
     useState<ColorScheme | null>(config.content?.explicitColorScheme ?? null);
