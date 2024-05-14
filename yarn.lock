@@ -23,10 +23,10 @@
     "@jridgewell/gen-mapping" "^0.3.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@authgear/react-native@2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@authgear/react-native/-/react-native-2.2.0.tgz#a9f0bcadb6c7fef409340c651c5e08292b243312"
-  integrity sha512-tr0VQf6u0jUEAy8HC+iEFvK+uA9n040p5QFwRmsXWSdLhfz8YHvibobF56i0rSvJB0dy9TC7K9kTSswh++oW0w==
+"@authgear/react-native@2.8.1":
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/@authgear/react-native/-/react-native-2.8.1.tgz#0249841ce7a443363305b43b64f3c036c1638e21"
+  integrity sha512-A+xQqKxgRkqX//2GyrYU3TfFHEwYfnIcb8B/a2HrKoLX1Fa3kqqH95xhkDOYHJRQ13LQPhXwZa+IMVBrB0TfHQ==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.18.6":
   version "7.18.6"
