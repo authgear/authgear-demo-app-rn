@@ -17,6 +17,15 @@ export interface Config {
   shareSessionWithSystemBrowser: boolean;
 }
 
+const defaultConfig: Config = {
+  clientID: 'e6b2f5bad8546ee3',
+  endpoint: 'demo-app.authgear.cloud',
+  colorScheme: undefined,
+  explicitColorScheme: null,
+  useTransientTokenStorage: false,
+  shareSessionWithSystemBrowser: false,
+};
+
 interface ConfigContextProviderValue {
   loading: boolean;
   content: Config | null;
@@ -71,6 +80,8 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
         const value = await AsyncStorage.getItem('config');
         if (value != null) {
           setContent(JSON.parse(value));
+        } else {
+          setContent(defaultConfig);
         }
       } finally {
         setLoading(false);
