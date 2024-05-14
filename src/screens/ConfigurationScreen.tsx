@@ -59,7 +59,11 @@ const styles = StyleSheet.create({
   colorSchemeLabel: {
     flexDirection: 'column',
   },
-
+  dialogText: {
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 20,
+  },
   switch: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -141,6 +145,8 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
   const [useWebkitWebView, setUseWebkitWebView] = useState<boolean>(
     config.content?.useWebkitWebView ?? false
   );
+  const [isWebkitWebViewDialogVisible, setIsWebkitWebViewDialogVisible] =
+    useState<boolean>(false);
 
   const systemColorScheme = useCorrectedColorScheme();
 
@@ -166,7 +172,14 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
 
   const onPressUseWebkitWebView = useCallback(() => {
     setUseWebkitWebView(!useWebkitWebView);
+    if (!useWebkitWebView) {
+      setIsWebkitWebViewDialogVisible(true);
+    }
   }, [useWebkitWebView]);
+
+  const hideWebkitWebViewDialog = useCallback(() => {
+    setIsWebkitWebViewDialogVisible(false);
+  }, []);
 
   const onSave = useCallback(async () => {
     if (clientID === '' || endpoint === '') {
@@ -269,6 +282,24 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
               </Dialog.Content>
               <Dialog.Actions>
                 <Button onPress={hideColorSchemeDialog}>Done</Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+
+          <Portal>
+            <Dialog
+              visible={isWebkitWebViewDialogVisible}
+              onDismiss={hideWebkitWebViewDialog}
+            >
+              <Dialog.Title>Webkit WebView</Dialog.Title>
+              <Dialog.Content>
+                <Text style={styles.dialogText}>
+                  "Login with Google" and "Passkey" are not supported in Webkit
+                  Webview mode.
+                </Text>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={hideWebkitWebViewDialog}>OK</Button>
               </Dialog.Actions>
             </Dialog>
           </Portal>
