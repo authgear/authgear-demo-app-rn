@@ -138,6 +138,9 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
     useState<boolean>(config.content?.shareSessionWithSystemBrowser ?? false);
   const [isColorSchemeDialogVisible, setIsColorSchemeDialogVisible] =
     useState<boolean>(false);
+  const [useWebkitWebView, setUseWebkitWebView] = useState<boolean>(
+    config.content?.useWebkitWebView ?? false
+  );
 
   const systemColorScheme = useCorrectedColorScheme();
 
@@ -161,6 +164,10 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
     setIsColorSchemeDialogVisible(false);
   }, [setIsColorSchemeDialogVisible]);
 
+  const onPressUseWebkitWebView = useCallback(() => {
+    setUseWebkitWebView(!useWebkitWebView);
+  }, [useWebkitWebView]);
+
   const onSave = useCallback(async () => {
     if (clientID === '' || endpoint === '') {
       Alert.alert('Error', 'Please fill in client ID and endpoint');
@@ -174,6 +181,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
       explicitColorScheme,
       useTransientTokenStorage,
       shareSessionWithSystemBrowser,
+      useWebkitWebView,
     };
     config.setContent(newConfig);
 
@@ -192,6 +200,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
     navigation,
     shareSessionWithSystemBrowser,
     useTransientTokenStorage,
+    useWebkitWebView,
   ]);
 
   const onCancelButtonClick = useCallback(() => {
@@ -293,6 +302,18 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
                 color={theme.colors.primary}
                 value={shareSessionWithSystemBrowser}
                 onValueChange={setShareSessionWithSystemBrowser}
+              />
+            </View>
+          </Pressable>
+          <Divider />
+
+          <Pressable onPress={onPressUseWebkitWebView}>
+            <View style={styles.switch}>
+              <Text style={styles.labelText}>Webkit Webview</Text>
+              <Switch
+                color={theme.colors.primary}
+                value={useWebkitWebView}
+                onValueChange={onPressUseWebkitWebView}
               />
             </View>
           </Pressable>
