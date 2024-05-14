@@ -342,7 +342,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
               {config.content?.useTransientTokenStorage.toString()}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Share Session with Device Browser:{' '}
+              Share Session with Device Browser (Enable SSO):{' '}
               {config.content?.shareSessionWithSystemBrowser.toString()}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
