@@ -63,7 +63,7 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
           tokenStorage: content.useTransientTokenStorage
             ? new TransientTokenStorage()
             : new PersistentTokenStorage(),
-          isSSOEnabled: false,
+          isSSOEnabled: content.shareSessionWithSystemBrowser,
           uiImplementation: content.useWebkitWebView
             ? new WebKitWebViewUIImplementation()
             : undefined,

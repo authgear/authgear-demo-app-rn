@@ -329,9 +329,12 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
             }
           >
             <View style={styles.switch}>
-              <Text style={styles.labelText}>
-                Share Session with Device Browser
-              </Text>
+              <View>
+                <Text style={styles.labelText}>
+                  Share Session with Device Browser
+                </Text>
+                <Text style={styles.labelText}>(Enable SSO)</Text>
+              </View>
               <Switch
                 color={theme.colors.primary}
                 value={shareSessionWithSystemBrowser}
