@@ -338,7 +338,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
               {config.content?.explicitColorScheme ?? 'System'}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Transient Token Storage:{' '}
+              Logout upon app quit (Transient TokenStorage):{' '}
               {config.content?.useTransientTokenStorage.toString()}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>

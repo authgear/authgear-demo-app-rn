@@ -310,7 +310,10 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
             }
           >
             <View style={styles.switch}>
-              <Text style={styles.labelText}>Transient TokenStorage</Text>
+              <View>
+                <Text style={styles.labelText}>Logout upon app quit</Text>
+                <Text style={styles.labelText}>(Transient TokenStorage)</Text>
+              </View>
               <Switch
                 color={theme.colors.primary}
                 value={useTransientTokenStorage}
