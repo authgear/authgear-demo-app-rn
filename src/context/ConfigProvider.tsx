@@ -17,6 +17,15 @@ export interface Config {
   shareSessionWithSystemBrowser: boolean;
 }
 
+export const defaultConfig: Config = {
+  clientID: 'e6b2f5bad8546ee3',
+  endpoint: 'https://demo-app.authgear.cloud',
+  colorScheme: undefined,
+  explicitColorScheme: null,
+  useTransientTokenStorage: false,
+  shareSessionWithSystemBrowser: false,
+};
+
 interface ConfigContextProviderValue {
   loading: boolean;
   content: Config | null;
