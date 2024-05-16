@@ -2,6 +2,7 @@ import {
   ColorScheme,
   PersistentTokenStorage,
   TransientTokenStorage,
+  WebKitWebViewUIImplementation,
 } from '@authgear/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -15,6 +16,7 @@ export interface Config {
   explicitColorScheme: ColorScheme | null;
   useTransientTokenStorage: boolean;
   shareSessionWithSystemBrowser: boolean;
+  useWebkitWebView?: boolean;
 }
 
 export const defaultConfig: Config = {
@@ -24,6 +26,7 @@ export const defaultConfig: Config = {
   explicitColorScheme: null,
   useTransientTokenStorage: false,
   shareSessionWithSystemBrowser: false,
+  useWebkitWebView: false,
 };
 
 interface ConfigContextProviderValue {
@@ -61,6 +64,9 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
             ? new TransientTokenStorage()
             : new PersistentTokenStorage(),
           isSSOEnabled: false,
+          uiImplementation: content.useWebkitWebView
+            ? new WebKitWebViewUIImplementation()
+            : undefined,
         });
         await AsyncStorage.setItem('config', JSON.stringify(content));
       } finally {
