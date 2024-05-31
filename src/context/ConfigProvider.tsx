@@ -9,6 +9,27 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import ShowError from '../ShowError';
 import authgear from '@authgear/react-native';
 
+function createRandomString(length: number) {
+  const chars =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+async function getDistinctNamePerInstall(): Promise<string> {
+  const key = 'authgear.container.name';
+  let name = await AsyncStorage.getItem(key);
+  if (name == null || name === '') {
+    name = createRandomString(44);
+    await AsyncStorage.setItem(key, name);
+    return name;
+  }
+  return name;
+}
+
 export interface Config {
   clientID: string;
   endpoint: string;
@@ -56,7 +77,14 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
       }
 
       setLoading(true);
+      // The anonymous user key is associated with the container name.
+      // If endpoint is changed, then the SDK will use a key assoicated with another project,
+      // resulting in invalid credentials error.
+      // To work around this issue, we generate a disinct name per install.
+      // See https://github.com/authgear/authgear-demo-app-rn/issues/31
+      const name = await getDistinctNamePerInstall();
       try {
+        authgear.name = name;
         await authgear.configure({
           clientID: content.clientID,
           endpoint: content.endpoint,
