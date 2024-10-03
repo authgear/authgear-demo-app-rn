@@ -90,7 +90,9 @@ jobs:
         sed -I "" "s/versionCode 1/versionCode $VERSION_CODE/" ./android/app/build.gradle
     - name: Build unsigned APK
       working-directory: ./android
-      run: ./gradlew :app:assembleRelease
+      run: |
+        java --version
+        ./gradlew :app:assembleRelease
     - name: Install keystore
       env:
         ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
