@@ -114,6 +114,7 @@ jobs:
         echo -n "$ANDROID_KEYSTORE_BASE64" | base64 --decode -o $KEYSTORE_PATH
     - name: Run zipalign
       run: |
+        ls "$ANDROID_HOME/build-tools/"
         BUILD_TOOLS_VERSION=$(sed -n -E 's/.*buildToolsVersion = "(.*)"/\1/p' ./android/build.gradle)
         "$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/zipalign" -c -v 4 ./android/app/build/outputs/apk/release/app-release-unsigned.apk
     - name: Run apksigner
