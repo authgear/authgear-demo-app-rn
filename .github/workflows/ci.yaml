@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: "18.x"
+        node-version-file: "./.tool-versions"
     - run: sudo xcode-select -s /Applications/Xcode_15.3.app/Contents/Developer
     - run: npm install -g appcenter-cli
     - run: yarn install
@@ -74,7 +74,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: "18.x"
+        node-version-file: "./.tool-versions"
     - run: npm install -g appcenter-cli
     - run: yarn install
     - name: Set versionCode
