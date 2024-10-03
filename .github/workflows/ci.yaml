@@ -79,9 +79,11 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version-file: "./.tool-versions"
-    - name: Set java version
-      run: |
-        echo "JAVA_HOME=$JAVA_HOME_17_X64" >> $GITHUB_ENV
+    - uses: actions/setup-java@v4
+      with:
+        # The Java that comes with macos-15 is also temurin.
+        distribution: "temurin"
+        java-version: "17"
     - run: npm install -g appcenter-cli
     - run: npm ci
     - name: Set versionCode
