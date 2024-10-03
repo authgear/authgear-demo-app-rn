@@ -14,7 +14,9 @@ on:
 jobs:
   react_native_ios:
     if: github.ref == 'refs/heads/master'
-    runs-on: macos-15
+    # As of 2024-10-03, macos-15 has only 30.0.3 Android build tools, which does not seem correct.
+    # So we still use macos-14
+    runs-on: macos-14
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -84,7 +86,9 @@ jobs:
 
   react_native_android:
     if: github.ref == 'refs/heads/master'
-    runs-on: macos-15
+    # As of 2024-10-03, macos-15 has only 30.0.3 Android build tools, which does not seem correct.
+    # So we still use macos-14
+    runs-on: macos-14
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
