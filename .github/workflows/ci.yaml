@@ -79,6 +79,9 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version-file: "./.tool-versions"
+    - name: Set java version
+      run: |
+        echo "JAVA_HOME=$JAVA_HOME_17_X64" >> $GITHUB_ENV
     - run: npm install -g appcenter-cli
     - run: npm ci
     - name: Set versionCode
