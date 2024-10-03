@@ -14,14 +14,14 @@ See [https://reactnative.dev/docs/environment-setup](https://reactnative.dev/doc
 
 ```bash
 # In root of React Native demo app
-yarn
+npm ci
 ```
 
 ## Start Metro server
 
 ```bash
 # In root of React Native demo app
-yarn start
+npm start
 ```
 
 ## Build Android app
@@ -30,7 +30,7 @@ yarn start
     
     ```bash
     # In root of React Native demo app
-    yarn android
+    npm run  android
     ```
 
 2. By Android Studio
@@ -56,7 +56,7 @@ yarn start
 
     ```bash
     # In root of React Native demo app
-    yarn android
+    npm run ios
     ```
 
 3. Build by Xcode
