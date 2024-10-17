@@ -27,11 +27,13 @@ import { defaultConfig, useConfig } from '../context/ConfigProvider';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 16,
+  },
+  scrollView: {
+    flex: 1,
   },
   contentContainer: {
-    flex: 1,
     justifyContent: 'space-between',
+    padding: 16,
   },
   titleText: {
     marginTop: 40,
@@ -222,15 +224,14 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        <View>
-          <Text style={styles.titleText}>Authgear Demo</Text>
-          <Text
-            style={{ ...styles.subTitleText, color: theme.colors.disabled }}
-          >
-            Configuration
-          </Text>
-        </View>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.contentContainer}
+      >
+        <Text style={styles.titleText}>Authgear Demo</Text>
+        <Text style={{ ...styles.subTitleText, color: theme.colors.disabled }}>
+          Configuration
+        </Text>
 
         <View style={styles.textInputs}>
           <TextInput
@@ -251,135 +252,129 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
           />
         </View>
 
-        <View>
-          <Pressable
-            style={styles.colorSchemeLabelButton}
-            onPress={showColorSchemeDialog}
+        <Pressable
+          style={styles.colorSchemeLabelButton}
+          onPress={showColorSchemeDialog}
+        >
+          <View style={styles.colorSchemeLabel}>
+            <Text style={styles.labelText}>AuthUI Color Scheme</Text>
+            <Text style={{ ...styles.labelText, color: theme.colors.disabled }}>
+              {colorSchemeLabel}
+            </Text>
+          </View>
+        </Pressable>
+        <Divider />
+
+        <Portal>
+          <Dialog
+            visible={isColorSchemeDialogVisible}
+            onDismiss={hideColorSchemeDialog}
           >
-            <View style={styles.colorSchemeLabel}>
-              <Text style={styles.labelText}>AuthUI Color Scheme</Text>
-              <Text
-                style={{ ...styles.labelText, color: theme.colors.disabled }}
-              >
-                {colorSchemeLabel}
+            <Dialog.Title>Color Scheme</Dialog.Title>
+            <Dialog.Content>
+              <RadioGroup
+                items={colorSchemeItems}
+                value={explicitColorScheme}
+                onChange={setExplicitColorScheme}
+              />
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={hideColorSchemeDialog}>Done</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+
+        <Portal>
+          <Dialog
+            visible={isWebkitWebViewDialogVisible}
+            onDismiss={hideWebkitWebViewDialog}
+          >
+            <Dialog.Title>Webkit WebView</Dialog.Title>
+            <Dialog.Content>
+              <Text style={styles.dialogText}>
+                "Login with Google" and "Passkey" are not supported in Webkit
+                Webview mode.
               </Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={hideWebkitWebViewDialog}>OK</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+
+        <Pressable
+          onPress={() => setUseTransientTokenStorage(!useTransientTokenStorage)}
+        >
+          <View style={styles.switch}>
+            <View>
+              <Text style={styles.labelText}>Logout upon app quit</Text>
+              <Text style={styles.labelText}>(Transient TokenStorage)</Text>
             </View>
-          </Pressable>
-          <Divider />
+            <Switch
+              color={theme.colors.primary}
+              value={useTransientTokenStorage}
+              onValueChange={setUseTransientTokenStorage}
+            />
+          </View>
+        </Pressable>
+        <Divider />
 
-          <Portal>
-            <Dialog
-              visible={isColorSchemeDialogVisible}
-              onDismiss={hideColorSchemeDialog}
-            >
-              <Dialog.Title>Color Scheme</Dialog.Title>
-              <Dialog.Content>
-                <RadioGroup
-                  items={colorSchemeItems}
-                  value={explicitColorScheme}
-                  onChange={setExplicitColorScheme}
-                />
-              </Dialog.Content>
-              <Dialog.Actions>
-                <Button onPress={hideColorSchemeDialog}>Done</Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
+        <Pressable
+          onPress={() =>
+            setShareSessionWithSystemBrowser(!shareSessionWithSystemBrowser)
+          }
+        >
+          <View style={styles.switch}>
+            <View>
+              <Text style={styles.labelText}>
+                Share Session with Device Browser
+              </Text>
+              <Text style={styles.labelText}>(Enable SSO)</Text>
+            </View>
+            <Switch
+              color={theme.colors.primary}
+              value={shareSessionWithSystemBrowser}
+              onValueChange={setShareSessionWithSystemBrowser}
+            />
+          </View>
+        </Pressable>
+        <Divider />
 
-          <Portal>
-            <Dialog
-              visible={isWebkitWebViewDialogVisible}
-              onDismiss={hideWebkitWebViewDialog}
-            >
-              <Dialog.Title>Webkit WebView</Dialog.Title>
-              <Dialog.Content>
-                <Text style={styles.dialogText}>
-                  "Login with Google" and "Passkey" are not supported in Webkit
-                  Webview mode.
-                </Text>
-              </Dialog.Content>
-              <Dialog.Actions>
-                <Button onPress={hideWebkitWebViewDialog}>OK</Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
+        <Pressable onPress={onPressUseWebkitWebView}>
+          <View style={styles.switch}>
+            <Text style={styles.labelText}>Webkit Webview</Text>
+            <Switch
+              color={theme.colors.primary}
+              value={useWebkitWebView}
+              onValueChange={onPressUseWebkitWebView}
+            />
+          </View>
+        </Pressable>
+        <Divider />
 
-          <Pressable
-            onPress={() =>
-              setUseTransientTokenStorage(!useTransientTokenStorage)
-            }
+        <View style={styles.buttonContainer}>
+          <Button
+            mode="contained"
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            onPress={onSave}
           >
-            <View style={styles.switch}>
-              <View>
-                <Text style={styles.labelText}>Logout upon app quit</Text>
-                <Text style={styles.labelText}>(Transient TokenStorage)</Text>
-              </View>
-              <Switch
-                color={theme.colors.primary}
-                value={useTransientTokenStorage}
-                onValueChange={setUseTransientTokenStorage}
-              />
-            </View>
-          </Pressable>
-          <Divider />
-
-          <Pressable
-            onPress={() =>
-              setShareSessionWithSystemBrowser(!shareSessionWithSystemBrowser)
-            }
-          >
-            <View style={styles.switch}>
-              <View>
-                <Text style={styles.labelText}>
-                  Share Session with Device Browser
-                </Text>
-                <Text style={styles.labelText}>(Enable SSO)</Text>
-              </View>
-              <Switch
-                color={theme.colors.primary}
-                value={shareSessionWithSystemBrowser}
-                onValueChange={setShareSessionWithSystemBrowser}
-              />
-            </View>
-          </Pressable>
-          <Divider />
-
-          <Pressable onPress={onPressUseWebkitWebView}>
-            <View style={styles.switch}>
-              <Text style={styles.labelText}>Webkit Webview</Text>
-              <Switch
-                color={theme.colors.primary}
-                value={useWebkitWebView}
-                onValueChange={onPressUseWebkitWebView}
-              />
-            </View>
-          </Pressable>
-          <Divider />
-
-          <View style={styles.buttonContainer}>
+            Save
+          </Button>
+          {fromButton ? (
             <Button
-              mode="contained"
+              mode="outlined"
               style={styles.button}
               contentStyle={styles.buttonContent}
               labelStyle={styles.buttonText}
-              onPress={onSave}
+              onPress={onCancelButtonClick}
             >
-              Save
+              Cancel
             </Button>
-            {fromButton ? (
-              <Button
-                mode="outlined"
-                style={styles.button}
-                contentStyle={styles.buttonContent}
-                labelStyle={styles.buttonText}
-                onPress={onCancelButtonClick}
-              >
-                Cancel
-              </Button>
-            ) : (
-              <></>
-            )}
-          </View>
+          ) : (
+            <></>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
