@@ -15,18 +15,22 @@ import { useUser } from '../context/UserProvider';
 import authgear from '@authgear/react-native';
 
 const styles = StyleSheet.create({
-  container: {
-    margin: 16,
+  safeArea: {
+    flex: 1,
+  },
+  root: {
     flex: 1,
     justifyContent: 'space-between',
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 64,
+    paddingBottom: 32,
   },
   headerContainer: {
-    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 64,
-    marginBottom: 6,
-    marginRight: -12,
+  },
+  titleContainer: {
+    flex: 1,
   },
   titleText: {
     fontSize: 34,
@@ -41,7 +45,6 @@ const styles = StyleSheet.create({
 
   actionButtons: {
     alignItems: 'center',
-    marginBottom: 32,
   },
   button: {
     marginBottom: 20,
@@ -171,60 +174,60 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <LoadingSpinner loading={loading} />
-      <View style={styles.headerContainer}>
-        <View>
-          <Text style={styles.titleText}>Authgear Demo</Text>
-          <Text
-            style={{ ...styles.subTitleText, color: theme.colors.disabled }}
-          >
-            {config.content?.endpoint}
-          </Text>
-        </View>
-        <View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.root}>
+        <LoadingSpinner loading={loading} />
+        <View style={styles.headerContainer}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.titleText}>Authgear Demo</Text>
+            <Text
+              style={{ ...styles.subTitleText, color: theme.colors.disabled }}
+            >
+              {config.content?.endpoint}
+            </Text>
+          </View>
           <IconButton icon="cog-outline" onPress={onPressConfigButton} />
         </View>
-      </View>
-      <View style={styles.actionButtons}>
-        {user.isBiometricEnabled ? (
+        <View style={styles.actionButtons}>
+          {user.isBiometricEnabled ? (
+            <Button
+              mode="contained"
+              style={styles.button}
+              contentStyle={styles.buttonContent}
+              labelStyle={styles.buttonText}
+              onPress={onPressBiometricLoginButton}
+            >
+              Login with biometric
+            </Button>
+          ) : null}
           <Button
-            mode="contained"
+            mode={user.isBiometricEnabled ? 'outlined' : 'contained'}
             style={styles.button}
             contentStyle={styles.buttonContent}
             labelStyle={styles.buttonText}
-            onPress={onPressBiometricLoginButton}
+            onPress={onPressSignupButton}
           >
-            Login with biometric
+            Signup
           </Button>
-        ) : null}
-        <Button
-          mode={user.isBiometricEnabled ? 'outlined' : 'contained'}
-          style={styles.button}
-          contentStyle={styles.buttonContent}
-          labelStyle={styles.buttonText}
-          onPress={onPressSignupButton}
-        >
-          Signup
-        </Button>
-        <Button
-          mode="outlined"
-          style={styles.button}
-          contentStyle={styles.buttonContent}
-          labelStyle={styles.buttonText}
-          onPress={onPressLoginButton}
-        >
-          Login
-        </Button>
-        <Button
-          mode="outlined"
-          style={styles.button}
-          contentStyle={styles.buttonContent}
-          labelStyle={styles.buttonText}
-          onPress={onPressGuestLoginButton}
-        >
-          Continue as guest
-        </Button>
+          <Button
+            mode="outlined"
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            onPress={onPressLoginButton}
+          >
+            Login
+          </Button>
+          <Button
+            mode="outlined"
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            onPress={onPressGuestLoginButton}
+          >
+            Continue as guest
+          </Button>
+        </View>
       </View>
     </SafeAreaView>
   );
