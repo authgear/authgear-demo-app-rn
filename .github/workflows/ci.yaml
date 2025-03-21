@@ -15,7 +15,7 @@ on:
 
 jobs:
   react_native_ios:
-    if: github.ref == 'refs/heads/master'
+    if: ${{ github.repository == 'authgear/authgear-demo-app-rn' }}
     # As of 2024-10-03, macos-15 has only 30.0.3 Android build tools, which does not seem correct.
     # So we still use macos-14
     runs-on: macos-14
@@ -28,11 +28,9 @@ jobs:
       with:
         # runs 'bundle install' and caches installed gems automatically
         bundler-cache: true
-    - run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
-    - run: npm install -g appcenter-cli
-    - run: npm ci
-    - working-directory: ./ios
-      run: bundle exec pod install
+    - run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
+    - run: make npm-ci
+    - run: make pod-install
     # https://docs.github.com/en/actions/use-cases-and-examples/deploying/installing-an-apple-certificate-on-macos-runners-for-xcode-development
     # Start from macos 15, importing certificate without a password will always fail.
     # See https://forums.developer.apple.com/forums/thread/764429
@@ -65,21 +63,23 @@ jobs:
         # apply provisioning profile
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
-    - name: Set CFBundleVersion
-      working-directory: ./ios
-      run: |
-        BUILD_NUMBER=$(date +%s)
-        /usr/libexec/Plistbuddy -c "Set CFBundleVersion $BUILD_NUMBER" ./AuthgearDemoAppRN/Info.plist
-    - name: Run xcodebuild archive
-      working-directory: ./ios
-      run: xcodebuild -workspace AuthgearDemoAppRN.xcworkspace -scheme AuthgearDemoAppRN -configuration Release -archivePath "$RUNNER_TEMP/AuthgearDemoAppRN.xcarchive" archive
-    - name: Run xcodebuild -exportArchive
-      working-directory: ./ios
-      run: xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/AuthgearDemoAppRN.xcarchive" -exportPath "$RUNNER_TEMP/AuthgearDemoAppRN.export" -exportOptionsPlist "./ExportOptions.plist"
-    - name: Distribute to App Center
+    - name: Install App Store Connect API key
       env:
-        APPCENTER_ACCESS_TOKEN: ${{ secrets.IOS_APPCENTER_ACCESS_TOKEN }}
-      run: appcenter distribute release --debug --silent --file "$RUNNER_TEMP/AuthgearDemoAppRN.export/AuthgearDemoAppRN.ipa" --store "App Store Connect Users" --app "Oursky/Authgear-demo-app-react-native-for-sales" --release-notes "no release notes"
+        IOS_API_KEY_BASE64: ${{ secrets.IOS_API_KEY_BASE64 }}
+        IOS_API_KEY_ID: ${{ secrets.IOS_API_KEY_ID }}
+      run: |
+        API_KEY_PATH=$RUNNER_TEMP/AuthKey_${IOS_API_KEY_ID}.p8
+        echo -n "$IOS_API_KEY_BASE64" | base64 --decode -o $API_KEY_PATH
+    - name: Create fastlane api key json
+      env:
+        API_ISSUER: ${{ secrets.IOS_API_KEY_ISSUER }}
+        API_KEY: ${{ secrets.IOS_API_KEY_ID }}
+      run: |
+        export API_KEY_PATH=$RUNNER_TEMP/AuthKey_${API_KEY}.p8
+        make fastlane-api-key-json
+    - run: make ios-build-app
+    - run: make ios-upload-app
+      if: ${{ github.ref == 'refs/heads/master' }}
     - name: Clean up keychain and provisioning profile
       if: ${{ always() }}
       run: |

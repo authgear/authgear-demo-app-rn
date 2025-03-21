@@ -1,0 +1,25 @@
+default_platform(:ios)
+
+platform :ios do
+  lane :ios_build_app do |options|
+    build_app(
+      destination: "generic/platform=iOS",
+      workspace: "./ios/AuthgearDemoAppRN.xcworkspace",
+      scheme: "AuthgearDemoAppRN",
+      configuration: "Release",
+      export_options: "./ios/ExportOptions.plist",
+      clean: true,
+      output_directory: "./build/Release/iOS/AuthgearDemoAppRN",
+      output_name: "AuthgearDemoAppRN.ipa",
+      xcargs: "CURRENT_PROJECT_VERSION=#{options[:CURRENT_PROJECT_VERSION]}",
+    )
+  end
+
+  lane :ios_upload_app do
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      api_key_path: "./build/fastlane-api-key.json",
+      ipa: "./build/Release/iOS/AuthgearDemoAppRN/AuthgearDemoAppRN.ipa"
+    )
+  end
+end
