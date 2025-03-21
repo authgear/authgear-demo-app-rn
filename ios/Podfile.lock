@@ -684,7 +684,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  authgear-react-native: 17f38720b26a873e9170df6fca735529fda7b975
+  authgear-react-native: 778171f430547e9914f524418d27a8cedd6c1f1f
   boost: 7dcd2de282d72e344012f7d6564d024930a6a440
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
@@ -703,29 +703,29 @@ SPEC CHECKSUMS:
   hermes-engine: 982096772bd947125ee3b4f72ace6cb9a33f1d02
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
+  RCT-Folly: 8dc08ca5a393b48b1c523ab6220dfdcc0fe000ad
   RCTRequired: 01c639ec840ee03928b2d65f5cd5297d737b3834
   RCTTypeSafety: 9623592521a1576363baf3d6ab8d164cfe9062bf
   React: 3c0beeda318c3c515a6bb2c1f197b55bd731aa43
   React-callinvoker: 0cd6ff2cdd80255c82cd4628fc925df1e7133a1a
-  React-Codegen: 20cfee78965306e4a5bb65d95958142eda116cfc
-  React-Core: df691c59e0c8a3db4d138a51bb8862c52c8b14f1
-  React-CoreModules: cebd223e814ac07bc1f597bbd2480167a2c7a130
-  React-cxxreact: dec3959d439708cb7dd73b46a11ed64c3eea79da
+  React-Codegen: d3239ad82b29f93beeeb154ac0c776719d1164bc
+  React-Core: 24c3b4beb23e45bdfe1a57cc7687b8ead142a43b
+  React-CoreModules: 24415fff794f24f8269846b88d9ac6b172ce4171
+  React-cxxreact: 9c9d59b4ce6f2535f31e0d812af6a58bc304ba85
   React-debug: 3a5091cbda7ffe5f11ad0443109810fcd1a3e885
-  React-hermes: f3b6b278c4ff7e6664a86b2bf964a4dc4ae72d34
-  React-jsi: 6ec4bd4cd929ae9d468b4984b0ae2c657aeeb2da
-  React-jsiexecutor: 8dc585381e476c3ff2e9468f444c90c4d1d5b874
+  React-hermes: 773790a092f8e0939e1aa3ee6cd10e928f2ce643
+  React-jsi: 33409556a868a4cf41347e68ffd270cbba1d218a
+  React-jsiexecutor: 8d95d2ed8969c2ce7eb8b4bfaccb0bb9c0423761
   React-jsinspector: 853b8631b908636bb09ef77cb217376c38a0c8ff
-  React-logger: 9ca44bb5703bf2355f3c2d2e5e67bfe98ca2dc34
-  react-native-safe-area-context: 9697629f7b2cda43cf52169bb7e0767d330648c2
-  react-native-webview: b8ec89966713985111a14d6e4bf98d8b54bced0d
-  React-NativeModulesApple: 2edfcbb25329e3eb5f76eb79d89010de7c1c6f1f
+  React-logger: afa402da502a35728c9073804b1802861783a996
+  react-native-safe-area-context: 8745463257fac6150abd2281b02de640b3595ec7
+  react-native-webview: 65c16ff14c50a6c3d3cf2c6e4b60b47b413dbaf8
+  React-NativeModulesApple: a3b3019ffee56cf78bbf09c48e056072f3bb4ea4
   React-perflogger: 785b0063af5178298a61b54bb46aae9a19c7bbb5
   React-RCTActionSheet: 84f37b34bd77249263ace75471d6664393c29972
   React-RCTAnimation: 5713910b6223154df4bba80a0bda4e2e671b00f8
-  React-RCTAppDelegate: d3777d05bf6b65fed847536af520731c1a167dea
-  React-RCTBlob: d4d3fb21c0bf1ce2f0308e05227ecd3f19266bf7
+  React-RCTAppDelegate: 11fe0debffcd253bfee81d68fc588f6367444caf
+  React-RCTBlob: 0f191768e0be79ab0cf487be4cab6e88e5c4e480
   React-RCTImage: 2e63a483be5d4e46a80dea3b17c9abee38006feb
   React-RCTLinking: e3ff685ee62187f8f61e938357307c1f890125b5
   React-RCTNetwork: a35842997a403edfdc1ec25b61a0e10a0526368d
@@ -734,16 +734,16 @@ SPEC CHECKSUMS:
   React-RCTVibration: defaae8016de9b3351a2a67ee8ef3fbdd643b0e1
   React-rncore: dfd20469cfad38e48b1c3cc9c4367db63f5231d7
   React-runtimeexecutor: 448409b5ae5a01b7793239f630051960c7dd39f9
-  React-runtimescheduler: ff30efdf24f8ce62eb517a391ded3d99c4263bb0
-  React-utils: 7959d4553163b61e01bbe83dbd80e58ca420aecb
-  ReactCommon: 841449721eb2e004de2c3366844b0a03f329f2cb
-  RNCAsyncStorage: 4b98ac3c64efa4e35c1197cb0c5ca5e9f5d4c666
-  RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
-  RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
+  React-runtimescheduler: 5cd71d2becb07952525bd137963ca5cb98597bc0
+  React-utils: 389181b1411d047f3d9c4913930b9e806d59d0b1
+  ReactCommon: 561cfc1683ccdebe8a377b4616958ea6a1f62d91
+  RNCAsyncStorage: b33ba15f623939b6e244cbb93863bcf01c409e0f
+  RNCClipboard: efe1b27ad1ea378c60c8c8aabfd130961bbeb474
+  RNScreens: 39db1910d2ea9ae885dcda43086818e9f8b714d0
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: ef534101bb891fb09bae657417f34d399c1efe38
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: a51c1e5e18012640c2cef160845ef8298fea1bad
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.16.2
