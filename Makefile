@@ -8,8 +8,8 @@ pod-install:
 
 .PHONY: ios-build-app
 ios-build-app:
-	bundle exec fastlane ios_build_app CURRENT_PROJECT_VERSION:$(shell date +%s)
+	bundle exec fastlane ios ios_build_app CURRENT_PROJECT_VERSION:$(shell date +%s)
 
 .PHONY: ios-upload-app
 ios-upload-app:
-	bundle exec fastlane ios_upload_app
+	bundle exec fastlane ios ios_upload_app
