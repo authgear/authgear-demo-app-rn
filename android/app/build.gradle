@@ -95,7 +95,7 @@ android {
 
     namespace "com.authgeardemoapprn"
     defaultConfig {
-        applicationId "com.authgeardemoapprn"
+        applicationId "com.authgear.exampleapp.reactnativeforsales"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
