@@ -7,6 +7,7 @@ import {
   Card,
   Dialog,
   Divider,
+  MD2Theme,
   Portal,
   Text,
   useTheme,
@@ -56,18 +57,18 @@ type UserPanelScreenProps = NativeStackScreenProps<
 
 const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
   const navigation = props.navigation;
-  const theme = useTheme();
+  const theme = useTheme<MD2Theme>();
   const config = useConfig();
   const user = useUser();
 
-  const [infoDialogVisble, setInfoDialogVisible] = useState(false);
-  const [authTimeDialogVisble, setAuthTimeDialogVisble] = useState(false);
-  const [disableBiometricDialogVisble, setDisableBiometricDialogVisble] =
+  const [infoDialogVisible, setInfoDialogVisible] = useState(false);
+  const [authTimeDialogVisible, setAuthTimeDialogVisible] = useState(false);
+  const [disableBiometricDialogVisible, setDisableBiometricDialogVisible] =
     useState(false);
-  const [reauthDialogVisble, setReauthDialogVisble] = useState(false);
-  const [reauthSuccessDialogVisble, setReauthSuccessDialogVisble] =
+  const [reauthDialogVisible, setReauthDialogVisible] = useState(false);
+  const [reauthSuccessDialogVisible, setReauthSuccessDialogVisible] =
     useState(false);
-  const [logoutDialogVisble, setLogoutDialogVisble] = useState(false);
+  const [logoutDialogVisible, setLogoutDialogVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
     null
@@ -102,7 +103,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
       return;
     }
 
-    // Give buffer time for spinner to disapear
+    // Give buffer time for spinner to disappear
     setTimeout(dispatchAction, 100);
     setDispatchAction(null);
   }, [dispatchAction, loading]);
@@ -225,7 +226,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
   const onDisableBiometric = useCallback(() => {
     async function disableBiometric() {
-      setDisableBiometricDialogVisble(false);
+      setDisableBiometricDialogVisible(false);
       setLoading(true);
       try {
         await authgear.disableBiometric();
@@ -262,7 +263,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
   const onReauthenticate = useCallback(() => {
     async function reauth() {
-      setReauthDialogVisble(false);
+      setReauthDialogVisible(false);
       setLoading(true);
       try {
         await authgear.refreshIDToken();
@@ -281,7 +282,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
           biometricOptions
         );
         setUserInfo(result.userInfo);
-        setReauthSuccessDialogVisble(true);
+        setReauthSuccessDialogVisible(true);
       } finally {
         setLoading(false);
       }
@@ -294,7 +295,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
   const onLogout = useCallback(() => {
     async function logout() {
-      setLogoutDialogVisble(false);
+      setLogoutDialogVisible(false);
       setLoading(true);
       try {
         await authgear.logout();
@@ -322,7 +323,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
       <Portal>
         <Dialog
-          visible={infoDialogVisble}
+          visible={infoDialogVisible}
           onDismiss={() => setInfoDialogVisible(false)}
         >
           <Dialog.Title>Configuration</Dialog.Title>
@@ -358,8 +359,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
       <Portal>
         <Dialog
-          visible={authTimeDialogVisble}
-          onDismiss={() => setAuthTimeDialogVisble(false)}
+          visible={authTimeDialogVisible}
+          onDismiss={() => setAuthTimeDialogVisible(false)}
         >
           <Dialog.Title>Auth Time</Dialog.Title>
           <Dialog.Content>
@@ -368,7 +369,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setAuthTimeDialogVisble(false)}>
+            <Button onPress={() => setAuthTimeDialogVisible(false)}>
               Dismiss
             </Button>
           </Dialog.Actions>
@@ -377,8 +378,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
       <Portal>
         <Dialog
-          visible={logoutDialogVisble}
-          onDismiss={() => setLogoutDialogVisble(false)}
+          visible={logoutDialogVisible}
+          onDismiss={() => setLogoutDialogVisible(false)}
         >
           <Dialog.Title>Logout?</Dialog.Title>
           <Dialog.Content>
@@ -387,7 +388,9 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setLogoutDialogVisble(false)}>Cancel</Button>
+            <Button onPress={() => setLogoutDialogVisible(false)}>
+              Cancel
+            </Button>
             <Button onPress={onLogout}>Logout</Button>
           </Dialog.Actions>
         </Dialog>
@@ -395,8 +398,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
       <Portal>
         <Dialog
-          visible={reauthDialogVisble}
-          onDismiss={() => setReauthDialogVisble(false)}
+          visible={reauthDialogVisible}
+          onDismiss={() => setReauthDialogVisible(false)}
         >
           <Dialog.Title>Reauthenticate user?</Dialog.Title>
           <Dialog.Content>
@@ -406,7 +409,9 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setReauthDialogVisble(false)}>Cancel</Button>
+            <Button onPress={() => setReauthDialogVisible(false)}>
+              Cancel
+            </Button>
             <Button onPress={onReauthenticate}>Re-auth</Button>
           </Dialog.Actions>
         </Dialog>
@@ -414,8 +419,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
       <Portal>
         <Dialog
-          visible={reauthSuccessDialogVisble}
-          onDismiss={() => setReauthSuccessDialogVisble(false)}
+          visible={reauthSuccessDialogVisible}
+          onDismiss={() => setReauthSuccessDialogVisible(false)}
         >
           <Dialog.Title>Reauth success</Dialog.Title>
           <Dialog.Content>
@@ -424,7 +429,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setReauthSuccessDialogVisble(false)}>
+            <Button onPress={() => setReauthSuccessDialogVisible(false)}>
               Dismiss
             </Button>
           </Dialog.Actions>
@@ -433,8 +438,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
       <Portal>
         <Dialog
-          visible={disableBiometricDialogVisble}
-          onDismiss={() => setDisableBiometricDialogVisble(false)}
+          visible={disableBiometricDialogVisible}
+          onDismiss={() => setDisableBiometricDialogVisible(false)}
         >
           <Dialog.Title>Disable Biometric Login?</Dialog.Title>
           <Dialog.Content>
@@ -443,7 +448,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setDisableBiometricDialogVisble(false)}>
+            <Button onPress={() => setDisableBiometricDialogVisible(false)}>
               Cancel
             </Button>
             <Button onPress={onDisableBiometric}>Disable</Button>
@@ -491,7 +496,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
                 contentStyle={styles.buttonContent}
                 onPress={
                   user.isBiometricEnabled
-                    ? () => setDisableBiometricDialogVisble(true)
+                    ? () => setDisableBiometricDialogVisible(true)
                     : onPressEnableBiometricButton
                 }
               >
@@ -506,7 +511,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
                 compact={true}
                 uppercase={false}
                 contentStyle={styles.buttonContent}
-                onPress={() => setReauthDialogVisble(true)}
+                onPress={() => setReauthDialogVisible(true)}
               >
                 <Text style={styles.contentText}>Reauthenticate</Text>
               </Button>
@@ -517,7 +522,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
             compact={true}
             uppercase={false}
             contentStyle={styles.buttonContent}
-            onPress={() => setAuthTimeDialogVisble(true)}
+            onPress={() => setAuthTimeDialogVisible(true)}
           >
             <Text style={styles.contentText}>Show Auth Time</Text>
           </Button>
@@ -539,7 +544,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
             compact={true}
             uppercase={false}
             contentStyle={styles.buttonContent}
-            onPress={() => setLogoutDialogVisble(true)}
+            onPress={() => setLogoutDialogVisible(true)}
           >
             <Text style={{ ...styles.contentText, color: theme.colors.error }}>
               Logout

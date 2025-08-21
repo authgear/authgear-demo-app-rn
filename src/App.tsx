@@ -9,8 +9,8 @@ import {
   DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
 import {
-  DarkTheme as PaperDarkTheme,
-  DefaultTheme as PaperDefaultTheme,
+  MD2DarkTheme as PaperDarkTheme,
+  MD2LightTheme as PaperDefaultTheme,
   Provider as PaperProvider,
 } from 'react-native-paper';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';

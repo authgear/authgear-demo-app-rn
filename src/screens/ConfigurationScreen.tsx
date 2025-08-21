@@ -17,6 +17,7 @@ import {
   Divider,
   Portal,
   Dialog,
+  MD2Theme,
 } from 'react-native-paper';
 import { ColorScheme } from '@authgear/react-native';
 import RadioGroup, { RadioGroupItemProps } from '../RadioGroup';
@@ -124,7 +125,7 @@ function useCorrectedColorScheme(): ColorScheme | undefined {
 }
 
 const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
-  const theme = useTheme();
+  const theme = useTheme<MD2Theme>();
   const navigation = props.navigation;
   const fromButton = props.route.params?.fromButton;
 
