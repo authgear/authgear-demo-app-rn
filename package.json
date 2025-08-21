@@ -15,6 +15,7 @@
     "@authgear/react-native": "^2.15.0",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-clipboard/clipboard": "^1.16.3",
+    "@react-native-vector-icons/material-design-icons": "^12.3.0",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
     "react": "18.3.1",
@@ -22,7 +23,6 @@
     "react-native-paper": "^5.14.5",
     "react-native-safe-area-context": "^5.6.1",
     "react-native-screens": "^3.37.0",
-    "react-native-vector-icons": "^10.2.0",
     "react-native-webview": "^13.15.0"
   },
   "devDependencies": {
