@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
-import { useTheme, Button, Text, IconButton } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  useTheme,
+  Button,
+  Text,
+  IconButton,
+  MD2Theme,
+} from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   biometricOptions,
@@ -64,7 +71,7 @@ type AuthenticationScreenProps = NativeStackScreenProps<
 >;
 
 const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
-  const theme = useTheme();
+  const theme = useTheme<MD2Theme>();
   const navigation = props.navigation;
 
   const config = useConfig();
@@ -92,7 +99,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
     if (dispatchAction == null) {
       return;
     }
-    // Give buffer time for spinner to disapear
+    // Give buffer time for spinner to disappear
     setTimeout(dispatchAction, 100);
     setDispatchAction(null);
   }, [dispatchAction, loading]);

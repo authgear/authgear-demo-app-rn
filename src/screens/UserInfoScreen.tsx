@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
   Appbar,
   Divider,
+  MD2Theme,
   Portal,
   Snackbar,
   Text,
@@ -40,19 +41,19 @@ interface UserInfoItemProps {
 }
 
 const UserInfoItem: React.FC<UserInfoItemProps> = (props) => {
-  const theme = useTheme();
+  const theme = useTheme<MD2Theme>();
   const label = props.label;
   const value = props.value ?? '';
 
-  const [snackBarVisible, setSnackBarVisble] = useState(false);
+  const [snackBarVisible, setSnackBarVisible] = useState(false);
 
   const hideSnackBar = useCallback(() => {
-    setSnackBarVisble(false);
+    setSnackBarVisible(false);
   }, []);
 
   const copyItemValue = useCallback(() => {
     Clipboard.setString(label + ': ' + value);
-    setSnackBarVisble(true);
+    setSnackBarVisible(true);
   }, [label, value]);
 
   return (
