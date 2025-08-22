@@ -4,10 +4,10 @@ import {
   View,
   useColorScheme,
   Alert,
-  SafeAreaView,
   ScrollView,
   Pressable,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   useTheme,
   Button,
