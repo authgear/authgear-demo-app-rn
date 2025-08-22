@@ -4,7 +4,10 @@ buildscript {
         minSdkVersion = 24
         compileSdkVersion = 35
         targetSdkVersion = 35
-        ndkVersion = "27.1.12297006"
+        // Use the 27.x NDK available on the GitHub runner image.
+        // 27 is determined by the version of react-native.
+        // See https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md
+        ndkVersion = "27.3.13750724"
         kotlinVersion = "2.0.21"
     }
     repositories {
