@@ -93,7 +93,14 @@ const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
             : new PersistentTokenStorage(),
           isSSOEnabled: content.shareSessionWithSystemBrowser,
           uiImplementation: content.useWebkitWebView
-            ? new WebKitWebViewUIImplementation()
+            ? new WebKitWebViewUIImplementation({
+                ios: {
+                  navigationBarButtonTintColor: 0xff000000,
+                },
+                android: {
+                  actionBarButtonTintColor: 0xff000000,
+                },
+              })
             : undefined,
         });
         await AsyncStorage.setItem('config', JSON.stringify(content));
