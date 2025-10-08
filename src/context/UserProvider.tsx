@@ -54,8 +54,6 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     onSessionStateChange: (container) => {
       updateState(container);
     },
-
-    sendWechatAuthRequest: () => {},
   };
 
   return (
