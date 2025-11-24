@@ -37,7 +37,7 @@ export interface Config {
   explicitColorScheme: ColorScheme | null;
   useTransientTokenStorage: boolean;
   shareSessionWithSystemBrowser: boolean;
-  useWebkitWebView?: boolean;
+  useWebkitWebView: boolean;
 }
 
 export const defaultConfig: Config = {
