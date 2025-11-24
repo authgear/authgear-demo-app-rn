@@ -148,6 +148,12 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
   const [useWebkitWebView, setUseWebkitWebView] = useState<boolean>(
     config.content?.useWebkitWebView ?? false
   );
+  const [
+    allowFallbackToPasscodeInBiometric,
+    setAllowFallbackToPasscodeInBiometric,
+  ] = useState<boolean>(
+    config.content?.allowFallbackToPasscodeInBiometric ?? false
+  );
   const [isWebkitWebViewDialogVisible, setIsWebkitWebViewDialogVisible] =
     useState<boolean>(false);
 
@@ -180,6 +186,10 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
     }
   }, [useWebkitWebView]);
 
+  const onPressAllowFallbackToPasscodeInBiometric = useCallback(() => {
+    setAllowFallbackToPasscodeInBiometric(!allowFallbackToPasscodeInBiometric);
+  }, [allowFallbackToPasscodeInBiometric]);
+
   const hideWebkitWebViewDialog = useCallback(() => {
     setIsWebkitWebViewDialogVisible(false);
   }, []);
@@ -198,6 +208,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
       useTransientTokenStorage,
       shareSessionWithSystemBrowser,
       useWebkitWebView,
+      allowFallbackToPasscodeInBiometric,
     };
     config.setContent(newConfig);
 
@@ -217,6 +228,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
     shareSessionWithSystemBrowser,
     useTransientTokenStorage,
     useWebkitWebView,
+    allowFallbackToPasscodeInBiometric,
   ]);
 
   const onCancelButtonClick = useCallback(() => {
@@ -348,6 +360,18 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
               color={theme.colors.primary}
               value={useWebkitWebView}
               onValueChange={onPressUseWebkitWebView}
+            />
+          </View>
+        </Pressable>
+        <Divider />
+
+        <Pressable onPress={onPressAllowFallbackToPasscodeInBiometric}>
+          <View style={styles.switch}>
+            <Text style={styles.labelText}>Allow passcode in biometric</Text>
+            <Switch
+              color={theme.colors.primary}
+              value={allowFallbackToPasscodeInBiometric}
+              onValueChange={onPressAllowFallbackToPasscodeInBiometric}
             />
           </View>
         </Pressable>
