@@ -26,7 +26,7 @@ import {
   BiometricOptions,
   BiometricAccessConstraintIOS,
   BiometricLAPolicy,
-  BiometricAccessConstraintAndroid,
+  BiometricAuthenticatorAndroid,
 } from '@authgear/react-native';
 
 export type RootStackParamList = {
@@ -55,7 +55,12 @@ export const biometricOptions: BiometricOptions = {
     subtitle: 'Biometric authentication',
     description: 'Use biometric to authenticate',
     negativeButtonText: 'Cancel',
-    constraint: [BiometricAccessConstraintAndroid.BiometricStrong],
+    allowedAuthenticatorsOnEnable: [
+      BiometricAuthenticatorAndroid.BiometricStrong,
+    ],
+    allowedAuthenticatorsOnAuthenticate: [
+      BiometricAuthenticatorAndroid.BiometricStrong,
+    ],
     invalidatedByBiometricEnrollment: true,
   },
 };
