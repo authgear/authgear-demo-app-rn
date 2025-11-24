@@ -10,7 +10,7 @@ import {
 } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
-  biometricOptions,
+  getBiometricOptions,
   redirectURI,
   RootStackParamList,
   wechatRedirectURI,
@@ -146,6 +146,12 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
     async function biometricLogin() {
       setLoading(true);
       try {
+        const biometricOptions = getBiometricOptions({
+          forEnableBiometric: false,
+          allowFallbackToPasscode:
+            config.content?.allowFallbackToPasscodeInBiometric ?? false,
+        });
+
         const { userInfo } = await authgear.authenticateBiometric(
           biometricOptions
         );
@@ -160,7 +166,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
     biometricLogin().catch((e) => {
       ShowError(e);
     });
-  }, [navigation]);
+  }, [config.content?.allowFallbackToPasscodeInBiometric, navigation]);
 
   const onPressGuestLoginButton = useCallback(() => {
     async function guestLogin() {

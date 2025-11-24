@@ -44,26 +44,47 @@ export const wechatRedirectURI = Platform.select<string>({
   ios: 'https://authgear-demo-rn.pandawork.com/authgear/open_wechat_app',
 });
 
-export const biometricOptions: BiometricOptions = {
-  ios: {
-    localizedReason: 'Use biometric to authenticate',
-    constraint: BiometricAccessConstraintIOS.BiometryCurrentSet,
-    policy: BiometricLAPolicy.deviceOwnerAuthenticationWithBiometrics,
-  },
-  android: {
-    title: 'Biometric Authentication',
-    subtitle: 'Biometric authentication',
-    description: 'Use biometric to authenticate',
-    negativeButtonText: 'Cancel',
-    allowedAuthenticatorsOnEnable: [
-      BiometricAuthenticatorAndroid.BiometricStrong,
-    ],
-    allowedAuthenticatorsOnAuthenticate: [
-      BiometricAuthenticatorAndroid.BiometricStrong,
-    ],
-    invalidatedByBiometricEnrollment: true,
-  },
-};
+export function getBiometricOptions(opts: {
+  forEnableBiometric: boolean;
+  allowFallbackToPasscode: boolean;
+}): BiometricOptions {
+  const { forEnableBiometric, allowFallbackToPasscode } = opts;
+
+  return {
+    ios: {
+      localizedReason: 'Use biometric to authenticate',
+      // When passcode is allowed, allow passcode AND do not invalidate biometric.
+      constraint: allowFallbackToPasscode
+        ? BiometricAccessConstraintIOS.UserPresence
+        : BiometricAccessConstraintIOS.BiometryCurrentSet,
+      // Always require biometric when enable.
+      policy: forEnableBiometric
+        ? BiometricLAPolicy.deviceOwnerAuthenticationWithBiometrics
+        : allowFallbackToPasscode
+        ? BiometricLAPolicy.deviceOwnerAuthentication
+        : BiometricLAPolicy.deviceOwnerAuthenticationWithBiometrics,
+    },
+    android: {
+      title: 'Biometric Authentication',
+      subtitle: 'Biometric authentication',
+      description: 'Use biometric to authenticate',
+      negativeButtonText: 'Cancel',
+      // Always require biometric when enable.
+      allowedAuthenticatorsOnEnable: [
+        BiometricAuthenticatorAndroid.BiometricStrong,
+      ],
+      // When passcode is allowed, allow passcode.
+      allowedAuthenticatorsOnAuthenticate: allowFallbackToPasscode
+        ? [
+            BiometricAuthenticatorAndroid.BiometricStrong,
+            BiometricAuthenticatorAndroid.DeviceCredential,
+          ]
+        : [BiometricAuthenticatorAndroid.BiometricStrong],
+      // When passcode is allowed, do not invalid biometric.
+      invalidatedByBiometricEnrollment: allowFallbackToPasscode ? false : true,
+    },
+  };
+}
 
 const CombinedDefaultTheme = {
   ...PaperDefaultTheme,
