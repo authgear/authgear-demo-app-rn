@@ -294,8 +294,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  benchmark
+  bigdecimal
   cocoapods (~> 1.16)
   fastlane (~> 2.227)
+  logger
+  mutex_m
 
 RUBY VERSION
    ruby 3.3.4p94
