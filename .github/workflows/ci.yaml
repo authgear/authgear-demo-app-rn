@@ -14,9 +14,31 @@ on:
   - cron: "35 9 * * THU"
 
 jobs:
-  react_native_ios:
-    if: ${{ github.repository == 'authgear/authgear-demo-app-rn' }}
+  test:
     runs-on: macos-15
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: "./.tool-versions"
+    - uses: ruby/setup-ruby@v1
+      with:
+        # runs 'bundle install' and caches installed gems automatically
+        bundler-cache: true
+    - run: make npm-ci
+    - run: make typecheck
+      if: ${{ !cancelled() }}
+    - run: make check-format
+      if: ${{ !cancelled() }}
+    - run: make lint
+      if: ${{ !cancelled() }}
+    - run: make test
+      if: ${{ !cancelled() }}
+
+  react_native_ios:
+    if: ${{ github.repository == 'authgear/authgear-demo-app-rn' && github.event_name == 'push' }}
+    runs-on: macos-15
+    needs: ["test"]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -46,8 +68,9 @@ jobs:
       if: ${{ github.ref == 'refs/heads/master' }}
 
   react_native_android:
-    if: ${{ github.repository == 'authgear/authgear-demo-app-rn' }}
+    if: ${{ github.repository == 'authgear/authgear-demo-app-rn' && github.event_name == 'push' }}
     runs-on: macos-15
+    needs: ["test"]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4

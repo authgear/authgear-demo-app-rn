@@ -1,11 +1,12 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
-import { biometricOptions } from '../App';
+import { getBiometricOptions } from '../App';
 import authgear, {
   BiometricNoEnrollmentError,
   ReactNativeContainer,
   SessionState,
 } from '@authgear/react-native';
 import ShowError from '../ShowError';
+import { useConfig } from './ConfigProvider';
 
 interface UserContextProviderValue {
   sessionState: SessionState;
@@ -29,26 +30,36 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   );
   const [isBiometricEnabled, setIsBiometricEnabled] = useState<boolean>(false);
 
-  const updateState = useCallback((container: ReactNativeContainer) => {
-    async function update() {
-      try {
-        await container.checkBiometricSupported(biometricOptions);
-      } finally {
-        const newIsBiometricEnabled = await container.isBiometricEnabled();
-        const newSessionState = container.sessionState;
-        setIsBiometricEnabled(newIsBiometricEnabled);
-        setSessionState(newSessionState);
-      }
-    }
+  const config = useConfig();
 
-    update().catch((e) => {
-      if (e instanceof BiometricNoEnrollmentError) {
-        setIsBiometricEnabled(false);
-        return;
+  const updateState = useCallback(
+    (container: ReactNativeContainer) => {
+      async function update() {
+        try {
+          const biometricOptions = getBiometricOptions({
+            forEnableBiometric: true,
+            allowFallbackToPasscode:
+              config.content?.allowFallbackToPasscodeInBiometric ?? false,
+          });
+          await container.checkBiometricSupported(biometricOptions);
+        } finally {
+          const newIsBiometricEnabled = await container.isBiometricEnabled();
+          const newSessionState = container.sessionState;
+          setIsBiometricEnabled(newIsBiometricEnabled);
+          setSessionState(newSessionState);
+        }
       }
-      ShowError(e);
-    });
-  }, []);
+
+      update().catch((e) => {
+        if (e instanceof BiometricNoEnrollmentError) {
+          setIsBiometricEnabled(false);
+          return;
+        }
+        ShowError(e);
+      });
+    },
+    [config.content?.allowFallbackToPasscodeInBiometric]
+  );
 
   authgear.delegate = {
     onSessionStateChange: (container) => {

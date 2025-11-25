@@ -37,7 +37,8 @@ export interface Config {
   explicitColorScheme: ColorScheme | null;
   useTransientTokenStorage: boolean;
   shareSessionWithSystemBrowser: boolean;
-  useWebkitWebView?: boolean;
+  useWebkitWebView: boolean;
+  allowFallbackToPasscodeInBiometric: boolean;
 }
 
 export const defaultConfig: Config = {
@@ -48,6 +49,7 @@ export const defaultConfig: Config = {
   useTransientTokenStorage: false,
   shareSessionWithSystemBrowser: false,
   useWebkitWebView: false,
+  allowFallbackToPasscodeInBiometric: false,
 };
 
 interface ConfigContextProviderValue {

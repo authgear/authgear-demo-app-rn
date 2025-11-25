@@ -1,23 +1,13 @@
 #import "AppDelegate.h"
 
+#import <RCTAppDelegate.h>
 #import <React/RCTBundleURLProvider.h>
 #import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
 #import <AGAuthgearReactNative.h>
 
-@implementation AppDelegate
+@implementation ReactNativeDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-  self.moduleName = @"AuthgearDemoAppRN";
-  self.dependencyProvider = [RCTAppDependencyProvider new];
-    // You can add your custom initial props in the dictionary below.
-  // They will be passed down to the ViewController used by React Native.
-  self.initialProps = @{};
-
-  return [super application:application didFinishLaunchingWithOptions:launchOptions];
-}
-
-- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
+- (NSURL *_Nullable)sourceURLForBridge:(nonnull RCTBridge *)bridge
 {
   return [self bundleURL];
 }
@@ -29,6 +19,23 @@
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
+}
+
+@end
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+  self.reactNativeDelegate = [ReactNativeDelegate new];
+  self.reactNativeFactory = [[RCTReactNativeFactory alloc] initWithDelegate:self.reactNativeDelegate];
+  self.reactNativeDelegate.dependencyProvider = [RCTAppDependencyProvider new];
+  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  [self.reactNativeFactory startReactNativeWithModuleName:@"AuthgearDemoAppRN"
+                                                 inWindow:self.window
+                                        initialProperties:@{}
+                                            launchOptions:launchOptions];
+  return true;
 }
 
 @end

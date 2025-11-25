@@ -12,7 +12,7 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
-import { biometricOptions, RootStackParamList } from '../App';
+import { getBiometricOptions, RootStackParamList } from '../App';
 import { useConfig } from '../context/ConfigProvider';
 import ShowError from '../ShowError';
 import authgear, { Page, UserInfo } from '@authgear/react-native';
@@ -211,6 +211,12 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     async function enableBiometric() {
       setLoading(true);
       try {
+        const biometricOptions = getBiometricOptions({
+          forEnableBiometric: true,
+          allowFallbackToPasscode:
+            config.content?.allowFallbackToPasscodeInBiometric ?? false,
+        });
+
         await authgear.checkBiometricSupported(biometricOptions);
         await authgear.enableBiometric(biometricOptions);
       } finally {
@@ -222,7 +228,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     enableBiometric().catch((e) => {
       ShowError(e);
     });
-  }, [user]);
+  }, [config.content?.allowFallbackToPasscodeInBiometric, user]);
 
   const onDisableBiometric = useCallback(() => {
     async function disableBiometric() {
@@ -273,6 +279,12 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
           );
         }
 
+        const biometricOptions = getBiometricOptions({
+          forEnableBiometric: false,
+          allowFallbackToPasscode:
+            config.content?.allowFallbackToPasscodeInBiometric ?? false,
+        });
+
         const result = await authgear.reauthenticate(
           {
             redirectURI,
@@ -291,7 +303,10 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     reauth().catch((e) => {
       ShowError(e);
     });
-  }, [config.content?.colorScheme, setUserInfo]);
+  }, [
+    config.content?.allowFallbackToPasscodeInBiometric,
+    config.content?.colorScheme,
+  ]);
 
   const onLogout = useCallback(() => {
     async function logout() {

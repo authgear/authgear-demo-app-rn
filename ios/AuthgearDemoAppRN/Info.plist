@@ -47,7 +47,9 @@
 	<key>NSFaceIDUsageDescription</key>
 	<string>Use Face ID to authenticate</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
+	<key>RCTNewArchEnabled</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>MaterialDesignIcons.ttf</string>

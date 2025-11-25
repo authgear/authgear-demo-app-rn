@@ -4,3 +4,8 @@ ruby "~> 3.3"
 
 gem "cocoapods", "~> 1.16"
 gem "fastlane", "~> 2.227"
+
+gem "bigdecimal"
+gem "logger"
+gem "benchmark"
+gem "mutex_m"
