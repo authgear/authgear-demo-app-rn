@@ -9,7 +9,8 @@
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write --list-different \"src/**/*.{js,jsx,ts,tsx}\"",
+    "prettier:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
+    "prettier:format": "prettier --write --list-different \"src/**/*.{js,jsx,ts,tsx}\"",
     "react-native-screens": "react-native-screens >= 4.14 requires react-native >= 0.79. See https://github.com/software-mansion/react-native-screens?tab=readme-ov-file#support-for-fabric"
   },
   "dependencies": {

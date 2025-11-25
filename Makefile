@@ -2,6 +2,26 @@
 npm-ci:
 	npm ci
 
+.PHONY: typecheck
+typecheck:
+	npm run typecheck
+
+.PHONY: check-format
+check-format:
+	npm run prettier:check
+
+.PHONY: format
+format:
+	npm run prettier:format
+
+.PHONY: lint
+lint:
+	npm run lint
+
+.PHONY: test
+test:
+	npm run test
+
 .PHONY: pod-install
 pod-install:
 	cd ./ios; bundle exec pod install
