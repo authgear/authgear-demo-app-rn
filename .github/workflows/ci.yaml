@@ -36,7 +36,7 @@ jobs:
       if: ${{ !cancelled() }}
 
   react_native_ios:
-    if: ${{ github.repository == 'authgear/authgear-demo-app-rn' && github.event_name == 'push' }}
+    if: ${{ github.repository == 'authgear/authgear-demo-app-rn' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
     runs-on: macos-15
     needs: ["test"]
     steps:
@@ -68,7 +68,7 @@ jobs:
       if: ${{ github.ref == 'refs/heads/master' }}
 
   react_native_android:
-    if: ${{ github.repository == 'authgear/authgear-demo-app-rn' && github.event_name == 'push' }}
+    if: ${{ github.repository == 'authgear/authgear-demo-app-rn' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
     runs-on: macos-15
     needs: ["test"]
     steps:
