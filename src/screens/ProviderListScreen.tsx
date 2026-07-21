@@ -6,7 +6,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import { useProviders } from '../context/ProvidersProvider';
 import { isAuthgearProvider, Provider } from '../providers/types';
-import { AUTHGEAR_DEMO_PROVIDER_ID } from '../providers/store';
 import LoadingSpinner from '../LoadingSpinner';
 
 const styles = StyleSheet.create({
@@ -48,11 +47,7 @@ const ProviderListScreen: React.FC<Props> = ({ navigation }) => {
                 <List.Icon
                   {...props}
                   icon={
-                    p.id === AUTHGEAR_DEMO_PROVIDER_ID
-                      ? 'star'
-                      : isAuthgearProvider(p)
-                      ? 'shield-account'
-                      : 'key-variant'
+                    isAuthgearProvider(p) ? 'shield-account' : 'key-variant'
                   }
                 />
               )}
