@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Appbar,
   Button,
+  Chip,
   TextInput,
   SegmentedButtons,
   Switch,
@@ -28,6 +29,7 @@ import { randomId } from '../util/id';
 import { parseScopes, serializeScopes } from '../util/scopes';
 import { OIDC_REDIRECT_URL } from '../engines/oidc';
 import ShowError from '../ShowError';
+import { providerPresets, ProviderPreset } from '../providers/presets';
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
@@ -45,6 +47,14 @@ const styles = StyleSheet.create({
   hint: { fontSize: 12 },
   saveButton: { marginTop: 24 },
   deleteButton: { marginTop: 12 },
+  presetLabel: { marginTop: 8, marginBottom: 4 },
+  presetRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 8,
+  },
+  presetChip: { marginRight: 8, marginBottom: 8 },
 });
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddEditProvider'>;
@@ -145,6 +155,14 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
       .catch((e) => ShowError(e));
   };
 
+  const applyPreset = (preset: ProviderPreset) => {
+    if (name.trim() === '') {
+      setName(preset.label);
+    }
+    setIssuer(preset.issuerTemplate);
+    setScopesText(serializeScopes(preset.defaultScopes));
+  };
+
   const onDelete = () => {
     if (editingId == null) {
       return;
@@ -231,6 +249,29 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
           </>
         ) : (
           <>
+            {existing == null ? (
+              <>
+                <Text
+                  style={{
+                    ...styles.presetLabel,
+                    color: theme.colors.disabled,
+                  }}
+                >
+                  Start from a preset:
+                </Text>
+                <View style={styles.presetRow}>
+                  {providerPresets.map((preset) => (
+                    <Chip
+                      key={preset.key}
+                      style={styles.presetChip}
+                      onPress={() => applyPreset(preset)}
+                    >
+                      {preset.label}
+                    </Chip>
+                  ))}
+                </View>
+              </>
+            ) : null}
             <TextInput
               style={styles.field}
               mode="outlined"
