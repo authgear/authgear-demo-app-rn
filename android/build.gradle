@@ -1,8 +1,10 @@
 buildscript {
     ext {
-        buildToolsVersion = "35.0.0"
+        buildToolsVersion = "36.0.0"
         minSdkVersion = 24
-        compileSdkVersion = 35
+        // compileSdk 36 is required by androidx.browser:1.9.0, pulled in via
+        // react-native-app-auth. targetSdk stays at 35 (no behavior change).
+        compileSdkVersion = 36
         targetSdkVersion = 35
         // Use the 27.x NDK available on the GitHub runner image.
         // 27 is determined by the version of react-native.
