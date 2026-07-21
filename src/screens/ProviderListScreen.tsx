@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Appbar, List, Button, Divider } from 'react-native-paper';
+import { Appbar, List, Button, Divider, IconButton } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import { useProviders } from '../context/ProvidersProvider';
@@ -56,7 +56,9 @@ const ProviderListScreen: React.FC<Props> = ({ navigation }) => {
                   }
                 />
               )}
-              right={(props) => <List.Icon {...props} icon="pencil" />}
+              right={() => (
+                <IconButton icon="pencil" onPress={() => editProvider(p)} />
+              )}
               onPress={() => openProvider(p)}
               onLongPress={() => editProvider(p)}
             />
