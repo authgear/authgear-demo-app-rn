@@ -34,7 +34,10 @@ const ProviderListScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <Appbar.Header>
-        <Appbar.Content title="Authgear Tools" />
+        <Appbar.Content
+          title="Authgear Tools"
+          subtitle="OIDC integration tester"
+        />
       </Appbar.Header>
       <LoadingSpinner loading={loading} />
       <ScrollView style={styles.list}>
