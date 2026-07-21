@@ -18,6 +18,7 @@ import ProviderListScreen from './screens/ProviderListScreen';
 import AddEditProviderScreen from './screens/AddEditProviderScreen';
 import AuthenticationScreen from './screens/AuthenticationScreen';
 import OIDCResultScreen from './screens/OIDCResultScreen';
+import OIDCDiscoveryScreen from './screens/OIDCDiscoveryScreen';
 import UserPanelScreen from './screens/UserPanelScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
 import ProvidersProvider from './context/ProvidersProvider';
@@ -36,6 +37,7 @@ export type RootStackParamList = {
   AddEditProvider: { providerId?: string } | undefined;
   AuthgearLogin: { providerId: string };
   OIDCResult: { providerId: string };
+  OIDCDiscovery: { providerId: string };
   UserPanel: { userInfo: UserInfo | null } | undefined;
   UserInfo: { userInfo: UserInfo | null } | undefined;
 };
@@ -144,6 +146,10 @@ const App: React.FC = () => {
                 component={AuthenticationScreen}
               />
               <Stack.Screen name="OIDCResult" component={OIDCResultScreen} />
+              <Stack.Screen
+                name="OIDCDiscovery"
+                component={OIDCDiscoveryScreen}
+              />
               <Stack.Screen name="UserPanel" component={UserPanelScreen} />
               <Stack.Screen name="UserInfo" component={UserInfoScreen} />
             </Stack.Navigator>

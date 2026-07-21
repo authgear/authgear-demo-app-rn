@@ -42,16 +42,30 @@ export async function oidcEndSession(
   });
 }
 
+export async function getDiscovery(
+  issuer: string
+): Promise<Record<string, unknown>> {
+  const base = issuer.replace(/\/+$/, '');
+  const res = await fetch(`${base}/.well-known/openid-configuration`);
+  if (!res.ok) {
+    throw new Error(`Discovery failed: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function fetchDiscovery(
+  provider: OIDCProvider
+): Promise<Record<string, unknown>> {
+  return getDiscovery(provider.issuer);
+}
+
 export async function fetchUserInfo(
   provider: OIDCProvider,
   accessToken: string
 ): Promise<Record<string, unknown>> {
-  const base = provider.issuer.replace(/\/$/, '');
-  const wellKnown = await fetch(`${base}/.well-known/openid-configuration`);
-  if (!wellKnown.ok) {
-    throw new Error(`Discovery failed: HTTP ${wellKnown.status}`);
-  }
-  const doc = (await wellKnown.json()) as { userinfo_endpoint?: string };
+  const doc = (await getDiscovery(provider.issuer)) as {
+    userinfo_endpoint?: string;
+  };
   if (doc.userinfo_endpoint == null) {
     throw new Error('Provider has no userinfo_endpoint');
   }

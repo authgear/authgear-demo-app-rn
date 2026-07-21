@@ -176,6 +176,18 @@ const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
           </Text>
         ) : null}
 
+        <Button
+          mode="text"
+          style={styles.loginButton}
+          onPress={() =>
+            navigation.navigate('OIDCDiscovery', {
+              providerId: route.params.providerId,
+            })
+          }
+        >
+          View discovery document
+        </Button>
+
         {tokens == null ? (
           <Button
             mode="contained"
