@@ -13,7 +13,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import { getBiometricOptions, RootStackParamList } from '../App';
-import { useConfig } from '../context/ConfigProvider';
+import { useProviders } from '../context/ProvidersProvider';
 import ShowError from '../ShowError';
 import authgear, { Page, UserInfo } from '@authgear/react-native';
 import LoadingSpinner from '../LoadingSpinner';
@@ -58,7 +58,7 @@ type UserPanelScreenProps = NativeStackScreenProps<
 const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
   const navigation = props.navigation;
   const theme = useTheme<MD2Theme>();
-  const config = useConfig();
+  const { activeAuthgearProvider } = useProviders();
   const user = useUser();
 
   const [infoDialogVisible, setInfoDialogVisible] = useState(false);
@@ -79,7 +79,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
   useEffect(() => {
     if (user.sessionState !== 'AUTHENTICATED') {
-      setDispatchAction(() => () => navigation.replace('Authentication'));
+      setDispatchAction(() => () => navigation.replace('ProviderList'));
     }
   }, [navigation, user.sessionState]);
 
@@ -112,7 +112,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     if (userInfo == null) {
       updateUserInfo().catch((e) => {
         ShowError(e);
-        setDispatchAction(() => () => navigation.replace('Authentication'));
+        setDispatchAction(() => () => navigation.replace('ProviderList'));
       });
     }
   }, [navigation, updateUserInfo, userInfo]);
@@ -179,7 +179,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
 
     navigateToUserInfoScreen().catch((e) => {
       ShowError(e);
-      setDispatchAction(() => () => navigation.replace('Authentication'));
+      setDispatchAction(() => () => navigation.replace('ProviderList'));
     });
   }, [navigation, updateUserInfo]);
 
@@ -188,7 +188,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
       setLoading(true);
       try {
         await authgear.open(Page.Settings, {
-          colorScheme: config.content?.colorScheme,
+          colorScheme: activeAuthgearProvider?.explicitColorScheme ?? undefined,
           wechatRedirectURI,
         });
       } finally {
@@ -205,7 +205,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     userSettings().catch((e) => {
       ShowError(e);
     });
-  }, [config.content?.colorScheme, updateUserInfo]);
+  }, [activeAuthgearProvider?.explicitColorScheme, updateUserInfo]);
 
   const onPressEnableBiometricButton = useCallback(() => {
     async function enableBiometric() {
@@ -214,7 +214,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
         const biometricOptions = getBiometricOptions({
           forEnableBiometric: true,
           allowFallbackToPasscode:
-            config.content?.allowFallbackToPasscodeInBiometric ?? false,
+            activeAuthgearProvider?.allowFallbackToPasscodeInBiometric ?? false,
         });
 
         await authgear.checkBiometricSupported(biometricOptions);
@@ -228,7 +228,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     enableBiometric().catch((e) => {
       ShowError(e);
     });
-  }, [config.content?.allowFallbackToPasscodeInBiometric, user]);
+  }, [activeAuthgearProvider?.allowFallbackToPasscodeInBiometric, user]);
 
   const onDisableBiometric = useCallback(() => {
     async function disableBiometric() {
@@ -254,7 +254,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
         const result = await authgear.promoteAnonymousUser({
           redirectURI,
           wechatRedirectURI,
-          colorScheme: config.content?.colorScheme,
+          colorScheme: activeAuthgearProvider?.explicitColorScheme ?? undefined,
         });
         setUserInfo(result.userInfo);
       } finally {
@@ -265,7 +265,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     promoteUser().catch((e) => {
       ShowError(e);
     });
-  }, [config.content?.colorScheme, setUserInfo]);
+  }, [activeAuthgearProvider?.explicitColorScheme, setUserInfo]);
 
   const onReauthenticate = useCallback(() => {
     async function reauth() {
@@ -282,13 +282,14 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
         const biometricOptions = getBiometricOptions({
           forEnableBiometric: false,
           allowFallbackToPasscode:
-            config.content?.allowFallbackToPasscodeInBiometric ?? false,
+            activeAuthgearProvider?.allowFallbackToPasscodeInBiometric ?? false,
         });
 
         const result = await authgear.reauthenticate(
           {
             redirectURI,
-            colorScheme: config.content?.colorScheme,
+            colorScheme:
+              activeAuthgearProvider?.explicitColorScheme ?? undefined,
             wechatRedirectURI,
           },
           biometricOptions
@@ -304,8 +305,8 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
       ShowError(e);
     });
   }, [
-    config.content?.allowFallbackToPasscodeInBiometric,
-    config.content?.colorScheme,
+    activeAuthgearProvider?.allowFallbackToPasscodeInBiometric,
+    activeAuthgearProvider?.explicitColorScheme,
   ]);
 
   const onLogout = useCallback(() => {
@@ -344,26 +345,26 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
           <Dialog.Title>Configuration</Dialog.Title>
           <Dialog.Content>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Endpoint: {config.content?.endpoint}
+              Endpoint: {activeAuthgearProvider?.endpoint}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Client ID: {config.content?.clientID}
+              Client ID: {activeAuthgearProvider?.clientID}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               AUTHUI Color Scheme:{' '}
-              {config.content?.explicitColorScheme ?? 'System'}
+              {activeAuthgearProvider?.explicitColorScheme ?? 'System'}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               Logout upon app quit (Transient TokenStorage):{' '}
-              {config.content?.useTransientTokenStorage.toString()}
+              {activeAuthgearProvider?.useTransientTokenStorage.toString()}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               Share Session with Device Browser (Enable SSO):{' '}
-              {config.content?.shareSessionWithSystemBrowser.toString()}
+              {activeAuthgearProvider?.shareSessionWithSystemBrowser.toString()}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
               Webkit Webview:{' '}
-              {config.content?.useWebkitWebView?.toString() ?? 'false'}
+              {activeAuthgearProvider?.useWebkitWebView?.toString() ?? 'false'}
             </Text>
           </Dialog.Content>
           <Dialog.Actions>

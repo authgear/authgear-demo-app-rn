@@ -1,13 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  useTheme,
-  Button,
-  Text,
-  IconButton,
-  MD2Theme,
-} from 'react-native-paper';
+import { useTheme, Button, Text, Appbar, MD2Theme } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   getBiometricOptions,
@@ -15,98 +9,64 @@ import {
   RootStackParamList,
   wechatRedirectURI,
 } from '../App';
-import { useConfig } from '../context/ConfigProvider';
+import { useProviders } from '../context/ProvidersProvider';
+import { isAuthgearProvider } from '../providers/types';
 import ShowError from '../ShowError';
 import LoadingSpinner from '../LoadingSpinner';
 import { useUser } from '../context/UserProvider';
 import authgear from '@authgear/react-native';
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
+  safeArea: { flex: 1 },
   root: {
     flex: 1,
     justifyContent: 'space-between',
     paddingLeft: 16,
     paddingRight: 16,
-    paddingTop: 64,
     paddingBottom: 32,
   },
-  headerContainer: {
-    flexDirection: 'row',
-  },
-  titleContainer: {
-    flex: 1,
-  },
-  titleText: {
-    fontSize: 34,
-    fontWeight: '400',
-    lineHeight: 42,
-  },
-  subTitleText: {
-    fontSize: 14,
-    fontWeight: '400',
-    lineHeight: 20,
-  },
-
-  actionButtons: {
-    alignItems: 'center',
-  },
-  button: {
-    marginBottom: 20,
-    width: '100%',
-  },
-  buttonContent: {
-    height: 48,
-  },
-  buttonText: {
-    fontSize: 16,
-  },
+  headerContainer: { flexDirection: 'row', paddingTop: 16 },
+  titleContainer: { flex: 1 },
+  titleText: { fontSize: 34, fontWeight: '400', lineHeight: 42 },
+  subTitleText: { fontSize: 14, fontWeight: '400', lineHeight: 20 },
+  actionButtons: { alignItems: 'center' },
+  button: { marginBottom: 20, width: '100%' },
+  buttonContent: { height: 48 },
+  buttonText: { fontSize: 16 },
 });
 
-type AuthenticationScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  'Authentication'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'AuthgearLogin'>;
 
-const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
+const AuthenticationScreen: React.FC<Props> = ({ navigation, route }) => {
   const theme = useTheme<MD2Theme>();
-  const navigation = props.navigation;
-
-  const config = useConfig();
+  const { providers, activateAuthgear, activeAuthgearProvider } =
+    useProviders();
   const user = useUser();
+
+  const providerId = route.params.providerId;
+  const provider = providers.find((p) => p.id === providerId);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [dispatchAction, setDispatchAction] = useState<(() => void) | null>(
     null
   );
 
+  // Configure the Authgear SDK for the selected provider on mount.
   useEffect(() => {
-    if (config.loading) {
-      return;
+    if (provider != null && isAuthgearProvider(provider)) {
+      activateAuthgear(provider).catch((e) => ShowError(e));
     }
-
-    if (config.content == null) {
-      navigation.replace('Configuration');
-    }
-  }, [config.content, config.loading, navigation]);
+  }, [provider, activateAuthgear]);
 
   useEffect(() => {
-    if (loading) {
+    if (loading || dispatchAction == null) {
       return;
     }
-    if (dispatchAction == null) {
-      return;
-    }
-    // Give buffer time for spinner to disappear
     setTimeout(dispatchAction, 100);
     setDispatchAction(null);
   }, [dispatchAction, loading]);
 
-  const onPressConfigButton = useCallback(() => {
-    return navigation.navigate('Configuration', { fromButton: true });
-  }, [navigation]);
+  const colorScheme = activeAuthgearProvider?.explicitColorScheme ?? undefined;
 
   const authenticate = useCallback(
     (page: string) => {
@@ -117,44 +77,36 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
             redirectURI,
             wechatRedirectURI,
             page,
-            colorScheme: config.content?.colorScheme,
+            colorScheme,
           });
-          setDispatchAction(() => () => {
-            navigation.replace('UserPanel', { userInfo });
-          });
+          setDispatchAction(
+            () => () => navigation.replace('UserPanel', { userInfo })
+          );
         } finally {
           setLoading(false);
         }
       }
-
-      auth().catch((e) => {
-        ShowError(e);
-      });
+      auth().catch((e) => ShowError(e));
     },
-    [config.content?.colorScheme, navigation]
+    [colorScheme, navigation]
   );
 
-  const onPressSignupButton = useCallback(() => {
-    authenticate('signup');
-  }, [authenticate]);
+  const onPressSignup = useCallback(
+    () => authenticate('signup'),
+    [authenticate]
+  );
+  const onPressLogin = useCallback(() => authenticate('login'), [authenticate]);
 
-  const onPressLoginButton = useCallback(() => {
-    authenticate('login');
-  }, [authenticate]);
-
-  const onPressBiometricLoginButton = useCallback(() => {
+  const onPressBiometricLogin = useCallback(() => {
     async function biometricLogin() {
       setLoading(true);
       try {
-        const biometricOptions = getBiometricOptions({
+        const options = getBiometricOptions({
           forEnableBiometric: false,
           allowFallbackToPasscode:
-            config.content?.allowFallbackToPasscodeInBiometric ?? false,
+            activeAuthgearProvider?.allowFallbackToPasscodeInBiometric ?? false,
         });
-
-        const { userInfo } = await authgear.authenticateBiometric(
-          biometricOptions
-        );
+        const { userInfo } = await authgear.authenticateBiometric(options);
         setDispatchAction(
           () => () => navigation.replace('UserPanel', { userInfo })
         );
@@ -162,13 +114,10 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
         setLoading(false);
       }
     }
+    biometricLogin().catch((e) => ShowError(e));
+  }, [activeAuthgearProvider, navigation]);
 
-    biometricLogin().catch((e) => {
-      ShowError(e);
-    });
-  }, [config.content?.allowFallbackToPasscodeInBiometric, navigation]);
-
-  const onPressGuestLoginButton = useCallback(() => {
+  const onPressGuestLogin = useCallback(() => {
     async function guestLogin() {
       setLoading(true);
       try {
@@ -180,26 +129,26 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
         setLoading(false);
       }
     }
-
-    guestLogin().catch((e) => {
-      ShowError(e);
-    });
+    guestLogin().catch((e) => ShowError(e));
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.Content title="Authgear" />
+      </Appbar.Header>
       <View style={styles.root}>
         <LoadingSpinner loading={loading} />
         <View style={styles.headerContainer}>
           <View style={styles.titleContainer}>
-            <Text style={styles.titleText}>Authgear</Text>
+            <Text style={styles.titleText}>{provider?.name ?? 'Authgear'}</Text>
             <Text
               style={{ ...styles.subTitleText, color: theme.colors.disabled }}
             >
-              {config.content?.endpoint}
+              {activeAuthgearProvider?.endpoint ?? ''}
             </Text>
           </View>
-          <IconButton icon="cog-outline" onPress={onPressConfigButton} />
         </View>
         <View style={styles.actionButtons}>
           {user.isBiometricEnabled ? (
@@ -208,7 +157,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
               style={styles.button}
               contentStyle={styles.buttonContent}
               labelStyle={styles.buttonText}
-              onPress={onPressBiometricLoginButton}
+              onPress={onPressBiometricLogin}
             >
               Login with biometric
             </Button>
@@ -218,7 +167,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
             style={styles.button}
             contentStyle={styles.buttonContent}
             labelStyle={styles.buttonText}
-            onPress={onPressSignupButton}
+            onPress={onPressSignup}
           >
             Signup
           </Button>
@@ -227,7 +176,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
             style={styles.button}
             contentStyle={styles.buttonContent}
             labelStyle={styles.buttonText}
-            onPress={onPressLoginButton}
+            onPress={onPressLogin}
           >
             Login
           </Button>
@@ -236,7 +185,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
             style={styles.button}
             contentStyle={styles.buttonContent}
             labelStyle={styles.buttonText}
-            onPress={onPressGuestLoginButton}
+            onPress={onPressGuestLogin}
           >
             Continue as guest
           </Button>
