@@ -25,6 +25,7 @@ import {
 } from '../engines/oidc';
 import { decodeJwt } from '../util/jwt';
 import { isJwt, formatClaimTimestamp, tokenValidity } from '../util/claims';
+import { verifyIdTokenSignature, VerifyResult } from '../engines/jwks';
 import LoadingSpinner from '../LoadingSpinner';
 
 interface TokenState {
@@ -67,6 +68,7 @@ const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
     null
   );
   const [error, setError] = useState<string | null>(null);
+  const [verifyResult, setVerifyResult] = useState<VerifyResult | null>(null);
 
   const claims = useMemo(() => {
     if (tokens == null) {
@@ -118,6 +120,7 @@ const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
         accessTokenExpirationDate: result.accessTokenExpirationDate,
       });
       setUserInfo(null);
+      setVerifyResult(null);
     });
   }, [oidcProvider, run]);
 
@@ -133,6 +136,18 @@ const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
         refreshToken: result.refreshToken ?? tokens.refreshToken,
         accessTokenExpirationDate: result.accessTokenExpirationDate,
       });
+      setVerifyResult(null);
+    });
+  }, [oidcProvider, tokens, run]);
+
+  const onVerify = useCallback(() => {
+    if (oidcProvider == null || tokens == null) {
+      return;
+    }
+    run(async () => {
+      setVerifyResult(
+        await verifyIdTokenSignature(tokens.idToken, oidcProvider.issuer)
+      );
     });
   }, [oidcProvider, tokens, run]);
 
@@ -256,6 +271,31 @@ const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
                         {k}: {renderClaimValue(k, v)}
                       </Text>
                     ))}
+                    <Button
+                      mode="outlined"
+                      style={{ marginTop: 12 }}
+                      onPress={onVerify}
+                    >
+                      Verify signature
+                    </Button>
+                    {verifyResult != null ? (
+                      <Text
+                        style={{
+                          ...styles.claim,
+                          color: verifyResult.verified
+                            ? theme.colors.primary
+                            : theme.colors.error,
+                        }}
+                      >
+                        {verifyResult.error
+                          ? `Error: ${verifyResult.error}`
+                          : verifyResult.verified
+                          ? `✓ Signature valid (${verifyResult.alg}, kid=${
+                              verifyResult.kid ?? 'n/a'
+                            })`
+                          : '✗ Signature invalid'}
+                      </Text>
+                    ) : null}
                   </>
                 )}
               </Card.Content>
