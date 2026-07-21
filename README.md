@@ -1,6 +1,10 @@
 # Authgear React Native Demo App
 
-This app is for demonstrating the usage of functions supportted by @authgear/react-native SDK.
+This app is an OIDC/OAuth integration tester built on React Native. It presents a list of
+providers — a pinned Authgear demo provider showcasing the `@authgear/react-native` SDK,
+plus any generic OIDC providers you add — so you can exercise the full authorization code
+flow (login, tokens, ID-token claims, userinfo, refresh, and logout) against your own
+OIDC-compliant identity provider.
 
 # Initial setup
 
