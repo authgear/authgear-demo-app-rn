@@ -136,7 +136,9 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
       const normalizedIssuer = issuer.trim().replace(/\/+$/, '');
       if (!/^https?:\/\//i.test(normalizedIssuer)) {
         ShowError(
-          new Error('Issuer must be a valid URL starting with https://')
+          new Error(
+            'Issuer must be a valid URL starting with http:// or https://'
+          )
         );
         return;
       }

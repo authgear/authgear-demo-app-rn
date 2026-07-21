@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Appbar, Text, Button, Divider } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
-import appInfo from '../../app.json';
 import pkg from '../../package.json';
 
 const styles = StyleSheet.create({
@@ -68,9 +67,7 @@ const AboutScreen: React.FC<Props> = ({ navigation }) => {
           How OpenID Connect works
         </Button>
 
-        <Text style={styles.version}>
-          Version {appInfo.displayName} • {pkg.version}
-        </Text>
+        <Text style={styles.version}>Authgear Tools • v{pkg.version}</Text>
       </ScrollView>
     </SafeAreaView>
   );

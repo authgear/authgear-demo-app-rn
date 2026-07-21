@@ -1,6 +1,5 @@
 // Throwaway RSA test keypair for JWKS verification tests (NOT a real secret).
 // Generated once so tests never run slow in-JS RSA keygen.
-/* eslint-disable */
 export const TEST_PRIVATE_PEM = `-----BEGIN PRIVATE KEY-----
 MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCx6kkyLIYUhbbw
 75s9JjROwwrAFX+5kKwsv0Gi02yH7AipQtb9ba8h8FGbPmeGizbEiQYZ0ng9dgsb
