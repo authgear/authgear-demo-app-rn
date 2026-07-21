@@ -24,6 +24,10 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = (props) => {
   return (
     <ActivityIndicator
       animating={loading}
+      // The spinner is an absolute, full-screen overlay. When idle it must let
+      // touches pass through, otherwise it swallows taps on anything rendered
+      // before it in the tree (e.g. the Appbar header's back/action buttons).
+      pointerEvents={loading ? 'auto' : 'none'}
       style={loading ? [styles.loading, { zIndex: 1 }] : styles.loading}
     />
   );
