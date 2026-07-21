@@ -74,6 +74,9 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
     existing?.kind ?? 'oidc'
   );
   const [name, setName] = useState<string>(existing?.name ?? '');
+  // Tracks the last preset-provided name so switching presets updates the
+  // display name — unless the user has typed their own custom name.
+  const [presetName, setPresetName] = useState<string | null>(null);
 
   // Authgear fields
   const authgearExisting =
@@ -158,8 +161,10 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const applyPreset = (preset: ProviderPreset) => {
-    if (name.trim() === '') {
+    // Fill the name from the preset unless the user typed a custom one.
+    if (name.trim() === '' || name === presetName) {
       setName(preset.label);
+      setPresetName(preset.label);
     }
     setIssuer(preset.issuerTemplate);
     setScopesText(serializeScopes(preset.defaultScopes));
