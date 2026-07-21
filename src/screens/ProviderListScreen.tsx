@@ -32,7 +32,7 @@ const ProviderListScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={styles.safeArea} edges={['bottom']}>
       <Appbar.Header>
         <Appbar.Content
           title="Authgear Tools"
