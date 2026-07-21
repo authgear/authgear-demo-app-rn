@@ -27,6 +27,7 @@ import {
 import { AUTHGEAR_DEMO_PROVIDER_ID } from '../providers/store';
 import { randomId } from '../util/id';
 import { parseScopes, serializeScopes } from '../util/scopes';
+import { isAutoFilledName } from '../util/displayName';
 import { OIDC_REDIRECT_URL } from '../engines/oidc';
 import ShowError from '../ShowError';
 import { providerPresets, ProviderPreset } from '../providers/presets';
@@ -165,7 +166,7 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
     // Clear an auto-filled preset name when switching tabs so a stale name
     // (e.g. "Okta" left over from the OIDC tab) doesn't linger. A name the
     // user typed themselves is preserved.
-    if (name === presetName) {
+    if (isAutoFilledName(name, presetName)) {
       setName('');
       setPresetName(null);
     }
@@ -173,7 +174,7 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const applyPreset = (preset: ProviderPreset) => {
     // Fill the name from the preset unless the user typed a custom one.
-    if (name.trim() === '' || name === presetName) {
+    if (isAutoFilledName(name, presetName)) {
       setName(preset.label);
       setPresetName(preset.label);
     }
