@@ -14,11 +14,13 @@ import {
   Provider as PaperProvider,
 } from 'react-native-paper';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ProviderListScreen from './screens/ProviderListScreen';
+import AddEditProviderScreen from './screens/AddEditProviderScreen';
 import AuthenticationScreen from './screens/AuthenticationScreen';
-import ConfigurationScreen from './screens/ConfigurationScreen';
-import ConfigProvider from './context/ConfigProvider';
+import OIDCResultScreen from './screens/OIDCResultScreen';
 import UserPanelScreen from './screens/UserPanelScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
+import ProvidersProvider from './context/ProvidersProvider';
 import { Platform, useColorScheme } from 'react-native';
 import UserProvider from './context/UserProvider';
 import {
@@ -30,16 +32,12 @@ import {
 } from '@authgear/react-native';
 
 export type RootStackParamList = {
-  // Existing routes (kept; navigator still registers these until the integration task)
-  Authentication: undefined;
-  Configuration: { fromButton: boolean } | undefined;
-  UserPanel: { userInfo: UserInfo | null } | undefined;
-  UserInfo: { userInfo: UserInfo | null } | undefined;
-  // New routes for the OIDC-tester feature (screens registered in the integration task)
   ProviderList: undefined;
   AddEditProvider: { providerId?: string } | undefined;
   AuthgearLogin: { providerId: string };
   OIDCResult: { providerId: string };
+  UserPanel: { userInfo: UserInfo | null } | undefined;
+  UserInfo: { userInfo: UserInfo | null } | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -125,29 +123,34 @@ const App: React.FC = () => {
     systemColorScheme === 'dark' ? CombinedDarkTheme : CombinedDefaultTheme;
 
   return (
-    <ConfigProvider>
+    <ProvidersProvider>
       <UserProvider>
         <PaperProvider theme={theme}>
           <NavigationContainer theme={theme}>
             <Stack.Navigator
-              initialRouteName="Authentication"
+              initialRouteName="ProviderList"
               screenOptions={{ headerShown: false }}
             >
               <Stack.Screen
-                name="Authentication"
-                component={AuthenticationScreen}
+                name="ProviderList"
+                component={ProviderListScreen}
               />
               <Stack.Screen
-                name="Configuration"
-                component={ConfigurationScreen}
+                name="AddEditProvider"
+                component={AddEditProviderScreen}
               />
+              <Stack.Screen
+                name="AuthgearLogin"
+                component={AuthenticationScreen}
+              />
+              <Stack.Screen name="OIDCResult" component={OIDCResultScreen} />
               <Stack.Screen name="UserPanel" component={UserPanelScreen} />
               <Stack.Screen name="UserInfo" component={UserInfoScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </PaperProvider>
       </UserProvider>
-    </ConfigProvider>
+    </ProvidersProvider>
   );
 };
 
