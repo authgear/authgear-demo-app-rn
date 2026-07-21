@@ -5,6 +5,7 @@ import {
   Appbar,
   Button,
   Card,
+  Chip,
   Text,
   Divider,
   IconButton,
@@ -23,6 +24,7 @@ import {
   fetchUserInfo,
 } from '../engines/oidc';
 import { decodeJwt } from '../util/jwt';
+import { isJwt, formatClaimTimestamp, tokenValidity } from '../util/claims';
 import LoadingSpinner from '../LoadingSpinner';
 
 interface TokenState {
@@ -72,6 +74,20 @@ const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
     }
     return decodeJwt(tokens.idToken)?.payload ?? null;
   }, [tokens]);
+
+  const accessClaims = useMemo(() => {
+    if (tokens == null || !isJwt(tokens.accessToken)) {
+      return null;
+    }
+    return decodeJwt(tokens.accessToken)?.payload ?? null;
+  }, [tokens]);
+
+  const idValidity = useMemo(() => {
+    if (claims == null) {
+      return 'unknown' as const;
+    }
+    return tokenValidity(claims, Date.now());
+  }, [claims]);
 
   const run = useCallback(async (fn: () => Promise<void>) => {
     setError(null);
@@ -143,6 +159,16 @@ const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
       }
     });
   }, [oidcProvider, tokens, run]);
+
+  const renderClaimValue = (key: string, value: unknown) => {
+    if (
+      typeof value === 'number' &&
+      ['exp', 'iat', 'nbf', 'auth_time'].includes(key)
+    ) {
+      return `${value} — ${formatClaimTimestamp(value, Date.now())}`;
+    }
+    return JSON.stringify(value);
+  };
 
   const renderToken = (label: string, value: string) => (
     <View>
@@ -218,14 +244,35 @@ const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
                 {claims == null ? (
                   <Text style={styles.claim}>Could not decode ID token.</Text>
                 ) : (
-                  Object.entries(claims).map(([k, v]) => (
-                    <Text key={k} style={styles.claim}>
-                      {k}: {JSON.stringify(v)}
-                    </Text>
-                  ))
+                  <>
+                    <Chip
+                      style={{ alignSelf: 'flex-start', marginBottom: 8 }}
+                      icon={idValidity === 'valid' ? 'check' : 'alert'}
+                    >
+                      {idValidity}
+                    </Chip>
+                    {Object.entries(claims).map(([k, v]) => (
+                      <Text key={k} style={styles.claim}>
+                        {k}: {renderClaimValue(k, v)}
+                      </Text>
+                    ))}
+                  </>
                 )}
               </Card.Content>
             </Card>
+
+            {accessClaims != null ? (
+              <Card style={styles.card}>
+                <Card.Title title="Access token claims (unverified)" />
+                <Card.Content>
+                  {Object.entries(accessClaims).map(([k, v]) => (
+                    <Text key={k} style={styles.claim}>
+                      {k}: {renderClaimValue(k, v)}
+                    </Text>
+                  ))}
+                </Card.Content>
+              </Card>
+            ) : null}
 
             {userInfo != null ? (
               <Card style={styles.card}>
