@@ -71,7 +71,7 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
   const isDemo = editingId === AUTHGEAR_DEMO_PROVIDER_ID;
 
   const [kind, setKind] = useState<'authgear' | 'oidc'>(
-    existing?.kind ?? 'oidc'
+    existing?.kind ?? 'authgear'
   );
   const [name, setName] = useState<string>(existing?.name ?? '');
   // Tracks the last preset-provided name so switching presets updates the
