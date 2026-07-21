@@ -30,10 +30,16 @@ import {
 } from '@authgear/react-native';
 
 export type RootStackParamList = {
+  // Existing routes (kept; navigator still registers these until the integration task)
   Authentication: undefined;
   Configuration: { fromButton: boolean } | undefined;
   UserPanel: { userInfo: UserInfo | null } | undefined;
   UserInfo: { userInfo: UserInfo | null } | undefined;
+  // New routes for the OIDC-tester feature (screens registered in the integration task)
+  ProviderList: undefined;
+  AddEditProvider: { providerId?: string } | undefined;
+  AuthgearLogin: { providerId: string };
+  OIDCResult: { providerId: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
