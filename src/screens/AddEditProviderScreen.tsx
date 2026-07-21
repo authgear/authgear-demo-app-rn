@@ -160,6 +160,17 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
       .catch((e) => ShowError(e));
   };
 
+  const onChangeKind = (v: 'authgear' | 'oidc') => {
+    setKind(v);
+    // Clear an auto-filled preset name when switching tabs so a stale name
+    // (e.g. "Okta" left over from the OIDC tab) doesn't linger. A name the
+    // user typed themselves is preserved.
+    if (name === presetName) {
+      setName('');
+      setPresetName(null);
+    }
+  };
+
   const applyPreset = (preset: ProviderPreset) => {
     // Fill the name from the preset unless the user typed a custom one.
     if (name.trim() === '' || name === presetName) {
@@ -189,7 +200,7 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
         {!isDemo ? (
           <SegmentedButtons
             value={kind}
-            onValueChange={(v) => setKind(v as 'authgear' | 'oidc')}
+            onValueChange={(v) => onChangeKind(v as 'authgear' | 'oidc')}
             buttons={[
               { value: 'oidc', label: 'Generic OIDC' },
               { value: 'authgear', label: 'Authgear' },
