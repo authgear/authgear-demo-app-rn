@@ -192,7 +192,7 @@ const AuthenticationScreen: React.FC<AuthenticationScreenProps> = (props) => {
         <LoadingSpinner loading={loading} />
         <View style={styles.headerContainer}>
           <View style={styles.titleContainer}>
-            <Text style={styles.titleText}>Authgear Demo</Text>
+            <Text style={styles.titleText}>Authgear</Text>
             <Text
               style={{ ...styles.subTitleText, color: theme.colors.disabled }}
             >

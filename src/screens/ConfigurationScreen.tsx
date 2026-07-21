@@ -241,7 +241,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = (props) => {
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
       >
-        <Text style={styles.titleText}>Authgear Demo</Text>
+        <Text style={styles.titleText}>Authgear</Text>
         <Text style={{ ...styles.subTitleText, color: theme.colors.disabled }}>
           Configuration
         </Text>
