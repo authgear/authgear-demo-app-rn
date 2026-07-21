@@ -103,6 +103,7 @@ android {
         applicationId "com.authgear.exampleapp.reactnativeforsales"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        manifestPlaceholders = [appAuthRedirectScheme: 'authgear-oidc-tester']
         if (project.hasProperty("VERSION_CODE")) {
             versionCode Integer.parseInt(project.findProperty("VERSION_CODE"))
         } else {
