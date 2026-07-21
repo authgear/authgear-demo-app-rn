@@ -14,7 +14,7 @@ import {
 } from 'react-native-paper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList, redirectURI } from '../App';
 import { useProviders } from '../context/ProvidersProvider';
 import {
   AuthgearProvider,
@@ -214,6 +214,19 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
             <View style={styles.toggleRow}>
               <Text>Allow passcode fallback in biometric</Text>
               <Switch value={allowPasscode} onValueChange={setAllowPasscode} />
+            </View>
+            <View style={styles.redirectBox}>
+              <Text style={{ ...styles.hint, color: theme.colors.disabled }}>
+                Register this redirect URI in your Authgear app:
+              </Text>
+              <View style={styles.redirectRow}>
+                <Text style={styles.redirectValue}>{redirectURI}</Text>
+                <IconButton
+                  icon="content-copy"
+                  size={18}
+                  onPress={() => Clipboard.setString(redirectURI)}
+                />
+              </View>
             </View>
           </>
         ) : (
