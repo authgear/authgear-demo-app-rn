@@ -1,0 +1,39 @@
+// Throwaway RSA test keypair for JWKS verification tests (NOT a real secret).
+// Generated once so tests never run slow in-JS RSA keygen.
+export const TEST_PRIVATE_PEM = `-----BEGIN PRIVATE KEY-----
+MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCx6kkyLIYUhbbw
+75s9JjROwwrAFX+5kKwsv0Gi02yH7AipQtb9ba8h8FGbPmeGizbEiQYZ0ng9dgsb
+uNoV+I/q2mcGSIFcnF3H7XqPTu/oBLiwChCcEO8WFL2YxtLzOm7ePIgYZ3BPR8qZ
+fUFqq6W8Iw3C6FBTQPJhO/1NaWw3F8EdaaaYFIRyl4fEJNnZ/lwUGi2B4PnaO7g1
+R1rAsx+vzQc9WAa9+L1625Kt3XYLKMOBBxf5KSg3AcqwCo6LSpX7rWbzYz4JLC7q
+D7IXMmMTVOxrCRuvobApfiIrZKqpSsgYl3/DAG4CM519C3gZ2x6ptGg14HGJ9Bq6
+EdZ3/Jf7AgMBAAECggEAEBvW6cXnPpzGw3TmY43TJvMjmjW4HVHwjOf6O5G/Xg/X
+JEAq3W0HcjVjUNZAeF71eVZbaON0w0KDX0yy46dgRyg5iMjwJuBPi3EV65DUSaKC
+eF9I7As1IpTZKn03ZLy8hL8KptmtbQ2NK1g7H+XlDoOb/4hE8Zd2pVV8VKcqxv1m
+8IFOsbEbhDjCPnKiYejnfXrXEnP6R4jmkv1+9u+z8WYXg4JWefuPkWl8dnPu7nt6
+bU/XmV6SW8nndb8r5Vg/7xYUZIKglrIMLNIEkVl6ZHinlj8lCd8AVyyROq2/6bYx
+D8yTv95xzqWvKWb4byIMo6zm9QjpacEfnw9TjBDDJQKBgQDr4e6MpxJzQTdcHh2D
+cnoccPEcsGw5bNCmJESyBK3aBj7MAT9icCAAb0eTOSkOV/06bR/R6twPly/20G39
+jWXQoryKEinMs8t4IPMBlxnYqWbaVbi6rD76h7CZkQ1sklpLXpCc8qPRK87pP2vd
+N8ZdU44tOe0Ar/XiprUFDbT1pwKBgQDBFr3bDAfux58nGjzxLuE5jyvU7lhPjyBU
+LCw25EW/Gpgt8yCSzZ5XzjSmvHDQJOeTXnwtKSZjOTy3dwHQxRymXvzHOcB1ujBH
+H9HtrpvOMy4goGNT54kRgOOgb4ewAkUI2osJTnVu+vT7CKG0WNpXzsCRFbZut0w5
+1ij8JwO9jQKBgEgGLZu+6/BLSocTHvni+4wxpD2ZVQJXyoHgcyVULm1zGLub6em5
+yNu5HsbCXlnl3gl4Bo5HQzhzdo7LZ7pS8XK6Lg2OrDq373nXvbuPkrHIUAJ8yDIf
+o/9FbVQGqW2sZmu7DTcPE5wr3zrzRZE/lY8rky8WD9r034R8WKuZWtbjAoGBALxG
+T4OqPIXw8dfv9qJ5wrUcTHIIoeWZur04gThY50VLSj3rxsQ+aHpXn/FA54OdqIyC
+4fQrHro7kl+WVBfcS25SSop8XpSsouyHM2xeCKBMOVso6RFkP7vogIvslFLkM6pJ
+Zq8BaPJ5E60/omU3Clf6SrxtfoCAjHwMvdP4uuX1AoGBANRxX9Sofc5BEKXFWvQk
+WnS+Kq9xEjfdLQB6Pd5W3EJD9mPR5L2+f3/tbKheRtut29rtRLXlAVPHmBmDHMZ1
+xPuDYxDY0rHU+X+O9lqQFisPkjSP+jmoluMCLDt++x/lx5f3ZIe/x+fRDfUow2/c
+3++zY7twSrdaszyL5/ntrycU
+-----END PRIVATE KEY-----
+`;
+export const TEST_JWK = {
+  kty: 'RSA',
+  n: 'sepJMiyGFIW28O-bPSY0TsMKwBV_uZCsLL9BotNsh-wIqULW_W2vIfBRmz5nhos2xIkGGdJ4PXYLG7jaFfiP6tpnBkiBXJxdx-16j07v6AS4sAoQnBDvFhS9mMbS8zpu3jyIGGdwT0fKmX1BaqulvCMNwuhQU0DyYTv9TWlsNxfBHWmmmBSEcpeHxCTZ2f5cFBotgeD52ju4NUdawLMfr80HPVgGvfi9etuSrd12CyjDgQcX-SkoNwHKsAqOi0qV-61m82M-CSwu6g-yFzJjE1Tsawkbr6GwKX4iK2SqqUrIGJd_wwBuAjOdfQt4GdseqbRoNeBxifQauhHWd_yX-w',
+  e: 'AQAB',
+  kid: 'test-key',
+  alg: 'RS256',
+  use: 'sig',
+} as Record<string, unknown>;

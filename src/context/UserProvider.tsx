@@ -6,7 +6,7 @@ import authgear, {
   SessionState,
 } from '@authgear/react-native';
 import ShowError from '../ShowError';
-import { useConfig } from './ConfigProvider';
+import { useProviders } from './ProvidersProvider';
 
 interface UserContextProviderValue {
   sessionState: SessionState;
@@ -30,7 +30,7 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   );
   const [isBiometricEnabled, setIsBiometricEnabled] = useState<boolean>(false);
 
-  const config = useConfig();
+  const { activeAuthgearProvider } = useProviders();
 
   const updateState = useCallback(
     (container: ReactNativeContainer) => {
@@ -39,7 +39,8 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
           const biometricOptions = getBiometricOptions({
             forEnableBiometric: true,
             allowFallbackToPasscode:
-              config.content?.allowFallbackToPasscodeInBiometric ?? false,
+              activeAuthgearProvider?.allowFallbackToPasscodeInBiometric ??
+              false,
           });
           await container.checkBiometricSupported(biometricOptions);
         } finally {
@@ -58,7 +59,7 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         ShowError(e);
       });
     },
-    [config.content?.allowFallbackToPasscodeInBiometric]
+    [activeAuthgearProvider?.allowFallbackToPasscodeInBiometric]
   );
 
   authgear.delegate = {

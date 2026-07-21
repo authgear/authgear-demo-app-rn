@@ -1,8 +1,14 @@
-# Authgear React Native Demo App
+# Authgear Tools — OIDC/OAuth Integration Tester
 
-This app demonstrates the features supported by the [`@authgear/react-native`](https://www.npmjs.com/package/@authgear/react-native) SDK — including login/logout, biometric authentication, token storage modes, SSO, WeChat login, and the WebView UI implementation.
+This app is an OIDC/OAuth integration tester built on React Native. It presents a list of
+providers — a pinned Authgear provider showcasing the [`@authgear/react-native`](https://www.npmjs.com/package/@authgear/react-native)
+SDK, plus any generic OIDC providers you add — so you can exercise the full authorization
+code flow (login, tokens, decoded ID-token claims, userinfo, discovery, JWKS signature
+verification, refresh, and logout) against your own OIDC-compliant identity provider.
 
-The app ships pre-configured against a public demo project (`https://demo-app.authgear.cloud`). You can point it at your own Authgear project at runtime from the in-app **Configuration** screen (client ID, endpoint, token storage, and related options).
+It ships with a ready-to-use Authgear provider. Add your own from the **Add provider** screen —
+start from a preset (Google, Microsoft Entra, Okta, Auth0, Keycloak) or enter an issuer and
+client ID. Tokens obtained while testing are kept in memory only.
 
 ## Prerequisites
 
@@ -79,3 +85,14 @@ make test           # jest
 ```
 
 Run `make format` to auto-format sources with Prettier.
+
+## Roadmap
+
+Candidate features, not yet implemented:
+
+- Manual endpoints & client-secret support for providers without a discovery document.
+- Token introspection (RFC 7662) and a raw request/response log for the auth flow.
+- Extra authorization parameters (`prompt`, `login_hint`, `acr_values`) and PKCE-method display.
+- Provider import/export (JSON or QR) to share configurations across a team.
+- A settings screen (theme, default scopes, clear all data).
+- Explicit OAuth error surfacing (`error` / `error_description`).
