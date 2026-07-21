@@ -21,6 +21,7 @@ import OIDCResultScreen from './screens/OIDCResultScreen';
 import OIDCDiscoveryScreen from './screens/OIDCDiscoveryScreen';
 import UserPanelScreen from './screens/UserPanelScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
+import AboutScreen from './screens/AboutScreen';
 import ProvidersProvider from './context/ProvidersProvider';
 import { Platform, useColorScheme } from 'react-native';
 import UserProvider from './context/UserProvider';
@@ -40,6 +41,7 @@ export type RootStackParamList = {
   OIDCDiscovery: { providerId: string };
   UserPanel: { userInfo: UserInfo | null } | undefined;
   UserInfo: { userInfo: UserInfo | null } | undefined;
+  About: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -152,6 +154,7 @@ const App: React.FC = () => {
               />
               <Stack.Screen name="UserPanel" component={UserPanelScreen} />
               <Stack.Screen name="UserInfo" component={UserInfoScreen} />
+              <Stack.Screen name="About" component={AboutScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </PaperProvider>

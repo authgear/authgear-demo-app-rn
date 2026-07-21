@@ -38,6 +38,10 @@ const ProviderListScreen: React.FC<Props> = ({ navigation }) => {
           title="Authgear Tools"
           subtitle="OIDC integration tester"
         />
+        <Appbar.Action
+          icon="information"
+          onPress={() => navigation.navigate('About')}
+        />
       </Appbar.Header>
       <LoadingSpinner loading={loading} />
       <ScrollView style={styles.list}>
