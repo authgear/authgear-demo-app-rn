@@ -329,7 +329,7 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
       <LoadingSpinner loading={loading} />
 
       <Appbar.Header>
-        <Appbar.Content title="Authgear Demo" />
+        <Appbar.Content title="Authgear" />
         <Appbar.Action
           icon="information-outline"
           onPress={() => setInfoDialogVisible(true)}
