@@ -16,7 +16,7 @@ export function legacyConfigToProvider(config: LegacyConfig): AuthgearProvider {
   return {
     id: AUTHGEAR_DEMO_PROVIDER_ID,
     kind: 'authgear',
-    name: 'Authgear (demo)',
+    name: 'Authgear (try it)',
     clientID: config.clientID,
     endpoint: config.endpoint,
     explicitColorScheme: config.explicitColorScheme ?? null,

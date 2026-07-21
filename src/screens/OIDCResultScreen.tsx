@@ -44,6 +44,12 @@ const styles = StyleSheet.create({
   loginButton: { marginBottom: 16 },
 });
 
+function isUserCancellation(e: any): boolean {
+  const code = String(e?.code ?? '');
+  const message = String(e?.message ?? e ?? '');
+  return /cancel/i.test(code) || /cancel/i.test(message);
+}
+
 type Props = NativeStackScreenProps<RootStackParamList, 'OIDCResult'>;
 
 const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
@@ -74,8 +80,8 @@ const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
       await fn();
     } catch (e: any) {
       // A user-cancelled browser flow is not an error worth surfacing loudly.
-      const message = String(e?.message ?? e);
-      if (!/cancel/i.test(message)) {
+      if (!isUserCancellation(e)) {
+        const message = String(e?.message ?? e);
         setError(message);
       }
     } finally {
@@ -129,9 +135,12 @@ const OIDCResultScreen: React.FC<Props> = ({ navigation, route }) => {
       return;
     }
     run(async () => {
-      await oidcEndSession(oidcProvider, tokens.idToken);
-      setTokens(null);
-      setUserInfo(null);
+      try {
+        await oidcEndSession(oidcProvider, tokens.idToken);
+      } finally {
+        setTokens(null);
+        setUserInfo(null);
+      }
     });
   }, [oidcProvider, tokens, run]);
 

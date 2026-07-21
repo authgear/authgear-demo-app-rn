@@ -5,7 +5,7 @@ export const AUTHGEAR_DEMO_PROVIDER_ID = 'authgear-demo';
 export const demoAuthgearProvider: AuthgearProvider = {
   id: AUTHGEAR_DEMO_PROVIDER_ID,
   kind: 'authgear',
-  name: 'Authgear (demo)',
+  name: 'Authgear (try it)',
   clientID: 'e6b2f5bad8546ee3',
   endpoint: 'https://demo-app.authgear.cloud',
   explicitColorScheme: null,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Appbar, List, Button, Divider, IconButton } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -38,7 +38,7 @@ const ProviderListScreen: React.FC<Props> = ({ navigation }) => {
         <Appbar.Content title="Authgear Tools" />
       </Appbar.Header>
       <LoadingSpinner loading={loading} />
-      <View style={styles.list}>
+      <ScrollView style={styles.list}>
         {providers.map((p) => (
           <React.Fragment key={p.id}>
             <List.Item
@@ -65,7 +65,7 @@ const ProviderListScreen: React.FC<Props> = ({ navigation }) => {
             <Divider />
           </React.Fragment>
         ))}
-      </View>
+      </ScrollView>
       <Button
         mode="contained"
         style={styles.addButton}

@@ -123,11 +123,18 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
         ShowError(new Error('Issuer and client ID are required.'));
         return;
       }
+      const normalizedIssuer = issuer.trim().replace(/\/+$/, '');
+      if (!/^https?:\/\//i.test(normalizedIssuer)) {
+        ShowError(
+          new Error('Issuer must be a valid URL starting with https://')
+        );
+        return;
+      }
       const oidc: OIDCProvider = {
         id,
         kind: 'oidc',
         name: name.trim() || 'OIDC provider',
-        issuer: issuer.trim(),
+        issuer: normalizedIssuer,
         clientID: clientID.trim(),
         scopes: parseScopes(scopesText),
       };
