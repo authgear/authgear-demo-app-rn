@@ -3,7 +3,6 @@
 #import <RCTAppDelegate.h>
 #import <React/RCTBundleURLProvider.h>
 #import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
-#import <AGAuthgearReactNative.h>
 
 @implementation ReactNativeDelegate
 
