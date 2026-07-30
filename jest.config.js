@@ -1,5 +1,5 @@
 module.exports = {
-  preset: 'react-native',
+  preset: '@react-native/jest-preset',
   // react-native-app-auth (and its react-native-base64 dependency) ship
   // untranspiled ESM, so they need to go through babel-jest like RN itself.
   transformIgnorePatterns: [
