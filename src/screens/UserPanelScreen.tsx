@@ -8,13 +8,13 @@ import {
   Dialog,
   Divider,
   MD2Theme,
-  Portal,
   Text,
   useTheme,
 } from 'react-native-paper';
 import { getBiometricOptions, RootStackParamList } from '../App';
 import { useProviders } from '../context/ProvidersProvider';
 import ShowError from '../ShowError';
+import AppDialog from '../AppDialog';
 import authgear, { Page, UserInfo } from '@authgear/react-native';
 import LoadingSpinner from '../LoadingSpinner';
 import { redirectURI, wechatRedirectURI } from '../App';
@@ -207,6 +207,25 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
     });
   }, [activeAuthgearProvider?.explicitColorScheme, updateUserInfo]);
 
+  const onPressChangePasswordButton = useCallback(() => {
+    async function changePassword() {
+      setLoading(true);
+      try {
+        await authgear.changePassword({
+          redirectURI,
+          colorScheme: activeAuthgearProvider?.explicitColorScheme ?? undefined,
+          wechatRedirectURI,
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    changePassword().catch((e) => {
+      ShowError(e);
+    });
+  }, [activeAuthgearProvider?.explicitColorScheme]);
+
   const onPressEnableBiometricButton = useCallback(() => {
     async function enableBiometric() {
       setLoading(true);
@@ -337,141 +356,125 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
         />
       </Appbar.Header>
 
-      <Portal>
-        <Dialog
-          visible={infoDialogVisible}
-          onDismiss={() => setInfoDialogVisible(false)}
-        >
-          <Dialog.Title>Configuration</Dialog.Title>
-          <Dialog.Content>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Endpoint: {activeAuthgearProvider?.endpoint}
-            </Text>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Client ID: {activeAuthgearProvider?.clientID}
-            </Text>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              AUTHUI Color Scheme:{' '}
-              {activeAuthgearProvider?.explicitColorScheme ?? 'System'}
-            </Text>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Logout upon app quit (Transient TokenStorage):{' '}
-              {activeAuthgearProvider?.useTransientTokenStorage.toString()}
-            </Text>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Share Session with Device Browser (Enable SSO):{' '}
-              {activeAuthgearProvider?.shareSessionWithSystemBrowser.toString()}
-            </Text>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              UI Implementation:{' '}
-              {activeAuthgearProvider?.uiImplementation ??
-                'asWebAuthenticationSession'}
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setInfoDialogVisible(false)}>Dismiss</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+      <AppDialog
+        visible={infoDialogVisible}
+        onDismiss={() => setInfoDialogVisible(false)}
+      >
+        <Dialog.Title>Configuration</Dialog.Title>
+        <Dialog.Content>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            Endpoint: {activeAuthgearProvider?.endpoint}
+          </Text>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            Client ID: {activeAuthgearProvider?.clientID}
+          </Text>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            AUTHUI Color Scheme:{' '}
+            {activeAuthgearProvider?.explicitColorScheme ?? 'System'}
+          </Text>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            Logout upon app quit (Transient TokenStorage):{' '}
+            {activeAuthgearProvider?.useTransientTokenStorage.toString()}
+          </Text>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            Share Session with Device Browser (Enable SSO):{' '}
+            {activeAuthgearProvider?.shareSessionWithSystemBrowser.toString()}
+          </Text>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            UI Implementation:{' '}
+            {activeAuthgearProvider?.uiImplementation ??
+              'asWebAuthenticationSession'}
+          </Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setInfoDialogVisible(false)}>Dismiss</Button>
+        </Dialog.Actions>
+      </AppDialog>
 
-      <Portal>
-        <Dialog
-          visible={authTimeDialogVisible}
-          onDismiss={() => setAuthTimeDialogVisible(false)}
-        >
-          <Dialog.Title>Auth Time</Dialog.Title>
-          <Dialog.Content>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              {authgear.getAuthTime()?.toISOString()}
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setAuthTimeDialogVisible(false)}>
-              Dismiss
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+      <AppDialog
+        visible={authTimeDialogVisible}
+        onDismiss={() => setAuthTimeDialogVisible(false)}
+      >
+        <Dialog.Title>Auth Time</Dialog.Title>
+        <Dialog.Content>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            {authgear.getAuthTime()?.toISOString()}
+          </Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setAuthTimeDialogVisible(false)}>
+            Dismiss
+          </Button>
+        </Dialog.Actions>
+      </AppDialog>
 
-      <Portal>
-        <Dialog
-          visible={logoutDialogVisible}
-          onDismiss={() => setLogoutDialogVisible(false)}
-        >
-          <Dialog.Title>Logout?</Dialog.Title>
-          <Dialog.Content>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Are you sure to logout?
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setLogoutDialogVisible(false)}>
-              Cancel
-            </Button>
-            <Button onPress={onLogout}>Logout</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+      <AppDialog
+        visible={logoutDialogVisible}
+        onDismiss={() => setLogoutDialogVisible(false)}
+      >
+        <Dialog.Title>Logout?</Dialog.Title>
+        <Dialog.Content>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            Are you sure to logout?
+          </Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setLogoutDialogVisible(false)}>Cancel</Button>
+          <Button onPress={onLogout}>Logout</Button>
+        </Dialog.Actions>
+      </AppDialog>
 
-      <Portal>
-        <Dialog
-          visible={reauthDialogVisible}
-          onDismiss={() => setReauthDialogVisible(false)}
-        >
-          <Dialog.Title>Reauthenticate user?</Dialog.Title>
-          <Dialog.Content>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              The auth time will be updated after reauthentication. This is
-              useful to identify the users before sensitive operations.
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setReauthDialogVisible(false)}>
-              Cancel
-            </Button>
-            <Button onPress={onReauthenticate}>Re-auth</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+      <AppDialog
+        visible={reauthDialogVisible}
+        onDismiss={() => setReauthDialogVisible(false)}
+      >
+        <Dialog.Title>Reauthenticate user?</Dialog.Title>
+        <Dialog.Content>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            The auth time will be updated after reauthentication. This is useful
+            to identify the users before sensitive operations.
+          </Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setReauthDialogVisible(false)}>Cancel</Button>
+          <Button onPress={onReauthenticate}>Re-auth</Button>
+        </Dialog.Actions>
+      </AppDialog>
 
-      <Portal>
-        <Dialog
-          visible={reauthSuccessDialogVisible}
-          onDismiss={() => setReauthSuccessDialogVisible(false)}
-        >
-          <Dialog.Title>Reauth success</Dialog.Title>
-          <Dialog.Content>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              The auth time is now {authgear.getAuthTime()?.toISOString()}
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setReauthSuccessDialogVisible(false)}>
-              Dismiss
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+      <AppDialog
+        visible={reauthSuccessDialogVisible}
+        onDismiss={() => setReauthSuccessDialogVisible(false)}
+      >
+        <Dialog.Title>Reauth success</Dialog.Title>
+        <Dialog.Content>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            The auth time is now {authgear.getAuthTime()?.toISOString()}
+          </Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setReauthSuccessDialogVisible(false)}>
+            Dismiss
+          </Button>
+        </Dialog.Actions>
+      </AppDialog>
 
-      <Portal>
-        <Dialog
-          visible={disableBiometricDialogVisible}
-          onDismiss={() => setDisableBiometricDialogVisible(false)}
-        >
-          <Dialog.Title>Disable Biometric Login?</Dialog.Title>
-          <Dialog.Content>
-            <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              This will remove the biometric key from this device.
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setDisableBiometricDialogVisible(false)}>
-              Cancel
-            </Button>
-            <Button onPress={onDisableBiometric}>Disable</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+      <AppDialog
+        visible={disableBiometricDialogVisible}
+        onDismiss={() => setDisableBiometricDialogVisible(false)}
+      >
+        <Dialog.Title>Disable Biometric Login?</Dialog.Title>
+        <Dialog.Content>
+          <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
+            This will remove the biometric key from this device.
+          </Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setDisableBiometricDialogVisible(false)}>
+            Cancel
+          </Button>
+          <Button onPress={onDisableBiometric}>Disable</Button>
+        </Dialog.Actions>
+      </AppDialog>
 
       <View style={styles.container}>
         <Text style={styles.contentText}>Welcome!</Text>
@@ -507,6 +510,15 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
           <Divider />
           {userInfo?.isAnonymous ? null : (
             <>
+              <Button
+                compact={true}
+                uppercase={false}
+                contentStyle={styles.buttonContent}
+                onPress={onPressChangePasswordButton}
+              >
+                <Text style={styles.contentText}>Change Password</Text>
+              </Button>
+              <Divider />
               <Button
                 compact={true}
                 uppercase={false}
