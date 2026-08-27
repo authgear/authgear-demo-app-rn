@@ -1,4 +1,8 @@
-import { AuthgearProvider, Provider } from './types';
+import {
+  AuthgearProvider,
+  DEFAULT_CUSTOM_WEBVIEW_NAV_BAR_COLOR,
+  Provider,
+} from './types';
 
 export const AUTHGEAR_DEMO_PROVIDER_ID = 'authgear-demo';
 
@@ -11,7 +15,8 @@ export const demoAuthgearProvider: AuthgearProvider = {
   explicitColorScheme: null,
   useTransientTokenStorage: false,
   shareSessionWithSystemBrowser: false,
-  useWebkitWebView: false,
+  uiImplementation: 'asWebAuthenticationSession',
+  customWebViewNavBarColor: DEFAULT_CUSTOM_WEBVIEW_NAV_BAR_COLOR,
   allowFallbackToPasscodeInBiometric: false,
 };
 

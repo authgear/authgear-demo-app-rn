@@ -23,6 +23,7 @@ import UserPanelScreen from './screens/UserPanelScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
 import AboutScreen from './screens/AboutScreen';
 import ProvidersProvider from './context/ProvidersProvider';
+import { CustomWebViewHost } from './engines/customWebView';
 import { Platform, useColorScheme } from 'react-native';
 import UserProvider from './context/UserProvider';
 import {
@@ -157,6 +158,7 @@ const App: React.FC = () => {
               <Stack.Screen name="About" component={AboutScreen} />
             </Stack.Navigator>
           </NavigationContainer>
+          <CustomWebViewHost />
         </PaperProvider>
       </UserProvider>
     </ProvidersProvider>

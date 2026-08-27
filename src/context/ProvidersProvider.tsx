@@ -13,7 +13,11 @@ import {
   upsertProvider as upsertInList,
   removeProvider as removeFromList,
 } from '../providers/store';
-import { legacyConfigToProvider, LegacyConfig } from '../providers/migration';
+import {
+  legacyConfigToProvider,
+  normalizeStoredProvider,
+  LegacyConfig,
+} from '../providers/migration';
 import { configureAuthgear } from '../engines/authgear';
 
 const STORAGE_KEY = 'providers.v1';
@@ -44,7 +48,8 @@ interface ProvidersProviderProps {
 async function loadInitial(): Promise<Provider[]> {
   const raw = await AsyncStorage.getItem(STORAGE_KEY);
   if (raw != null) {
-    return seedProviders(JSON.parse(raw) as Provider[]);
+    const stored = (JSON.parse(raw) as Provider[]).map(normalizeStoredProvider);
+    return seedProviders(stored);
   }
   // Migrate the legacy single-config key if present.
   const legacyRaw = await AsyncStorage.getItem(LEGACY_CONFIG_KEY);

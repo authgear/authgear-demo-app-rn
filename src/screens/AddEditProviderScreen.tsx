@@ -6,6 +6,7 @@ import {
   Button,
   Chip,
   TextInput,
+  RadioButton,
   SegmentedButtons,
   Switch,
   Text,
@@ -19,11 +20,14 @@ import { RootStackParamList, redirectURI } from '../App';
 import { useProviders } from '../context/ProvidersProvider';
 import {
   AuthgearProvider,
+  DEFAULT_CUSTOM_WEBVIEW_NAV_BAR_COLOR,
   OIDCProvider,
   Provider,
+  UIImplementationOption,
   isAuthgearProvider,
   isOIDCProvider,
 } from '../providers/types';
+import { isValidHexColor } from '../util/color';
 import { AUTHGEAR_DEMO_PROVIDER_ID } from '../providers/store';
 import { randomId } from '../util/id';
 import { parseScopes, serializeScopes } from '../util/scopes';
@@ -42,6 +46,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
   },
+  radioSection: { marginVertical: 10 },
   redirectBox: { marginTop: 12, marginBottom: 4 },
   redirectRow: { flexDirection: 'row', alignItems: 'center' },
   redirectValue: { flex: 1, fontFamily: 'Courier', fontSize: 13 },
@@ -96,8 +101,13 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
   const [shareSSO, setShareSSO] = useState<boolean>(
     authgearExisting?.shareSessionWithSystemBrowser ?? false
   );
-  const [useWebkit, setUseWebkit] = useState<boolean>(
-    authgearExisting?.useWebkitWebView ?? false
+  const [uiImplementation, setUIImplementation] =
+    useState<UIImplementationOption>(
+      authgearExisting?.uiImplementation ?? 'asWebAuthenticationSession'
+    );
+  const [navBarColor, setNavBarColor] = useState<string>(
+    authgearExisting?.customWebViewNavBarColor ??
+      DEFAULT_CUSTOM_WEBVIEW_NAV_BAR_COLOR
   );
   const [allowPasscode, setAllowPasscode] = useState<boolean>(
     authgearExisting?.allowFallbackToPasscodeInBiometric ?? false
@@ -119,6 +129,15 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
         ShowError(new Error('Client ID and endpoint are required.'));
         return;
       }
+      if (
+        uiImplementation === 'customWebView' &&
+        !isValidHexColor(navBarColor.trim())
+      ) {
+        ShowError(
+          new Error('Nav bar color must be a 6-digit hex color like #f9fafb.')
+        );
+        return;
+      }
       const authgear: AuthgearProvider = {
         id,
         kind: 'authgear',
@@ -128,7 +147,8 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
         explicitColorScheme: authgearExisting?.explicitColorScheme ?? null,
         useTransientTokenStorage: useTransient,
         shareSessionWithSystemBrowser: shareSSO,
-        useWebkitWebView: useWebkit,
+        uiImplementation,
+        customWebViewNavBarColor: navBarColor.trim(),
         allowFallbackToPasscodeInBiometric: allowPasscode,
       };
       provider = authgear;
@@ -244,9 +264,39 @@ const AddEditProviderScreen: React.FC<Props> = ({ navigation, route }) => {
               <Text>Share session with system browser</Text>
               <Switch value={shareSSO} onValueChange={setShareSSO} />
             </View>
-            <View style={styles.toggleRow}>
-              <Text>Use WebKit WebView</Text>
-              <Switch value={useWebkit} onValueChange={setUseWebkit} />
+            <View style={styles.radioSection}>
+              <Text>Authentication UI</Text>
+              <RadioButton.Group
+                value={uiImplementation}
+                onValueChange={(v) =>
+                  setUIImplementation(v as UIImplementationOption)
+                }
+              >
+                <RadioButton.Item
+                  label="ASWebAuthenticationSession"
+                  value="asWebAuthenticationSession"
+                />
+                <RadioButton.Item
+                  label="Webkit Webview"
+                  value="webkitWebView"
+                />
+                <RadioButton.Item
+                  label="Custom Webview"
+                  value="customWebView"
+                />
+              </RadioButton.Group>
+              {uiImplementation === 'customWebView' ? (
+                <TextInput
+                  style={styles.field}
+                  mode="outlined"
+                  label="Nav bar color"
+                  value={navBarColor}
+                  onChangeText={setNavBarColor}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  placeholder={DEFAULT_CUSTOM_WEBVIEW_NAV_BAR_COLOR}
+                />
+              ) : null}
             </View>
             <View style={styles.toggleRow}>
               <Text>Allow passcode fallback in biometric</Text>

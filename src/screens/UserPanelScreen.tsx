@@ -363,8 +363,9 @@ const UserPanelScreen: React.FC<UserPanelScreenProps> = (props) => {
               {activeAuthgearProvider?.shareSessionWithSystemBrowser.toString()}
             </Text>
             <Text style={[styles.dialogText, { color: theme.colors.disabled }]}>
-              Webkit Webview:{' '}
-              {activeAuthgearProvider?.useWebkitWebView?.toString() ?? 'false'}
+              UI Implementation:{' '}
+              {activeAuthgearProvider?.uiImplementation ??
+                'asWebAuthenticationSession'}
             </Text>
           </Dialog.Content>
           <Dialog.Actions>

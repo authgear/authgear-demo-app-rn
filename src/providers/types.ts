@@ -1,5 +1,12 @@
 import { ColorScheme } from '@authgear/react-native';
 
+export type UIImplementationOption =
+  | 'asWebAuthenticationSession'
+  | 'webkitWebView'
+  | 'customWebView';
+
+export const DEFAULT_CUSTOM_WEBVIEW_NAV_BAR_COLOR = '#f9fafb';
+
 export interface BaseProvider {
   id: string;
   kind: 'authgear' | 'oidc';
@@ -13,7 +20,8 @@ export interface AuthgearProvider extends BaseProvider {
   explicitColorScheme: ColorScheme | null;
   useTransientTokenStorage: boolean;
   shareSessionWithSystemBrowser: boolean;
-  useWebkitWebView: boolean;
+  uiImplementation: UIImplementationOption;
+  customWebViewNavBarColor: string;
   allowFallbackToPasscodeInBiometric: boolean;
 }
 
